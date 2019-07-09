@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>SoftCircuits.CsvParser</PackageId>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Jonathan Wood</Authors>
+    <Company>SoftCircuits</Company>
+    <Description>CsvParser is a class library to aid in working with comma-separated-value (CSV) files. The CsvWriter class can be used to write a CSV file. The `CsvReader` class can be used to read a CSV file.
+
+These classes have support for column values that contain special characters, such as commas. Such values are wrapped in quotes. And the classes even support column values that span multiple lines.
+
+An instance of the CsvSettings can optionally be passed to the constructors of the other classes, allowing you to override default settings such as which character is used to delimit columns, which character is used as a quote, and how empty lines are handled.</Description>
+    <Copyright>Copyright © 2019 SoftCircuits</Copyright>
+    <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/SoftCircuits/CsvParser</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>csv tsv csv-parser parser</PackageTags>
+    <PackageReleaseNotes>Initial version</PackageReleaseNotes>
+    <NeutralLanguage>en-US</NeutralLanguage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\License.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
