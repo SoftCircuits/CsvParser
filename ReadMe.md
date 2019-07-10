@@ -8,7 +8,7 @@ Install-Package SoftCircuits.CsvParser
 
 ## Overview
 
-CsvParser is a class library to aid in working with comma-separated-value (CSV) files. The `CsvWriter` class can be used to write a CSV file. The `CsvReader` class can be used to read a CSV file.
+CsvParser is a class library to aid in working with comma-separated-values (CSV) files. The `CsvWriter` class can be used to write a CSV file. The `CsvReader` class can be used to read a CSV file.
 
 These classes have support for column values that contain special characters, such as commas. Such values are wrapped in quotes. And the classes even support column values that span multiple lines.
 
@@ -34,6 +34,20 @@ This example reads all rows from a CSV file.
 
 ```cs
 using (CsvReader reader = new CsvReader(path))
+{
+    string[] columns;
+    while (reader.ReadRow(out columns))
+        Console.WriteLine(string.Join(", ", columns));
+}
+```
+
+The next example reads a tab-separated-values (TSV) file by creating a custom `CsvSettings` object, changing the `ColumnDelimiter` property to a tab, and passing the settings object to the `CsvReader`'s constructor.
+
+```cs
+CsvSettings settings = new CsvSettings();
+settings.ColumnDelimiter = '\t';
+
+using (CsvReader reader = new CsvReader(path, settings))
 {
     string[] columns;
     while (reader.ReadRow(out columns))
