@@ -39,7 +39,7 @@ using (CsvReader reader = new CsvReader(path))
 }
 ```
 
-The next example uses the `CsvSettings` class to read a tab-separated-values (TSV) file. It sets the `ColumnDelimiter` property to a tab. It also sets it to use single quotes instead of double quotes, something you would likely never to but is supported).
+The next example uses the `CsvSettings` class to read a tab-separated-values (TSV) file. It sets the `ColumnDelimiter` property to a tab. It also sets it to use single quotes instead of double quotes (something you would likely never to but is fully supported).
 
 ```cs
 CsvSettings settings = new CsvSettings();
