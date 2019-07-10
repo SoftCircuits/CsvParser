@@ -18,26 +18,13 @@ namespace SoftCircuits.CsvParser
         private StreamReader Reader;
         private CsvSettings Settings;
 
-        private string CurrLine;
+        private string Line;
         private int CurrPos;
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the
-        /// specified stream.
+        /// Initializes a new instance of the CsvReader class for the specified file name.
         /// </summary>
-        /// <param name="stream">The stream to read from</param>
-        /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(Stream stream, CsvSettings settings = null)
-        {
-            Reader = new StreamReader(stream);
-            Settings = settings ?? new CsvSettings();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the CsvReader class for the
-        /// specified file path.
-        /// </summary>
-        /// <param name="path">The name of the CSV file to read from</param>
+        /// <param name="path">The name of the CSV file to read.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(string path, CsvSettings settings = null)
         {
@@ -46,27 +33,121 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
+        /// Initializes a new instance of the CsvReader class for the specified file name,
+        /// with the specified byte order mark detection option.
+        /// </summary>
+        /// <param name="path">The name of the CSV file to read.</param>
+        /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
+        /// the beginning of the file.</param>
+        /// <param name="settings">Optional custom settings.</param>
+        public CsvReader(string path, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        {
+            Reader = new StreamReader(path, detectEncodingFromByteOrderMarks);
+            Settings = settings ?? new CsvSettings();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the CsvReader class for the specified file name,
+        /// with the specified character encoding.
+        /// </summary>
+        /// <param name="path">The name of the CSV file to read.</param>
+        /// <param name="encoding">The character encoding to use.</param>
+        /// <param name="settings">Optional custom settings.</param>
+        public CsvReader(string path, Encoding encoding, CsvSettings settings = null)
+        {
+            Reader = new StreamReader(path, encoding);
+            Settings = settings ?? new CsvSettings();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the CsvReader class for the specified file name,
+        /// with the specified character encoding and byte order mark detection option.
+        /// </summary>
+        /// <param name="path">The name of the CSV file to read.</param>
+        /// <param name="encoding">The character encoding to use.</param>
+        /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
+        /// the beginning of the file.</param>
+        /// <param name="settings">Optional custom settings.</param>
+        public CsvReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        {
+            Reader = new StreamReader(path, encoding, detectEncodingFromByteOrderMarks);
+            Settings = settings ?? new CsvSettings();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the CsvReader class for the specified stream.
+        /// </summary>
+        /// <param name="stream">The stream to be read.</param>
+        /// <param name="settings">Optional custom settings.</param>
+        public CsvReader(Stream stream, CsvSettings settings = null)
+        {
+            Reader = new StreamReader(stream);
+            Settings = settings ?? new CsvSettings();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the CsvReader class for the specified stream,
+        /// with the specified byte order mark detection option.
+        /// </summary>
+        /// <param name="stream">The stream to be read.</param>
+        /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
+        /// the beginning of the file.</param>
+        /// <param name="settings">Optional custom settings.</param>
+        public CsvReader(Stream stream, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        {
+            Reader = new StreamReader(stream, detectEncodingFromByteOrderMarks);
+            Settings = settings ?? new CsvSettings();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the CsvReader class for the specified stream,
+        /// with the specified character encoding.
+        /// </summary>
+        /// <param name="stream">The stream to be read.</param>
+        /// <param name="encoding">The character encoding to use.</param>
+        /// the beginning of the file.</param>
+        /// <param name="settings">Optional custom settings.</param>
+        public CsvReader(Stream stream, Encoding encoding, CsvSettings settings = null)
+        {
+            Reader = new StreamReader(stream, encoding);
+            Settings = settings ?? new CsvSettings();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the CsvReader class for the specified stream,
+        /// with the specified character encoding and byte order mark detection option.
+        /// </summary>
+        /// <param name="stream">The stream to be read.</param>
+        /// <param name="encoding">The character encoding to use.</param>
+        /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
+        /// the beginning of the file.</param>
+        /// <param name="settings">Optional custom settings.</param>
+        public CsvReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        {
+            Reader = new StreamReader(stream, encoding, detectEncodingFromByteOrderMarks);
+            Settings = settings ?? new CsvSettings();
+        }
+
+        /// <summary>
         /// Reads a row of columns from the current CSV file. Returns false if no
         /// more data could be read because the end of the file was reached.
         /// </summary>
-        /// <param name="columns">Array to hold the columns read. Will be null if
-        /// false is returned.</param>
-        public bool ReadRow(out string[] columns)
+        /// <param name="columns">Array to hold the columns read. Okay if it's <c>null</c>.</param>
+        public bool ReadRow(ref string[] columns)
         {
-            // In case there's no more data
-            columns = null;
-
-            List<string> results = new List<string>(columns?.Length ?? 0);
+            ArrayManager<string> results = new ArrayManager<string>(columns);
 
 ReadNextLine:
             // Read next line from the file
-            CurrLine = Reader.ReadLine();
+            Line = Reader.ReadLine();
             CurrPos = 0;
+
             // Test for end of file
-            if (CurrLine == null)
+            if (Line == null)
                 return false;
+
             // Test for empty line
-            if (CurrLine.Length == 0)
+            if (Line.Length == 0)
             {
                 switch (Settings.EmptyLineBehavior)
                 {
@@ -80,26 +161,27 @@ ReadNextLine:
                 }
             }
 
-            // Parse line
+            // Parse values in this line
+            string column;
             while (true)
             {
                 // Read next column
-                string column;
-                if (CurrPos < CurrLine.Length && CurrLine[CurrPos] == Settings.QuoteCharacter)
+                if (CurrPos < Line.Length && Line[CurrPos] == Settings.QuoteCharacter)
                     column = ReadQuotedColumn();
                 else
                     column = ReadUnquotedColumn();
                 // Add column to list
                 results.Add(column);
                 // Break if we reached the end of the line
-                if (CurrLine == null || CurrPos == CurrLine.Length)
+                if (Line == null || CurrPos == Line.Length)
                     break;
                 // Otherwise skip delimiter
-                Debug.Assert(CurrLine[CurrPos] == Settings.ColumnDelimiter);
+                Debug.Assert(Line[CurrPos] == Settings.ColumnDelimiter);
                 CurrPos++;
             }
+            // Returns results
+            columns = results.GetResults();
             // Indicate success
-            columns = results.ToArray();
             return true;
         }
 
@@ -107,48 +189,48 @@ ReadNextLine:
         /// Reads a quoted column by reading from the current line until a
         /// closing quote is found or the end of the file is reached. On return,
         /// the current position points to the delimiter or the end of the last
-        /// line in the file. Note: CurrLine may be set to null on return.
+        /// line in the file. Note: Line may be set to null on return.
         /// </summary>
         private string ReadQuotedColumn()
         {
             // Skip opening quote character
-            Debug.Assert(CurrPos < CurrLine.Length && CurrLine[CurrPos] == Settings.QuoteCharacter);
+            Debug.Assert(CurrPos < Line.Length && Line[CurrPos] == Settings.QuoteCharacter);
             CurrPos++;
 
             // Parse column
             StringBuilder builder = new StringBuilder();
             while (true)
             {
-                while (CurrPos == CurrLine.Length)
+                while (CurrPos == Line.Length)
                 {
                     // End of line so attempt to read the next line
-                    CurrLine = Reader.ReadLine();
+                    Line = Reader.ReadLine();
                     CurrPos = 0;
                     // Done if we reached the end of the file
-                    if (CurrLine == null)
+                    if (Line == null)
                         return builder.ToString();
                     // Otherwise, treat as a multi-line field
                     builder.Append(Environment.NewLine);
                 }
 
                 // Test for quote character
-                if (CurrLine[CurrPos] == Settings.QuoteCharacter)
+                if (Line[CurrPos] == Settings.QuoteCharacter)
                 {
                     // If two quotes, skip first and treat second as literal
                     int nextPos = (CurrPos + 1);
-                    if (nextPos < CurrLine.Length && CurrLine[nextPos] == Settings.QuoteCharacter)
+                    if (nextPos < Line.Length && Line[nextPos] == Settings.QuoteCharacter)
                         CurrPos++;
                     else
                         break;  // Single quote ends quoted sequence
                 }
                 // Add current character to the column
-                builder.Append(CurrLine[CurrPos++]);
+                builder.Append(Line[CurrPos++]);
             }
 
-            if (CurrPos < CurrLine.Length)
+            if (CurrPos < Line.Length)
             {
                 // Consume closing quote
-                Debug.Assert(CurrLine[CurrPos] == Settings.QuoteCharacter);
+                Debug.Assert(Line[CurrPos] == Settings.QuoteCharacter);
                 CurrPos++;
                 // Append any additional characters appearing before next delimiter
                 builder.Append(ReadUnquotedColumn());
@@ -166,18 +248,21 @@ ReadNextLine:
         private string ReadUnquotedColumn()
         {
             int startPos = CurrPos;
-            CurrPos = CurrLine.IndexOf(Settings.ColumnDelimiter, CurrPos);
+            CurrPos = Line.IndexOf(Settings.ColumnDelimiter, CurrPos);
             if (CurrPos == -1)
-                CurrPos = CurrLine.Length;
-            if (CurrPos > startPos)
-                return CurrLine.Substring(startPos, CurrPos - startPos);
-            return string.Empty;
+                CurrPos = Line.Length;
+            return Line.Substring(startPos, CurrPos - startPos);
         }
 
-        // Propagate Dispose to StreamReader
-        public void Dispose()
-        {
-            Reader.Dispose();
-        }
+        /// <summary>
+        /// Closes the CsvReader object and the underlying stream, and releases
+        /// any resources used.
+        /// </summary>
+        public void Close() => Reader.Close();
+
+        /// <summary>
+        /// Releases all resources used by the CsvReader object.
+        /// </summary>
+        public void Dispose() => Reader.Dispose();
     }
 }

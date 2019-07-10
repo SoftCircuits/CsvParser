@@ -7,19 +7,18 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Jonathan Wood</Authors>
     <Company>SoftCircuits</Company>
-    <Description>CsvParser is a class library to aid in working with comma-separated-value (CSV) files. The CsvWriter class can be used to write a CSV file. The `CsvReader` class can be used to read a CSV file.
+    <Description>CsvParser makes it easy to work with comma-separated-values (CSV) files. It supports column values that contain commas, quotes or other special characters. It even supports column values that span multiple lines. In addition, you can optionally change settings such as the column delimiter character, the quote character or how blank lines are handled.
 
-These classes have support for column values that contain special characters, such as commas. Such values are wrapped in quotes. And the classes even support column values that span multiple lines.
-
-An instance of the CsvSettings can optionally be passed to the constructors of the other classes, allowing you to override default settings such as which character is used to delimit columns, which character is used as a quote, and how empty lines are handled.</Description>
+Use the CsvWriter class to write a CSV file. Use the CsvReader class to read a CSV file.</Description>
     <Copyright>Copyright © 2019 SoftCircuits</Copyright>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/SoftCircuits/CsvParser</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csv tsv csv-parser parser</PackageTags>
-    <PackageReleaseNotes>Initial version</PackageReleaseNotes>
+    <PackageReleaseNotes>CsvReader constructors now allow you to specify the character encoding and/or the byte order detection option; CsvWriter constructors now allow you to specify the character encoding; Optimized CsvReader.ReadRow() method to minimize memory allocations; Added additional methods exposing underlying stream functionality; BREAKING CHANGE: CsvReader.ReadRow() argument now passed by reference</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

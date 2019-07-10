@@ -1,7 +1,6 @@
 ﻿// Copyright (c) 2019 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
-
 namespace SoftCircuits.CsvParser
 {
     /// <summary>
@@ -34,18 +33,24 @@ namespace SoftCircuits.CsvParser
     /// </summary>
     public class CsvSettings
     {
-        private const int ColumnDelimiterIndex = 0;
-        private const int QuoteCharacterIndex = 1;
-
-        // Used for formatting quoted columns
-        private string OneQuoteString = null;
-        private string TwoQuoteString = null;
-
         /// <summary>
         /// These are special characters in CSV files. If a column contains any
         /// of these characters, the entire column is wrapped in quotes.
         /// </summary>
         private char[] SpecialCharacters;
+
+        // Indices into SpecialCharacters
+        private const int ColumnDelimiterIndex = 0;
+        private const int QuoteCharacterIndex = 1;
+
+        //// Used for formatting quoted columns
+        //private string OneQuoteString = null;
+        //private string TwoQuoteString = null;
+
+        /// <summary>
+        /// Specifies how blank lines are interpreted by CsvReader.
+        /// </summary>
+        public EmptyLineBehavior EmptyLineBehavior;
 
         /// <summary>
         /// Gets/sets the character used to delimit columns.
@@ -65,28 +70,13 @@ namespace SoftCircuits.CsvParser
             set => SpecialCharacters[QuoteCharacterIndex] = value;
         }
 
-        /// <summary>
-        /// Specifies how blank lines are interpreted by CsvReader.
-        /// </summary>
-        public EmptyLineBehavior EmptyLineBehavior;
-
         public CsvSettings()
         {
             SpecialCharacters = new char[] { ',', '"', '\r', '\n' };
             EmptyLineBehavior = EmptyLineBehavior.NoColumns;
         }
 
-        internal string CsvEncode(string s)
-        {
-            if (s.IndexOfAny(SpecialCharacters) == -1)
-                return s;
-            // Ensure we're using current quote character
-            if (OneQuoteString == null || OneQuoteString[0] != QuoteCharacter)
-            {
-                OneQuoteString = QuoteCharacter.ToString();
-                TwoQuoteString = string.Format("{0}{0}", QuoteCharacter);
-            }
-            return string.Format("{0}{1}{0}", QuoteCharacter, s.Replace(OneQuoteString, TwoQuoteString));
-        }
+        // Returns true if string contains any special characters.
+        internal bool HasSpecialCharacter(string s) => s.IndexOfAny(SpecialCharacters) >= 0;
     }
 }
