@@ -19,7 +19,7 @@ This example creates and writes a few rows to a CSV file.
 ```cs
 using (CsvWriter writer = new CsvWriter(path))
 {
-    // Note: WriteRow also accepts an string[] or IEnumerable<string>
+    // Note: WriteRow also accepts string[] or IEnumerable<string>
     writer.WriteRow("First Name", "Last Name", "Address");
     writer.WriteRow("Jack", "Smith", "1215 Oak St");
     writer.WriteRow("Bryon", "Wilson", "18 Main St");
