@@ -8,11 +8,9 @@ Install-Package SoftCircuits.CsvParser
 
 ## Overview
 
-CsvParser is a class library to aid in working with comma-separated-values (CSV) files. The `CsvWriter` class can be used to write a CSV file. The `CsvReader` class can be used to read a CSV file.
+CsvParser makes it easy to work with comma-separated-values (CSV) files. It supports column values that contain commas, quotes or other special characters. It even supports column values that span multiple lines. In addition, you can optionally change settings such as the column delimiter character, the quote character or how blank lines are handled.
 
-These classes have support for column values that contain special characters, such as commas. Such values are wrapped in quotes. And the classes even support column values that span multiple lines.
-
-An instance of the `CsvSettings` can optionally be passed to the constructors of the other classes, allowing you to override default settings such as which character is used to delimit columns, which character is used as a quote, and how empty lines are handled.
+Use the `CsvWriter` class to write a CSV file. Use the `CsvReader` class to read a CSV file.
 
 ## Examples
 
@@ -35,22 +33,23 @@ This example reads all rows from a CSV file.
 ```cs
 using (CsvReader reader = new CsvReader(path))
 {
-    string[] columns;
-    while (reader.ReadRow(out columns))
+    string[] columns = null;
+    while (reader.ReadRow(ref columns))
         Console.WriteLine(string.Join(", ", columns));
 }
 ```
 
-The next example reads a tab-separated-values (TSV) file by creating a custom `CsvSettings` object, changing the `ColumnDelimiter` property to a tab, and passing the settings object to the `CsvReader`'s constructor.
+The next example uses the `CsvSettings` class to read a tab-separated-values (TSV) file. It sets the `ColumnDelimiter` property to a tab. It also sets it to use single quotes instead of double quotes, something you would likely never to but is supported).
 
 ```cs
 CsvSettings settings = new CsvSettings();
 settings.ColumnDelimiter = '\t';
+settings.QuoteCharacter = '\'';
 
 using (CsvReader reader = new CsvReader(path, settings))
 {
-    string[] columns;
-    while (reader.ReadRow(out columns))
+    string[] columns = null;
+    while (reader.ReadRow(ref columns))
         Console.WriteLine(string.Join(", ", columns));
 }
 ```
