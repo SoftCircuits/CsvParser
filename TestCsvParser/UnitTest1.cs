@@ -120,33 +120,33 @@ namespace TestCsvParser
             new List<List<string>>
             {
                 new List<string> { "abc", "def", "ghi" },
-                new List<string> { "abc","def","ghi" },
+                new List<string> { "abc", "def", "ghi" },
                 new List<string> { },
-                new List<string> { "abc","def","ghi" },
-                new List<string> { "abc","def","ghi" },
+                new List<string> { "abc", "def", "ghi" },
+                new List<string> { "abc", "def", "ghi" },
             },
             // EmptyLineBehavior.EmptyColumn
             new List<List<string>>
             {
                 new List<string> { "abc", "def", "ghi" },
-                new List<string> { "abc","def","ghi" },
+                new List<string> { "abc", "def", "ghi" },
                 new List<string> { "" },
-                new List<string> { "abc","def","ghi" },
-                new List<string> { "abc","def","ghi" },
+                new List<string> { "abc", "def", "ghi" },
+                new List<string> { "abc", "def", "ghi" },
             },
             // EmptyLineBehavior.Ignore
             new List<List<string>>
             {
                 new List<string> { "abc", "def", "ghi" },
-                new List<string> { "abc","def","ghi" },
-                new List<string> { "abc","def","ghi" },
-                new List<string> { "abc","def","ghi" },
+                new List<string> { "abc", "def", "ghi" },
+                new List<string> { "abc", "def", "ghi" },
+                new List<string> { "abc", "def", "ghi" },
             },
             // EmptyLineBehavior.EndOfFile
             new List<List<string>>
             {
                 new List<string> { "abc", "def", "ghi" },
-                new List<string> { "abc","def","ghi" },
+                new List<string> { "abc", "def", "ghi" },
             }
         };
 
