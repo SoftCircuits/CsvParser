@@ -1,14 +1,19 @@
+// Copyright (c) 2019 Jonathan Wood (www.softcircuits.com)
+// Licensed under the MIT license.
+//
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftCircuits.CsvParser;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace TestCsvParser
 {
     [TestClass]
     public class UnitTest1
     {
-        List<(string, string, string)> TestData = new List<(string, string, string)>
+        private List<(string, string, string)> TestData = new List<(string, string, string)>
         {
             ("Abc", "Def", "Ghi"),
             ("@Abc", "D\"e\"f", "G,h'i"),
@@ -40,14 +45,16 @@ namespace TestCsvParser
         {
             // Default settings
             CsvSettings settings = new CsvSettings();
-            RunTests(settings);
+            RunStreamTest(settings);
+            RunFileTests(settings);
             // Vary settings
             settings.ColumnDelimiter = '\t';
             settings.QuoteCharacter = '\'';
-            RunTests(settings);
+            RunStreamTest(settings);
+            RunFileTests(settings);
         }
 
-        public void RunTests(CsvSettings settings)
+        public void RunStreamTest(CsvSettings settings)
         {
             byte[] buffer;
             List<(string, string, string)> actual = new List<(string, string, string)>();
@@ -68,22 +75,15 @@ namespace TestCsvParser
                 while (reader.ReadRow(ref columns))
                 {
                     Assert.AreEqual(3, columns.Length);
-                    var s = string.Join(", ", columns);
                     actual.Add((columns[0], columns[1], columns[2]));
                 }
                 CollectionAssert.AreEqual(TestData, actual);
             }
         }
 
-        [TestMethod]
-        public void RunFileTests()
+        public void RunFileTests(CsvSettings settings)
         {
             string path = @"C:\TEMP\TEMP.CSV";
-
-            CsvSettings settings = new CsvSettings();
-            settings.ColumnDelimiter = '\t';
-            settings.QuoteCharacter = '\'';
-
             List<(string, string, string)> actual = new List<(string, string, string)>();
 
             using (CsvWriter writer = new CsvWriter(path, settings))
@@ -99,10 +99,91 @@ namespace TestCsvParser
                 while (reader.ReadRow(ref columns))
                 {
                     Assert.AreEqual(3, columns.Length);
-                    var s = string.Join(", ", columns);
                     actual.Add((columns[0], columns[1], columns[2]));
                 }
                 CollectionAssert.AreEqual(TestData, actual);
+            }
+        }
+
+        private List<string> EmptyLineBehaviorTestData = new List<string>
+        {
+            "\"abc\",\"def\",\"ghi\"",
+            "\"abc\",\"def\",\"ghi\"",
+            "",
+            "\"abc\",\"def\",\"ghi\"",
+            "\"abc\",\"def\",\"ghi\"",
+        };
+
+        private List<List<string>>[] EmptyLineBehaviorTestResults = new List<List<string>>[]
+        {
+            // EmptyLineBehavior.NoColumns
+            new List<List<string>>
+            {
+                new List<string> { "abc", "def", "ghi" },
+                new List<string> { "abc","def","ghi" },
+                new List<string> { },
+                new List<string> { "abc","def","ghi" },
+                new List<string> { "abc","def","ghi" },
+            },
+            // EmptyLineBehavior.EmptyColumn
+            new List<List<string>>
+            {
+                new List<string> { "abc", "def", "ghi" },
+                new List<string> { "abc","def","ghi" },
+                new List<string> { "" },
+                new List<string> { "abc","def","ghi" },
+                new List<string> { "abc","def","ghi" },
+            },
+            // EmptyLineBehavior.Ignore
+            new List<List<string>>
+            {
+                new List<string> { "abc", "def", "ghi" },
+                new List<string> { "abc","def","ghi" },
+                new List<string> { "abc","def","ghi" },
+                new List<string> { "abc","def","ghi" },
+            },
+            // EmptyLineBehavior.EndOfFile
+            new List<List<string>>
+            {
+                new List<string> { "abc", "def", "ghi" },
+                new List<string> { "abc","def","ghi" },
+            }
+        };
+
+        [TestMethod]
+        public void TestEmptyLineBehavior()
+        {
+            CsvSettings settings = new CsvSettings();
+            foreach (EmptyLineBehavior emptyLineBehavior in Enum.GetValues(typeof(EmptyLineBehavior)))
+            {
+                settings.EmptyLineBehavior = emptyLineBehavior;
+                byte[] buffer;
+                List<List<string>> actual = new List<List<string>>();
+
+                using (MemoryStream stream = new MemoryStream())
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    foreach (string line in EmptyLineBehaviorTestData)
+                        writer.WriteLine(line);
+                    writer.Flush();
+                    buffer = stream.ToArray();
+                }
+
+                using (MemoryStream stream = new MemoryStream(buffer))
+                using (CsvReader reader = new CsvReader(stream, settings))
+                {
+                    string[] columns = null;
+                    while (reader.ReadRow(ref columns))
+                        actual.Add(columns.ToList());
+                }
+
+                int resultIndex = (int)emptyLineBehavior;
+                Assert.AreEqual(EmptyLineBehaviorTestResults[resultIndex].Count, actual.Count);
+                if (EmptyLineBehaviorTestResults[resultIndex].Count == actual.Count)
+                {
+                    for (int i = 0; i < actual.Count; i++)
+                        CollectionAssert.AreEqual(EmptyLineBehaviorTestResults[resultIndex][i], actual[i]);
+                }
             }
         }
     }

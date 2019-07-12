@@ -43,10 +43,6 @@ namespace SoftCircuits.CsvParser
         private const int ColumnDelimiterIndex = 0;
         private const int QuoteCharacterIndex = 1;
 
-        //// Used for formatting quoted columns
-        //private string OneQuoteString = null;
-        //private string TwoQuoteString = null;
-
         /// <summary>
         /// Specifies how blank lines are interpreted by CsvReader.
         /// </summary>
