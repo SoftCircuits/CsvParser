@@ -117,20 +117,70 @@ class Person
 
 ## Custom Mapping
 
-Class members can also be mapped to columns using custom mapping. This is useful if you cannot modify the class that you are mapping to a CSV file. In addition, this method allows you specify a custom data converter.
+Class members can also be mapped to columns using custom mapping. Custom mapping is useful if you cannot directly modify the class you are working with. Custom mapping allows you to do anything you can do with `ColumnMapAttribute` and, in addition, it also allows you to provide custom data converters.
 
-A data converter is the code that converts any class property or field to a string, and then converts the string back to the property or field. The library includes converters for all basic types (including Guid and DateTime), nullable basic types, basic type arrays and nullable basic type arrays. But you can override the data convert used for any class member.
+Data converters convert class members to strings, and then back again from strings to class members. The CsvParser library includes converters for all basic types (including Guid and DateTime), nullable basic types, basic type arrays and nullable basic type arrays. But you can override the data convert used for any class member. You might want to write your own data converter to support custom member types, or when you are working with data not formatted as expected by the built-in data converters. For example, parsing `DateTime`s can be problematic as there are many different ways to format dates and time.
 
-You might want to write your own data converter to support custom member types. Or if you are working with data not formatted as expected by the built-in data converters. For example, parsing `DateTime`s can be problematic as there are many different ways to format dates and time.
+The following example starts by defining the `CustomDateTimeConverter` class. This class must implement the `ICustomConverter` interface. The easiest way to do this in a type-safe manner is to derive your class from `CustomConverter<T>`, where `T` is the type of the property or field you are converting. The `CustomConverter<T>` class has two abstract methods that must be implemented, `ConvertToString()` and `TryConvertFromString()`.
 
+Next, the example defines the `PersonMaps` class to define the custom mapping. This class must derive from `ColumnMaps<T>`, where `T` is the type of data class you are writing or reading to or from CSV files. The constructor of this class must call `MapColumn()` for each member it maps. This method supports a fluent interface to set the various mapping properties for each member. The meaning of these properties is described above in the *ColumnMap Attribute* section but supports one additional setting:
 
+**Converter():** Specifies a custom data converter as described above. See the example below.
 
+Finally, the example calls the `CsvDataWriter.MapColumns<T>()` method to register the custom mappings. The code that reads the CSV file also calls the `CsvDataReader.MapColumns<T>()` method in the same way. Both must use the same mapping in order for the data to be interpreted correctly. The easiest way to do this is to pass the same class to both methods.
 
+```cs
+class CustomDateTimeConverter : CustomConverter<DateTime>
+{
+    const string FormatString = "yyyyMMddHHmmss";
 
+    public override string ConvertToString(DateTime value)
+    {
+        return value.ToString(FormatString);
+    }
 
+    public override bool TryConvertFromString(string s, out DateTime value)
+    {
+        return (DateTime.TryParseExact(s, FormatString, CultureInfo.InvariantCulture, DateTimeStyles.None, out value));
+    }
+}
 
+class PersonMaps : ColumnMaps<Person>
+{
+    public PersonMaps()
+    {
+        MapColumn(m => m.Id).Exclude(true);
+        MapColumn(m => m.Name).Index(2).Name("abc");
+        MapColumn(m => m.Zip).Index(1).Name("def");
+        MapColumn(m => m.Birthday).Index(0).Name("ghi").Converter(new CustomDateTimeConverter());
+    }
+}
 
+using (CsvDataWriter<Person> writer = new CsvDataWriter<Person>(path))
+{
+    writer.MapColumns<PersonMaps>();
 
+    writer.WriteHeaders();
+    foreach (Person person in People)
+        writer.Write(person);
+}
+
+List<Person> people = new List<Person>();
+using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
+{
+    reader.MapColumns<PersonMaps>();
+
+    // Read header
+    reader.ReadHeaders(false);
+    // Read data
+    while (reader.Read(out Person person))
+        people.Add(person);
+}
+```
+
+Notice that the example above still calls `CsvDataWriter.WriteHeaders()` and `CsvDataReader.ReadHeaders()`. However, since the code has explicitly mapped all of the columns, this is just for completeness and is completely unnecessary. Also notice that `false` is passed to `CsvDataReader.ReadHeaders()` because we do not need the library to use the headers to determine column order, etc.
+
+## CsvSettings Class
 
 The next example uses the `CsvSettings` class to read a tab-separated-values (TSV) file. It sets the `ColumnDelimiter` property to a tab. It also sets it to use single quotes instead of double quotes (something you would likely never to but is fully supported).
 
