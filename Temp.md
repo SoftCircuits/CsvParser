@@ -182,7 +182,7 @@ Notice that the example above still calls `CsvDataWriter.WriteHeaders()` and `Cs
 
 ## CsvSettings Class
 
-The next example uses the `CsvSettings` class to read a tab-separated-values (TSV) file. It sets the `ColumnDelimiter` property to a tab. It also sets it to use single quotes instead of double quotes (something you would likely never to but is fully supported).
+You can customize the way the library behaves by passing your own instance of the `CsvSettings` class to any of the reader or writer constructors, as demonstrated in the following example. This code uses the `CsvSettings` class to read a tab-separated-values (TSV) file. It sets the `ColumnDelimiter` property to a tab. It also sets it to use single quotes instead of double quotes (something you would probably rarely do, but is fully supported).
 
 ```cs
 CsvSettings settings = new CsvSettings();
