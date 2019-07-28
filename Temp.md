@@ -85,7 +85,7 @@ using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
 
 It is important to note in the above example where the code that writes the data calls `CsvDataWriter.WriteHeaders()`. This writes a row with the name of each column. The code that reads the data calls `CsvDataReader.ReadHeaders()` to read that header data. Because the argument to `CsvDataReader.ReadHeaders()` is `true`, this tells the code to use the header data to determine how to map the columns in the rest of the file. For example, maybe the columns are in a different order, or maybe some of the columns are excluded.
 
-Here, the code maps the class members to columns based on the headers. This is critical to making these classes work correctly. The following sections will talk about other ways to map class members to columns.
+Here, the code maps the class members to columns based on the headers. This is critical to making the CSV classes work correctly. The following sections will talk about other ways to map class members to columns.
 
 ## ColumnMap Attribute
 
@@ -98,6 +98,8 @@ The `ColumnMapAttribute` can be applied to any class property or field to specif
 **Exclude:** Specifies that the class member should be excluded and not written or read to or from any column.
 
 The following example modifies the `Person` class created earlier with `ColumnMap` attributes. The attributes are used to set the columns to be in the opposite order from how the class members are declared, gives the columns completely different names, and excludes the `Id` column.
+
+With the `Person` class defined as follows, the previous example will work correctly without the calls to `WriteHeaders()` and `ReadHeaders()`.
 
 ```cs
 class Person
@@ -114,6 +116,19 @@ class Person
 ```
 
 ## Custom Mapping
+
+Class members can also be mapped to columns using custom mapping. This is useful if you cannot modify the class that you are mapping to a CSV file. In addition, this method allows you specify a custom data converter.
+
+A data converter is the code that converts any class property or field to a string, and then converts the string back to the property or field. The library includes converters for all basic types (including Guid and DateTime), nullable basic types, basic type arrays and nullable basic type arrays. But you can override the data convert used for any class member.
+
+You might want to write your own data converter to support custom member types. Or if you are working with data not formatted as expected by the built-in data converters. For example, parsing `DateTime`s can be problematic as there are many different ways to format dates and time.
+
+
+
+
+
+
+
 
 
 
