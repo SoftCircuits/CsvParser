@@ -14,9 +14,9 @@ In addition, a number of options can be modified. For example, you can change th
 
 you can optionally change settings such as the column delimiter character, the quote character or how blank lines are handled.
 
-## Basic Classes
+## CsvWriter and CsvReader Classes
 
-The following code writes several rows of data to a CSV file. Note that the `CsvWriter.WriteRow()` method is overloaded to also accept `string[]` and `IEnumerable<string>`.
+These classes provide the simplest way to read and write CSV files. Note that the `CsvWriter.WriteRow()` method is overloaded to also accept `string[]` and `IEnumerable<string>`.
 
 ```cs
 using (CsvWriter writer = new CsvWriter(path))
@@ -42,6 +42,55 @@ using (CsvReader reader = new CsvReader(path))
 }
 ```
 
+## CsvDataWriter and CsvDataReader Classes
+
+These higher-level classes will automatically map data between class members and CSV columns. The following example defines a class and a collection with several instances of that class. It then uses `CsvDataWriter` to write the data to a CSV file, and `CsvDataReader` to read it back again.
+
+```cs
+private class Person : IEquatable<Person>
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Zip { get; set; }
+    public DateTime Birthday { get; set; }
+}
+
+List<Person> People = new List<Person>
+{
+    new Person { Id = 1, Name = "Bill Smith", Zip = "92869", Birthday = new DateTime(1972, 10, 29) },
+    new Person { Id = 2, Name = "Susan Carpenter", Zip = "92865", Birthday = new DateTime(1985, 2, 17) },
+    new Person { Id = 3, Name = "Jim Winsor", Zip = "92862", Birthday = new DateTime(1979, 4, 23) },
+    new Person { Id = 4, Name = "Jill Morrison", Zip = "92861", Birthday = new DateTime(1969, 5, 2) },
+    new Person { Id = 5, Name = "Gary Wright", Zip = "92868", Birthday = new DateTime(1974, 2, 18) },
+};
+
+// Write the data to disk
+using (CsvDataWriter<Person> writer = new CsvDataWriter<Person>(path))
+{
+    writer.WriteHeaders();
+    foreach (Person person in People)
+        writer.Write(person);
+}
+
+// Read the data from disk
+List<Person> people = new List<Person>();
+using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
+{
+    // Read header and use to determine column order
+    reader.ReadHeaders(true);
+    // Read data
+    while (reader.Read(out Person person))
+        people.Add(person);
+}
+```
+
+Note in the example above where the code that writes the data calls `CsvDataWriter.WriteHeaders()`. 
+
+
+
+
+
+
 The next example uses the `CsvSettings` class to read a tab-separated-values (TSV) file. It sets the `ColumnDelimiter` property to a tab. It also sets it to use single quotes instead of double quotes (something you would likely never to but is fully supported).
 
 ```cs
@@ -59,4 +108,4 @@ using (CsvReader reader = new CsvReader(path, settings))
 
 ## Additional Information
 
-This code was derived from the article [Reading and Writing CSV Files in C#](http://www.blackbeltcoder.com/Articles/files/reading-and-writing-csv-files-in-c).
+This code was originally derived from the article [Reading and Writing CSV Files in C#](http://www.blackbeltcoder.com/Articles/files/reading-and-writing-csv-files-in-c).
