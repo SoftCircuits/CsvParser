@@ -10,13 +10,11 @@ Install-Package SoftCircuits.CsvParser
 
 CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files. It includes basic classes to read and write CSV columns and also higher level classes that will automatically map data between class members and columns. The library supports column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines.
 
-In addition, a number of options can be modified. For example, you can change the column delimiter to be a character other than a comma.
-
-you can optionally change settings such as the column delimiter character, the quote character or how blank lines are handled.
+In addition, there are a number of option settings. For example, you can change the column delimiter to another character. Additional options include changing the quote character and how blank lines are handled.
 
 ## CsvWriter and CsvReader Classes
 
-These classes provide the simplest way to read and write CSV files. Note that the `CsvWriter.WriteRow()` method is overloaded to also accept `string[]` and `IEnumerable<string>`.
+These classes provide the simplest way to read and write CSV files. The example below writes several rows of data to a CSV file and then reads it back. Note that the `CsvWriter.WriteRow()` method is overloaded to also accept `string[]` and `IEnumerable<string>`.
 
 ```cs
 using (CsvWriter writer = new CsvWriter(path))
@@ -84,9 +82,11 @@ using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
 }
 ```
 
-Note in the example above where the code that writes the data calls `CsvDataWriter.WriteHeaders()`. 
+It is important to note in the above example where the code that writes the data calls `CsvDataWriter.WriteHeaders()`. This writes a row with the name of each column. The code that reads the data calls `CsvDataReader.ReadHeaders()` to read that header data. Because the argument to `CsvDataReader.ReadHeaders()` is `true`, this tells the code to use the header data to figure out how to map the columns in the rest of the file. For example, maybe the columns are in a different order, or maybe one of the columns is excluded. Interpreting the column headers allows the code above correctly.
 
 
+
+In addition
 
 
 
