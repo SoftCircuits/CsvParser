@@ -46,7 +46,7 @@ using (CsvReader reader = new CsvReader(path))
 These higher-level classes will automatically map data between class members and CSV columns. The following example defines a class and a collection with several instances of that class. It then uses `CsvDataWriter` to write the data to a CSV file, and `CsvDataReader` to read it back again.
 
 ```cs
-private class Person
+class Person
 {
     public int Id { get; set; }
     public string Name { get; set; }
@@ -85,11 +85,28 @@ using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
 
 It is important to note in the above example where the code that writes the data calls `CsvDataWriter.WriteHeaders()`. This writes a row with the name of each column. The code that reads the data calls `CsvDataReader.ReadHeaders()` to read that header data. Because the argument to `CsvDataReader.ReadHeaders()` is `true`, this tells the code to use the header data to determine how to map the columns in the rest of the file. For example, maybe the columns are in a different order, or maybe some of the columns are excluded.
 
-Here, the code maps the class members to columns based on the headers. This is critical to making these classes work correct and we'll talk about other ways to map class members to columns.
+Here, the code maps the class members to columns based on the headers. This is critical to making these classes work correctly. The following sections will talk about other ways to map class members to columns.
 
 ## ColumnMap Attribute
 
+The `ColumnMapAttribute` can be applied to any class property or field to specify how that member is mapped to a CSV column. This attribute includes the following properties:
 
+#### Index
+Specifies the 
+
+```cs
+class Person
+{
+    [ColumnMap(Exclude = true)]
+    public int Id { get; set; }
+    [ColumnMap(Index = 2, Name = "abc")]
+    public string Name { get; set; }
+    [ColumnMap(Index = 1, Name = "def")]
+    public string Zip { get; set; }
+    [ColumnMap(Index = 0, Name = "ghi")]
+    public DateTime Birthday { get; set; }
+}
+```
 
 
 
