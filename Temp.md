@@ -46,7 +46,7 @@ using (CsvReader reader = new CsvReader(path))
 These higher-level classes will automatically map data between class members and CSV columns. The following example defines a class and a collection with several instances of that class. It then uses `CsvDataWriter` to write the data to a CSV file, and `CsvDataReader` to read it back again.
 
 ```cs
-private class Person : IEquatable<Person>
+private class Person
 {
     public int Id { get; set; }
     public string Name { get; set; }
