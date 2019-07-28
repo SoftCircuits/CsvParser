@@ -8,32 +8,35 @@ Install-Package SoftCircuits.CsvParser
 
 ## Overview
 
-CsvParser makes it easy to work with comma-separated-values (CSV) files. It supports column values that contain commas, quotes or other special characters. It even supports column values that span multiple lines. In addition, you can optionally change settings such as the column delimiter character, the quote character or how blank lines are handled.
+CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files. It includes basic classes to read and write CSV columns and also higher level classes that will automatically map data between class members and columns. The library supports column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines.
 
-Use the `CsvWriter` class to write a CSV file. Use the `CsvReader` class to read a CSV file.
+In addition, a number of options can be modified. For example, you can change the column delimiter to be a character other than a comma.
 
-## Examples
+you can optionally change settings such as the column delimiter character, the quote character or how blank lines are handled.
 
-This example creates and writes a few rows to a CSV file.
+## Basic Classes
+
+The following code writes several rows of data to a CSV file. Note that the `CsvWriter.WriteRow()` method is overloaded to also accept `string[]` and `IEnumerable<string>`.
 
 ```cs
 using (CsvWriter writer = new CsvWriter(path))
 {
-    // Note: WriteRow also accepts string[] or IEnumerable<string>
-    writer.WriteRow("First Name", "Last Name", "Address");
-    writer.WriteRow("Jack", "Smith", "1215 Oak St");
-    writer.WriteRow("Bryon", "Wilson", "18 Main St");
-    writer.WriteRow("Janet", "Carpenter", "1922 W Sycamore Ln");
-    writer.WriteRow("Bill", "Reynolds", "210 Redhill Ave");
+    // Note that WriteRow() also accepts string[] and IEnumerable<string>
+    writer.WriteRow("Id", "Name", "Zip", "Birthday");
+    writer.WriteRow("1", "Bill Smith", "92869", "10/29/1972 12:00:00 AM");
+    writer.WriteRow("2", "Susan Carpenter", "92865", "2/17/1985 12:00:00 AM");
+    writer.WriteRow("3", "Jim Winsor", "92862", "4/23/1979 12:00:00 AM");
+    writer.WriteRow("4", "Jill Morrison", "92861", "5/2/1969 12:00:00 AM");
+    writer.WriteRow("5", "Gary Wright", "92868", "2/18/1974 12:00:00 AM");
 }
 ```
 
 This example reads all rows from a CSV file.
 
 ```cs
+string[] columns = null;
 using (CsvReader reader = new CsvReader(path))
 {
-    string[] columns = null;
     while (reader.ReadRow(ref columns))
         Console.WriteLine(string.Join(", ", columns));
 }
