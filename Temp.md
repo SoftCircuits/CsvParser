@@ -17,9 +17,9 @@ In addition, there are a number of option settings. For example, you can change 
 These classes provide the simplest way to read and write CSV files. The example below writes several rows of data to a CSV file and then reads it back. Note that the `CsvWriter.WriteRow()` method is overloaded to also accept `string[]` and `IEnumerable<string>`.
 
 ```cs
+// Write some data to disk
 using (CsvWriter writer = new CsvWriter(path))
 {
-    // Note that WriteRow() also accepts string[] and IEnumerable<string>
     writer.WriteRow("Id", "Name", "Zip", "Birthday");
     writer.WriteRow("1", "Bill Smith", "92869", "10/29/1972 12:00:00 AM");
     writer.WriteRow("2", "Susan Carpenter", "92865", "2/17/1985 12:00:00 AM");
@@ -32,6 +32,7 @@ using (CsvWriter writer = new CsvWriter(path))
 This example reads all rows from a CSV file.
 
 ```cs
+// Read the data from disk
 string[] columns = null;
 using (CsvReader reader = new CsvReader(path))
 {
@@ -82,11 +83,14 @@ using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
 }
 ```
 
-It is important to note in the above example where the code that writes the data calls `CsvDataWriter.WriteHeaders()`. This writes a row with the name of each column. The code that reads the data calls `CsvDataReader.ReadHeaders()` to read that header data. Because the argument to `CsvDataReader.ReadHeaders()` is `true`, this tells the code to use the header data to figure out how to map the columns in the rest of the file. For example, maybe the columns are in a different order, or maybe one of the columns is excluded. Interpreting the column headers allows the code above correctly.
+It is important to note in the above example where the code that writes the data calls `CsvDataWriter.WriteHeaders()`. This writes a row with the name of each column. The code that reads the data calls `CsvDataReader.ReadHeaders()` to read that header data. Because the argument to `CsvDataReader.ReadHeaders()` is `true`, this tells the code to use the header data to determine how to map the columns in the rest of the file. For example, maybe the columns are in a different order, or maybe some of the columns are excluded.
+
+Here, the code maps the class members to columns based on the headers. This is critical to making these classes work correct and we'll talk about other ways to map class members to columns.
+
+## ColumnMap Attribute
 
 
 
-In addition
 
 
 
