@@ -8,7 +8,7 @@ Install-Package SoftCircuits.CsvParser
 
 ## Overview
 
-CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files. It includes basic classes to read and write CSV columns and also higher level classes that automatically map data between columns and class members. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines.
+CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files. It includes basic classes to read and write CSV columns and also higher level classes that can automatically map data between columns and class members. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines.
 
 In addition, there are a number of option settings. For example, you can change the column delimiter to another character. Additional options include changing the quote character and how blank lines are handled.
 
