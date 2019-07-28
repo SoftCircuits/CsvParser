@@ -97,6 +97,8 @@ The `ColumnMapAttribute` can be applied to any class property or field to specif
 
 **Exclude:** Specifies that the class member should be excluded and not written or read to or from any column.
 
+The following example modifies the `Person` class created earlier with `ColumnMap` attributes. The attributes are used to set the columns to be in the opposite order from how the class members are declared, gives the columns completely different names, and excludes the `Id` column.
+
 ```cs
 class Person
 {
