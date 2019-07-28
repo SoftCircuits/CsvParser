@@ -46,6 +46,7 @@ using (CsvReader reader = new CsvReader(path))
 These higher-level classes will automatically map data between class members and CSV columns. The following example defines a class and a collection with several instances of that class. It then uses `CsvDataWriter` to write the data to a CSV file, and `CsvDataReader` to read it back again.
 
 ```cs
+// This class will represent the data in the CSV file
 class Person
 {
     public int Id { get; set; }
@@ -54,6 +55,7 @@ class Person
     public DateTime Birthday { get; set; }
 }
 
+// Define some sample data
 List<Person> People = new List<Person>
 {
     new Person { Id = 1, Name = "Bill Smith", Zip = "92869", Birthday = new DateTime(1972, 10, 29) },
@@ -102,6 +104,7 @@ The following example modifies the `Person` class created earlier with `ColumnMa
 With the `Person` class defined as follows, the previous example will work correctly without the calls to `WriteHeaders()` and `ReadHeaders()`.
 
 ```cs
+// Add column mapping attributes to our data class
 class Person
 {
     [ColumnMap(Exclude = true)]
@@ -130,6 +133,7 @@ Next, the example defines the `PersonMaps` class to define the custom mapping. T
 Finally, the example calls the `CsvDataWriter.MapColumns<T>()` method to register the custom mappings. The code that reads the CSV file also calls the `CsvDataReader.MapColumns<T>()` method in the same way. Both must use the same mapping in order for the data to be interpreted correctly. The easiest way to do this is to pass the same class to both methods.
 
 ```cs
+// Create a custom data converter for DateTime values
 class CustomDateTimeConverter : CustomConverter<DateTime>
 {
     const string FormatString = "yyyyMMddHHmmss";
@@ -145,6 +149,7 @@ class CustomDateTimeConverter : CustomConverter<DateTime>
     }
 }
 
+// Create our custom mapping class
 class PersonMaps : ColumnMaps<Person>
 {
     public PersonMaps()
@@ -156,8 +161,10 @@ class PersonMaps : ColumnMaps<Person>
     }
 }
 
+// Write sample data to disk
 using (CsvDataWriter<Person> writer = new CsvDataWriter<Person>(path))
 {
+    // Register our custom mapping
     writer.MapColumns<PersonMaps>();
 
     writer.WriteHeaders();
@@ -165,9 +172,11 @@ using (CsvDataWriter<Person> writer = new CsvDataWriter<Person>(path))
         writer.Write(person);
 }
 
+// Read data from disk
 List<Person> people = new List<Person>();
 using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
 {
+    // Register our custom mapping
     reader.MapColumns<PersonMaps>();
 
     // Read header
@@ -185,10 +194,12 @@ Notice that the example above still calls `CsvDataWriter.WriteHeaders()` and `Cs
 You can customize the way the library behaves by passing your own instance of the `CsvSettings` class to any of the reader or writer constructors, as demonstrated in the following example. This code uses the `CsvSettings` class to read a tab-separated-values (TSV) file. It sets the `ColumnDelimiter` property to a tab. It also sets it to use single quotes instead of double quotes (something you would probably rarely do, but is fully supported).
 
 ```cs
+// Set custom settings
 CsvSettings settings = new CsvSettings();
 settings.ColumnDelimiter = '\t';
 settings.QuoteCharacter = '\'';
 
+// Apply custom settings to CsvReader
 using (CsvReader reader = new CsvReader(path, settings))
 {
     string[] columns = null;
