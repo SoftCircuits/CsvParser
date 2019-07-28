@@ -23,7 +23,7 @@ using (CsvWriter writer = new CsvWriter(path))
     writer.WriteRow("Id", "Name", "Zip", "Birthday");
     writer.WriteRow("1", "Bill Smith", "92869", "10/29/1972 12:00:00 AM");
     writer.WriteRow("2", "Susan Carpenter", "92865", "2/17/1985 12:00:00 AM");
-    writer.WriteRow("3", "Jim Winsor", "92862", "4/23/1979 12:00:00 AM");
+    writer.WriteRow("3", "Jim Windsor", "92862", "4/23/1979 12:00:00 AM");
     writer.WriteRow("4", "Jill Morrison", "92861", "5/2/1969 12:00:00 AM");
     writer.WriteRow("5", "Gary Wright", "92868", "2/18/1974 12:00:00 AM");
 }
@@ -58,7 +58,7 @@ List<Person> People = new List<Person>
 {
     new Person { Id = 1, Name = "Bill Smith", Zip = "92869", Birthday = new DateTime(1972, 10, 29) },
     new Person { Id = 2, Name = "Susan Carpenter", Zip = "92865", Birthday = new DateTime(1985, 2, 17) },
-    new Person { Id = 3, Name = "Jim Winsor", Zip = "92862", Birthday = new DateTime(1979, 4, 23) },
+    new Person { Id = 3, Name = "Jim Windsor", Zip = "92862", Birthday = new DateTime(1979, 4, 23) },
     new Person { Id = 4, Name = "Jill Morrison", Zip = "92861", Birthday = new DateTime(1969, 5, 2) },
     new Person { Id = 5, Name = "Gary Wright", Zip = "92868", Birthday = new DateTime(1974, 2, 18) },
 };
