@@ -93,7 +93,7 @@ The `ColumnMapAttribute` can be applied to any class property or field to specif
 
 **Name:** Specifies a column name, allowing the column name to be different from the class member name.
 
-**Index:** Specifies the column position for this member. Note that this value works more as a sort order. If all indexes assigned are not sequential and starting from 0, the actual index number may vary from the one specified.
+**Index:** Specifies the column position for this member. Note that if not all indexes assigned are sequential and starting from 0, the actual index numbers can vary from the ones specified.
 
 **Exclude:** Specifies that the class member should be excluded and not written or read to or from any column.
 
