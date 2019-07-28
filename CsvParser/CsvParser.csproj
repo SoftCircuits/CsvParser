@@ -7,19 +7,25 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Jonathan Wood</Authors>
     <Company>SoftCircuits</Company>
-    <Description>CsvParser makes it easy to work with comma-separated-values (CSV) files. It supports column values that contain commas, quotes or other special characters. It even supports column values that span multiple lines. In addition, you can optionally change settings such as the column delimiter character, the quote character or how blank lines are handled.
+    <Description>CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files. It includes basic classes to read and write CSV columns and also higher level classes that automatically map data between columns and class members. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines.
 
-Use the CsvWriter class to write a CSV file. Use the CsvReader class to read a CSV file.</Description>
+In addition, there are a number of option settings. For example, you can change the column delimiter to another character. Additional options include changing the quote character and how blank lines are handled.</Description>
     <Copyright>Copyright © 2019 SoftCircuits</Copyright>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/SoftCircuits/CsvParser</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csv tsv csv-parser parser</PackageTags>
-    <PackageReleaseNotes>CsvReader constructors now allow you to specify the character encoding and/or the byte order detection option; CsvWriter constructors now allow you to specify the character encoding; Optimized CsvReader.ReadRow() method to minimize memory allocations; Added additional methods exposing underlying stream functionality; BREAKING CHANGE: CsvReader.ReadRow() argument now passed by reference</PackageReleaseNotes>
+    <PackageReleaseNotes>Version 2 added higher level CsvDataReader and CsvDataWriter classes. These classes can automatically map data between columns and class members.</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>1.1.0</Version>
+    <Version>2.0.0</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Old Converters\**" />
+    <EmbeddedResource Remove="Old Converters\**" />
+    <None Remove="Old Converters\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\License.txt">

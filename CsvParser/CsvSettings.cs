@@ -1,6 +1,8 @@
 ﻿// Copyright (c) 2019 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
+using System;
+
 namespace SoftCircuits.CsvParser
 {
     /// <summary>
@@ -66,13 +68,35 @@ namespace SoftCircuits.CsvParser
             set => SpecialCharacters[QuoteCharacterIndex] = value;
         }
 
+        /// <summary>
+        /// If true, <see cref="CsvDataReader{T}"></see> will raise an
+        /// <see cref="InvalidDataException"></see> exception when it encounters
+        /// data that cannot be converted to the corresponding data type. True
+        /// by default.
+        /// </summary>
+        public bool InvalidDataRaisesException { get; set; }
+
+        /// <summary>
+        /// Specifies the string comparison type when
+        /// <see cref="CsvDataReader.ReadHeaders(bool)"></see> is called with
+        /// a <c>true</c> argument and compares the column headers with the
+        /// column names. The default is
+        /// <see cref="StringComparison.InvariantCultureIgnoreCase"></see>.
+        /// </summary>
+        public StringComparison ColumnHeaderStringComparison { get; set; }
+
+        // Returns true if string contains any special characters.
+        internal bool HasSpecialCharacter(string s) => s.IndexOfAny(SpecialCharacters) >= 0;
+
+        /// <summary>
+        /// Initializes a new <c>CsvSettings</c> instance.
+        /// </summary>
         public CsvSettings()
         {
             SpecialCharacters = new char[] { ',', '"', '\r', '\n' };
             EmptyLineBehavior = EmptyLineBehavior.NoColumns;
+            InvalidDataRaisesException = true;
+            ColumnHeaderStringComparison = StringComparison.InvariantCultureIgnoreCase;
         }
-
-        // Returns true if string contains any special characters.
-        internal bool HasSpecialCharacter(string s) => s.IndexOfAny(SpecialCharacters) >= 0;
     }
 }

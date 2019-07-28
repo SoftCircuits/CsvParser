@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 //
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -16,7 +15,7 @@ namespace SoftCircuits.CsvParser
     {
         // Private members
         private StreamReader Reader;
-        private CsvSettings Settings;
+        internal CsvSettings Settings;
 
         private string Line;
         private int CurrPos;

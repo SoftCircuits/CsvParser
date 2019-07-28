@@ -1,0 +1,15 @@
+﻿// Copyright (c) 2019 Jonathan Wood (www.softcircuits.com)
+// Licensed under the MIT license.
+//
+using System;
+using System.Collections.Generic;
+
+namespace CsvParserTests
+{
+    public static class TypeConvertersTestData
+    {
+        public static List<(Type Type, object Data)> TestItems = new List<(Type Type, object Data)>
+        {
+{@TestData}        };
+    }
+}

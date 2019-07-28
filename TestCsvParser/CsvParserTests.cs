@@ -8,12 +8,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TestCsvParser
+namespace CsvParserTests
 {
     [TestClass]
-    public class UnitTest1
+    public class CsvParserTests
     {
-        private List<(string, string, string)> TestData = new List<(string, string, string)>
+        private List<(string, string, string)> RawIniFile = new List<(string, string, string)>
         {
             ("Abc", "Def", "Ghi"),
             ("@Abc", "D\"e\"f", "G,h'i"),
@@ -41,7 +41,7 @@ namespace TestCsvParser
         };
 
         [TestMethod]
-        public void TestCsv()
+        public void TestCsvValues()
         {
             // Default settings
             CsvSettings settings = new CsvSettings();
@@ -62,7 +62,7 @@ namespace TestCsvParser
             using (MemoryStream stream = new MemoryStream())
             using (CsvWriter writer = new CsvWriter(stream, settings))
             {
-                foreach (var data in TestData)
+                foreach (var data in RawIniFile)
                     writer.WriteRow(data.Item1, data.Item2, data.Item3);
                 writer.Flush();
                 buffer = stream.ToArray();
@@ -77,7 +77,7 @@ namespace TestCsvParser
                     Assert.AreEqual(3, columns.Length);
                     actual.Add((columns[0], columns[1], columns[2]));
                 }
-                CollectionAssert.AreEqual(TestData, actual);
+                CollectionAssert.AreEqual(RawIniFile, actual);
             }
         }
 
@@ -88,7 +88,7 @@ namespace TestCsvParser
 
             using (CsvWriter writer = new CsvWriter(path, settings))
             {
-                foreach (var data in TestData)
+                foreach (var data in RawIniFile)
                     writer.WriteRow((IEnumerable<string>)new[] { data.Item1, data.Item2, data.Item3 });
                 writer.Close();
             }
@@ -101,11 +101,11 @@ namespace TestCsvParser
                     Assert.AreEqual(3, columns.Length);
                     actual.Add((columns[0], columns[1], columns[2]));
                 }
-                CollectionAssert.AreEqual(TestData, actual);
+                CollectionAssert.AreEqual(RawIniFile, actual);
             }
         }
 
-        private List<string> EmptyLineBehaviorTestData = new List<string>
+        private List<string> EmptyLineTestData = new List<string>
         {
             "\"abc\",\"def\",\"ghi\"",
             "\"abc\",\"def\",\"ghi\"",
@@ -114,7 +114,7 @@ namespace TestCsvParser
             "\"abc\",\"def\",\"ghi\"",
         };
 
-        private List<List<string>>[] EmptyLineBehaviorTestResults = new List<List<string>>[]
+        private List<List<string>>[] EmptyLineTestResults = new List<List<string>>[]
         {
             // EmptyLineBehavior.NoColumns
             new List<List<string>>
@@ -163,7 +163,7 @@ namespace TestCsvParser
                 using (MemoryStream stream = new MemoryStream())
                 using (StreamWriter writer = new StreamWriter(stream))
                 {
-                    foreach (string line in EmptyLineBehaviorTestData)
+                    foreach (string line in EmptyLineTestData)
                         writer.WriteLine(line);
                     writer.Flush();
                     buffer = stream.ToArray();
@@ -178,11 +178,11 @@ namespace TestCsvParser
                 }
 
                 int resultIndex = (int)emptyLineBehavior;
-                Assert.AreEqual(EmptyLineBehaviorTestResults[resultIndex].Count, actual.Count);
-                if (EmptyLineBehaviorTestResults[resultIndex].Count == actual.Count)
+                Assert.AreEqual(EmptyLineTestResults[resultIndex].Count, actual.Count);
+                if (EmptyLineTestResults[resultIndex].Count == actual.Count)
                 {
                     for (int i = 0; i < actual.Count; i++)
-                        CollectionAssert.AreEqual(EmptyLineBehaviorTestResults[resultIndex][i], actual[i]);
+                        CollectionAssert.AreEqual(EmptyLineTestResults[resultIndex][i], actual[i]);
                 }
             }
         }
