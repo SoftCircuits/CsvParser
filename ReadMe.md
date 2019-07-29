@@ -109,11 +109,11 @@ class Person
 {
     [ColumnMap(Exclude = true)]
     public int Id { get; set; }
-    [ColumnMap(Index = 2, Name = "abc")]
+    [ColumnMap(Index = 2, Name = "nombre")]
     public string Name { get; set; }
-    [ColumnMap(Index = 1, Name = "def")]
+    [ColumnMap(Index = 1, Name = "código postal")]
     public string Zip { get; set; }
-    [ColumnMap(Index = 0, Name = "ghi")]
+    [ColumnMap(Index = 0, Name = "cumpleaños")]
     public DateTime Birthday { get; set; }
 }
 ```
@@ -134,18 +134,30 @@ Finally, the example calls the `CsvDataWriter.MapColumns<T>()` method to registe
 
 ```cs
 // Create a custom data converter for DateTime values
+// Stores a date-only value (no time) in a compact format
 class DateTimeConverter : DataConverter<DateTime>
 {
-    const string FormatString = "yyyyMMddHHmmss";
-
     public override string ConvertToString(DateTime value)
     {
-        return value.ToString(FormatString);
+        int i = ((value.Day - 1) & 0b00011111) |
+            (((value.Month - 1) & 0b00001111) << 5) |
+            (value.Year) << 9;
+        return i.ToString("x");
     }
 
     public override bool TryConvertFromString(string s, out DateTime value)
     {
-        return (DateTime.TryParseExact(s, FormatString, CultureInfo.InvariantCulture, DateTimeStyles.None, out value));
+        try
+        {
+            int i = Convert.ToInt32(s, 16);
+            value = new DateTime(i >> 9, ((i >> 5) & 0b00001111) + 1, (i & 0b11111) + 1);
+            return true;
+        }
+        catch (Exception)
+        {
+            value = DateTime.Now;
+            return false;
+        }
     }
 }
 
@@ -155,9 +167,9 @@ class PersonMaps : ColumnMaps<Person>
     public PersonMaps()
     {
         MapColumn(m => m.Id).Exclude(true);
-        MapColumn(m => m.Name).Index(2).Name("abc");
-        MapColumn(m => m.Zip).Index(1).Name("def");
-        MapColumn(m => m.Birthday).Index(0).Name("ghi").Converter(new DateTimeConverter());
+        MapColumn(m => m.Name).Index(2).Name("nombre");
+        MapColumn(m => m.Zip).Index(1).Name("código postal");
+        MapColumn(m => m.Birthday).Index(0).Name("cumpleaños").Converter(new DateTimeConverter());
     }
 }
 
