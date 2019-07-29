@@ -9,9 +9,9 @@ using System.Runtime.CompilerServices;
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class Dispatcher
+    internal static class DataConverters
     {
-        static Dictionary<Type, Func<ICustomConverter>> ConverterLookup = new Dictionary<Type, Func<ICustomConverter>>
+        private static readonly Dictionary<Type, Func<IDataConverter>> ConverterLookup = new Dictionary<Type, Func<IDataConverter>>
         {
             [typeof(string)] = () => new StringConverter(),
             [typeof(string[])] = () => new StringArrayConverter(),
@@ -77,9 +77,17 @@ namespace SoftCircuits.CsvParser.Converters
             [typeof(DateTime?[])] = () => new NullableDateTimeArrayConverter(),
         };
 
-        public static ICustomConverter GetConverter(Type type)
+        /// <summary>
+        /// Returns the data converter for the specified type. Returns an instance
+        /// of <see cref="UnsupportedConverter"></see> if there are no matching
+        /// types.
+        /// </summary>
+        /// <param name="type">The type to find a converter for.</param>
+        /// <returns>Returns a class that derives from
+        /// <see cref="DataConverter{T}"></see>.</returns>
+        public static IDataConverter GetConverter(Type type)
         {
-            return ConverterLookup.TryGetValue(type, out Func<ICustomConverter> func) ?
+            return ConverterLookup.TryGetValue(type, out Func<IDataConverter> func) ?
                 func() :
                 new UnsupportedConverter(type);
         }

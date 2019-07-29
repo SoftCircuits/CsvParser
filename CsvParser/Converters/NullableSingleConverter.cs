@@ -4,7 +4,7 @@
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class NullableSingleConverter : CustomConverter<float?>
+    internal class NullableSingleConverter : DataConverter<float?>
     {
         public override string ConvertToString(float? value) => value.HasValue ? value.Value.ToString() : string.Empty;
 

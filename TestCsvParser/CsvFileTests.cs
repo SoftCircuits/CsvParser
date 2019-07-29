@@ -217,7 +217,7 @@ namespace CsvParserTests
         /// <summary>
         /// Custom DateTime converter.
         /// </summary>
-        class CustomDateTimeConverter : CustomConverter<DateTime>
+        class DateTimeConverter : DataConverter<DateTime>
         {
             const string FormatString = "yyyyMMddHHmmss";
 
@@ -239,7 +239,7 @@ namespace CsvParserTests
                 MapColumn(m => m.Id).Exclude(true);
                 MapColumn(m => m.Name).Index(2).Name("abc");
                 MapColumn(m => m.Zip).Index(1).Name("def");
-                MapColumn(m => m.Birthday).Index(0).Name("ghi").Converter(new CustomDateTimeConverter());
+                MapColumn(m => m.Birthday).Index(0).Name("ghi").Converter(new DateTimeConverter());
             }
         }
 

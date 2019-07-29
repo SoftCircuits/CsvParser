@@ -16,7 +16,7 @@ namespace CsvParserTests
         {
             foreach ((Type Type, object Data) item in TypeConvertersTestData.TestItems)
             {
-                ICustomConverter converter = Dispatcher.GetConverter(item.Type);
+                IDataConverter converter = DataConverters.GetConverter(item.Type);
                 string s = converter.ConvertToString(item.Data);
                 Assert.AreEqual(true, converter.TryConvertFromString(s, out object data));
                 if (item.Type.IsArray)

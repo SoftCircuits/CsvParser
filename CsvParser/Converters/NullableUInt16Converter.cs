@@ -4,7 +4,7 @@
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class NullableUInt16Converter : CustomConverter<ushort?>
+    internal class NullableUInt16Converter : DataConverter<ushort?>
     {
         public override string ConvertToString(ushort? value) => value.HasValue ? value.Value.ToString() : string.Empty;
 

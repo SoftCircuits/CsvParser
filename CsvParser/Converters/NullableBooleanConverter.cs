@@ -4,7 +4,7 @@
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class NullableBooleanConverter : CustomConverter<bool?>
+    internal class NullableBooleanConverter : DataConverter<bool?>
     {
         public override string ConvertToString(bool? value) => value.HasValue ? value.Value.ToString() : string.Empty;
 

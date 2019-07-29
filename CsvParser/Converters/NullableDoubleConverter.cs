@@ -4,7 +4,7 @@
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class NullableDoubleConverter : CustomConverter<double?>
+    internal class NullableDoubleConverter : DataConverter<double?>
     {
         public override string ConvertToString(double? value) => value.HasValue ? value.Value.ToString() : string.Empty;
 

@@ -4,7 +4,7 @@
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class CharArrayConverter : CustomConverter<char[]>
+    internal class CharArrayConverter : DataConverter<char[]>
     {
         public override string ConvertToString(char[] array) => (array != null) ? new string(array) : string.Empty;
 

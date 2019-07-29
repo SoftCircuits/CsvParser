@@ -2,13 +2,17 @@
 // Licensed under the MIT license.
 //
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
 
 namespace SoftCircuits.CsvParser
 {
+    /// <summary>
+    /// Class to read from a CSV file with automatic mapping from CSV columns
+    /// to object properties.
+    /// </summary>
+    /// <typeparam name="T">The object type being read.</typeparam>
     public class CsvDataReader<T> : CsvReader where T : class, new()
     {
         private ColumnInfoCollection ColumnsInfo;
@@ -129,27 +133,27 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Applies mapping
+        /// Applies <see cref="ColumnMaps{T}"></see> mappings to the reader.
         /// </summary>
-        /// <param name="columnMaps"></param>
         public void MapColumns<TMaps>() where TMaps : ColumnMaps<T>, new()
         {
             TMaps columnMaps = Activator.CreateInstance<TMaps>();
-            List<ColumnMap> mapping = columnMaps.GetCustomMaps();
             MappedColumnsInfo = ColumnsInfo.ApplyMapping(columnMaps.GetCustomMaps());
         }
 
         /// <summary>
-        /// Reads a row from the input stream. If <paramref name="useHeadersForColumnOrder"/>
-        /// is true, the column headers are used to map columns to class members.
+        /// Reads a row of columns from the input stream. If <paramref name="mapColumnsFromHeaders"/>
+        /// is true, the column headers are used to map columns to class members. The data read is
+        /// discarded.
         /// </summary>
-        /// <param name="useHeadersForColumnOrder">Specifies whether the column headers
+        /// <param name="mapColumnsFromHeaders">Specifies whether the column headers
         /// should be used to map columns to class members.</param>
-        public bool ReadHeaders(bool useHeadersForColumnOrder)
+        /// <returns>True if successful, false if the end of the file was reached.</returns>
+        public bool ReadHeaders(bool mapColumnsFromHeaders)
         {
             if (ReadRow(ref Columns))
             {
-                if (useHeadersForColumnOrder)
+                if (mapColumnsFromHeaders)
                 {
                     if (Columns.Length == 0)
                         throw new Exception("Cannot read column headers from empty row.");
@@ -160,6 +164,11 @@ namespace SoftCircuits.CsvParser
             return false;
         }
 
+        /// <summary>
+        /// Reads an item from the input stream.
+        /// </summary>
+        /// <param name="item">Receives the item read.</param>
+        /// <returns>True if successful, false if the end of the file was reached.</returns>
         public bool Read(out T item)
         {
             Debug.Assert(MappedColumnsInfo != null);

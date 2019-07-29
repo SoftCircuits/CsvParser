@@ -4,7 +4,7 @@
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class NullableUInt64Converter : CustomConverter<ulong?>
+    internal class NullableUInt64Converter : DataConverter<ulong?>
     {
         public override string ConvertToString(ulong? value) => value.HasValue ? value.Value.ToString() : string.Empty;
 

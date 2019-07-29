@@ -212,7 +212,7 @@ namespace CsvParserTests
             }
         }
 
-        class BoolConverter : CustomConverter<bool>
+        class BoolConverter : DataConverter<bool>
         {
             public override string ConvertToString(bool value)
             {

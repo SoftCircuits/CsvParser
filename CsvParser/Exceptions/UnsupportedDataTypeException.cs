@@ -6,7 +6,7 @@ using System;
 namespace SoftCircuits.CsvParser
 {
     /// <summary>
-    /// Exception that indicates a class member that was mapped to a column was not of a
+    /// Exception that indicates a class property that was mapped to a column was not of a
     /// supported data type. Resolve by excluding the column or by implementing your own
     /// custom data converter.
     /// </summary>
@@ -17,7 +17,7 @@ namespace SoftCircuits.CsvParser
         }
 
         public UnsupportedDataTypeException(string typeName)
-            : base($"The type '{typeName}' has no built-in conversion support, and no custom converter has been specified for the class member.")
+            : base($"The type '{typeName}' has no built-in conversion support, and no custom data converter has been specified for the class property.")
         {
         }
     }

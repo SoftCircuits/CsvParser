@@ -4,7 +4,7 @@
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class DecimalConverter : CustomConverter<decimal>
+    internal class DecimalConverter : DataConverter<decimal>
     {
         public override string ConvertToString(decimal value) => value.ToString();
 

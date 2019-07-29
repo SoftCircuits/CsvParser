@@ -8,63 +8,63 @@ namespace SoftCircuits.CsvParser
 {
     public class ColumnMap
     {
-        // Properties named as such to prevent conflict with set methods.
-        internal string _PropertyName { get; private set; }
-        internal string _Name { get; private set; }
-        internal int _Index { get; private set; }
-        internal bool? _Exclude { get; private set; }
-        internal ICustomConverter _Converter { get; private set; }
+        // Properties named as such to prevent conflict with methods.
+        internal string PropertyName_ { get; private set; }
+        internal string Name_ { get; private set; }
+        internal int Index_ { get; private set; }
+        internal bool? Exclude_ { get; private set; }
+        internal IDataConverter Converter_ { get; private set; }
 
         internal ColumnMap(string propertyName)
         {
-            _PropertyName = propertyName ?? throw new ArgumentNullException(nameof(propertyName));
-            _Name = null;
-            _Index = ColumnInfo.InvalidIndex;
-            _Exclude = null;
-            _Converter = null;
+            PropertyName_ = propertyName ?? throw new ArgumentNullException(nameof(propertyName));
+            Name_ = null;
+            Index_ = ColumnInfo.InvalidIndex;
+            Exclude_ = null;
+            Converter_ = null;
         }
 
         /// <summary>
-        /// Name override for this property.
+        /// Sets the column name for this property.
         /// </summary>
         /// <param name="name"></param>
         public ColumnMap Name(string name)
         {
-            _Name = name ?? throw new ArgumentNullException(nameof(name));
+            Name_ = name ?? throw new ArgumentNullException(nameof(name));
             return this;
         }
 
         /// <summary>
-        /// 0-based column position for this property.
+        /// Sets the 0-based column position for this property.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
         public ColumnMap Index(int index)
         {
-            _Index = index;
+            Index_ = index;
             return this;
         }
 
         /// <summary>
-        /// If true, this property will not be serialized to/from file.
+        /// If true, this property will not be mapped to any column.
         /// </summary>
         /// <param name="exclude"></param>
         /// <returns></returns>
         public ColumnMap Exclude(bool exclude)
         {
-            _Exclude = exclude;
+            Exclude_ = exclude;
             return this;
         }
 
         /// <summary>
-        /// Custom converter class for converting this property to a string
+        /// Data converter class for converting this property to a string
         /// and back to a property value.
         /// </summary>
-        /// <param name="converter">Specifies a custom converter for this
+        /// <param name="converter">Specifies a data converter for this
         /// property. Must be for the same type as the property type.</param>
-        public ColumnMap Converter(ICustomConverter converter)
+        public ColumnMap Converter(IDataConverter converter)
         {
-            _Converter = converter ?? throw new ArgumentNullException(nameof(converter));
+            Converter_ = converter ?? throw new ArgumentNullException(nameof(converter));
             return this;
         }
     }

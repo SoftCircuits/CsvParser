@@ -5,7 +5,7 @@ using System;
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class UInt16ArrayConverter : CustomConverter<ushort[]>
+    internal class UInt16ArrayConverter : DataConverter<ushort[]>
     {
         public override string ConvertToString(ushort[] array)
         {

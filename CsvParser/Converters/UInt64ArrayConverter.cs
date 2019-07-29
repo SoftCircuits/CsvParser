@@ -5,7 +5,7 @@ using System;
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class UInt64ArrayConverter : CustomConverter<ulong[]>
+    internal class UInt64ArrayConverter : DataConverter<ulong[]>
     {
         public override string ConvertToString(ulong[] array)
         {

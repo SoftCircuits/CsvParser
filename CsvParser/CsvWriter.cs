@@ -15,7 +15,7 @@ namespace SoftCircuits.CsvParser
     {
         // Private members
         private StreamWriter Writer;
-        internal CsvSettings Settings;
+        protected CsvSettings Settings;
 
         // Used for formatting quoted columns
         private string OneQuoteString = null;

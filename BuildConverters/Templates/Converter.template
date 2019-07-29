@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 //
 
-This is the template file used to build all the CustomConverter classes.
+This is the template file used to build all the DataConverter classes.
 The main template is the body of each class. And then sections are
 defined for various placeholders, types and modes.
 
@@ -23,7 +23,7 @@ TEMPLATE BODY
 {@UsingBlock}
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class {@ClassName} : CustomConverter<{@CType}>
+    internal class {@ClassName} : DataConverter<{@CType}>
     {
         {@ToString}
 
@@ -36,19 +36,19 @@ namespace SoftCircuits.CsvParser.Converters
 DEFAULT - STANDARD
 =====================================================================
 
-{@Section(ToString,Default,Standard)}public override string ConvertToString({@CType} value) => value.ToString();{@EndSection}
+{@Section(Default,Standard,ToString)}public override string ConvertToString({@CType} value) => value.ToString();{@EndSection}
 
-{@Section(FromString,Default,Standard)}public override bool TryConvertFromString(string s, out {@TypeCName} value) => {@TypeCName}.TryParse(s, out value);{@EndSection}
+{@Section(Default,Standard,FromString)}public override bool TryConvertFromString(string s, out {@TypeCName} value) => {@TypeCName}.TryParse(s, out value);{@EndSection}
 
-{@Section(UsingBlock,Default,Standard)}{@EndSection}
+{@Section(Default,Standard,UsingBlock)}{@EndSection}
 
 =====================================================================
 DEFAULT - NULLABLE
 =====================================================================
 
-{@Section(ToString,Default,Nullable)}public override string ConvertToString({@CType} value) => value.HasValue ? value.Value.ToString() : string.Empty;{@EndSection}
+{@Section(Default,Nullable,ToString)}public override string ConvertToString({@CType} value) => value.HasValue ? value.Value.ToString() : string.Empty;{@EndSection}
 
-{@Section(FromString,Default,Nullable)}public override bool TryConvertFromString(string s, out {@CType} value)
+{@Section(Default,Nullable,FromString)}public override bool TryConvertFromString(string s, out {@CType} value)
         {
             value = null;
 
@@ -63,13 +63,13 @@ DEFAULT - NULLABLE
             return false;
         }{@EndSection}
 
-{@Section(UsingBlock,Default,Nullable)}{@EndSection}
+{@Section(Default,Nullable,UsingBlock)}{@EndSection}
 
 =====================================================================
 DEFAULT - ARRAY
 =====================================================================
 
-{@Section(ToString,Default,Array)}public override string ConvertToString({@CType} array)
+{@Section(Default,Array,ToString)}public override string ConvertToString({@CType} array)
         {
             if (array == null)
                 return string.Empty;
@@ -77,7 +77,7 @@ DEFAULT - ARRAY
             return string.Join(";", array);
         }{@EndSection}
 
-{@Section(FromString,Default,Array)}public override bool TryConvertFromString(string s, out {@CType} array)
+{@Section(Default,Array,FromString)}public override bool TryConvertFromString(string s, out {@CType} array)
         {
             try
             {
@@ -99,14 +99,14 @@ DEFAULT - ARRAY
             }
         }{@EndSection}
 
-{@Section(UsingBlock,Default,Array)}using System;
+{@Section(Default,Array,UsingBlock)}using System;
 {@EndSection}
 
 =====================================================================
 DEFAULT - NULLABLE, ARRAY
 =====================================================================
 
-{@Section(ToString,Default,NullableArray)}public override string ConvertToString({@CType} array)
+{@Section(Default,NullableArray,ToString)}public override string ConvertToString({@CType} array)
         {
             if (array == null)
                 return string.Empty;
@@ -114,7 +114,7 @@ DEFAULT - NULLABLE, ARRAY
             return string.Join(";", array.Select(v => v.HasValue ? v.Value.ToString() : string.Empty));
         }{@EndSection}
 
-{@Section(FromString,Default,NullableArray)}public override bool TryConvertFromString(string s, out {@CType} array)
+{@Section(Default,NullableArray,FromString)}public override bool TryConvertFromString(string s, out {@CType} array)
         {
             try
             {
@@ -137,7 +137,7 @@ DEFAULT - NULLABLE, ARRAY
             }
         }{@EndSection}
         
-{@Section(UsingBlock,Default,NullableArray)}using System;
+{@Section(Default,NullableArray,UsingBlock)}using System;
 using System.Linq;
 {@EndSection}
 
@@ -145,22 +145,22 @@ using System.Linq;
 STRING - STANDARD
 =====================================================================
 
-{@Section(ToString,String,Standard)}public override string ConvertToString({@CType} value) => value;{@EndSection}
+{@Section(String,Standard,ToString)}public override string ConvertToString({@CType} value) => value;{@EndSection}
 
-{@Section(FromString,String,Standard)}public override bool TryConvertFromString(string s, out {@CType} value)
+{@Section(String,Standard,FromString)}public override bool TryConvertFromString(string s, out {@CType} value)
         {
             value = s;
             return (value != null);
         }{@EndSection}
 
-{@Section(UsingBlock,String,Standard)}using System;
+{@Section(String,Standard,UsingBlock)}using System;
 {@EndSection}
 
 =====================================================================
 STRING - ARRAY
 =====================================================================
 
-{@Section(ToString,String,Array)}public override string ConvertToString({@CType} array)
+{@Section(String,Array,ToString)}public override string ConvertToString({@CType} array)
         {
             StringBuilder builder = new StringBuilder();
 
@@ -179,7 +179,7 @@ STRING - ARRAY
             return builder.ToString();
         }{@EndSection}
 
-{@Section(FromString,String,Array)}public override bool TryConvertFromString(string s, out {@CType} array)
+{@Section(String,Array,FromString)}public override bool TryConvertFromString(string s, out {@CType} array)
         {
             List<string> list = new List<string>();
             int pos = 0;
@@ -235,7 +235,7 @@ STRING - ARRAY
             return true;
         }{@EndSection}
         
-{@Section(UsingBlock,String,Array)}using System.Collections.Generic;
+{@Section(String,Array,UsingBlock)}using System.Collections.Generic;
 using System.Text;
 {@EndSection}
 
@@ -243,9 +243,9 @@ using System.Text;
 CHAR - ARRAY
 =====================================================================
 
-{@Section(ToString,Char,Array)}public override string ConvertToString(char[] array) => (array != null) ? new string(array) : string.Empty;{@EndSection}
+{@Section(Char,Array,ToString)}public override string ConvertToString(char[] array) => (array != null) ? new string(array) : string.Empty;{@EndSection}
 
-{@Section(FromString,Char,Array)}public override bool TryConvertFromString(string s, out char[] array)
+{@Section(Char,Array,FromString)}public override bool TryConvertFromString(string s, out char[] array)
         {
             if (s == null)
             {
@@ -256,13 +256,13 @@ CHAR - ARRAY
             return true;
         }{@EndSection}
 
-{@Section(UsingBlock,Char,Array)}{@EndSection}
+{@Section(Char,Array,UsingBlock)}{@EndSection}
 
 =====================================================================
 CHAR - NULLABLE, ARRAY
 =====================================================================
 
-{@Section(ToString,Char,NullableArray)}public override string ConvertToString({@CType} array)
+{@Section(Char,NullableArray,ToString)}public override string ConvertToString({@CType} array)
         {
             if (array == null)
                 return string.Empty;
@@ -270,7 +270,7 @@ CHAR - NULLABLE, ARRAY
             return string.Join(";", array.Select(c => c.HasValue ? ((int)c).ToString() : string.Empty));
         }{@EndSection}
 
-{@Section(FromString,Char,NullableArray)}public override bool TryConvertFromString(string s, out {@CType} array)
+{@Section(Char,NullableArray,FromString)}public override bool TryConvertFromString(string s, out {@CType} array)
         {
             try
             {
@@ -293,7 +293,7 @@ CHAR - NULLABLE, ARRAY
             }
         }{@EndSection}
 
-{@Section(UsingBlock,Char,NullableArray)}using System;
+{@Section(Char,NullableArray,UsingBlock)}using System;
 using System.Linq;
 {@EndSection}
 
@@ -301,24 +301,24 @@ using System.Linq;
 GUID
 =====================================================================
 
-{@Section(UsingBlock,Guid,Standard)}using System;
+{@Section(Guid,Standard,UsingBlock)}using System;
 {@EndSection}
 
-{@Section(UsingBlock,Guid,Nullable)}using System;
+{@Section(Guid,Nullable,UsingBlock)}using System;
 {@EndSection}
 
 =====================================================================
 DATETIME - STANDARD
 =====================================================================
 
-{@Section(ToString,DateTime,Standard)}public override string ConvertToString({@CType} value) => value.ToString();{@EndSection}
+{@Section(DateTime,Standard,ToString)}public override string ConvertToString({@CType} value) => value.ToString();{@EndSection}
 
-{@Section(FromString,DateTime,Standard)}public override bool TryConvertFromString(string s, out {@CType} value)
+{@Section(DateTime,Standard,FromString)}public override bool TryConvertFromString(string s, out {@CType} value)
         {
             return {@TypeCName}.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.None, out value);
         }{@EndSection}
         
-{@Section(UsingBlock,DateTime,Standard)}using System;
+{@Section(DateTime,Standard,UsingBlock)}using System;
 using System.Globalization;
 {@EndSection}
 
@@ -326,9 +326,9 @@ using System.Globalization;
 DATETIME - NULLABLE
 =====================================================================
 
-{@Section(ToString,DateTime,Nullable)}public override string ConvertToString({@CType} value) => value.HasValue ? value.Value.ToString() : string.Empty;{@EndSection}
+{@Section(DateTime,Nullable,ToString)}public override string ConvertToString({@CType} value) => value.HasValue ? value.Value.ToString() : string.Empty;{@EndSection}
 
-{@Section(FromString,DateTime,Nullable)}public override bool TryConvertFromString(string s, out {@CType} value)
+{@Section(DateTime,Nullable,FromString)}public override bool TryConvertFromString(string s, out {@CType} value)
         {
             value = null;
 
@@ -343,7 +343,7 @@ DATETIME - NULLABLE
             return false;
         }{@EndSection}
 
-{@Section(UsingBlock,DateTime,Nullable)}using System;
+{@Section(DateTime,Nullable,UsingBlock)}using System;
 using System.Globalization;
 {@EndSection}
 
@@ -351,7 +351,7 @@ using System.Globalization;
 DATETIME - ARRAY
 =====================================================================
 
-{@Section(ToString,DateTime,Array)}public override string ConvertToString({@CType} array)
+{@Section(DateTime,Array,ToString)}public override string ConvertToString({@CType} array)
         {
             if (array == null)
                 return string.Empty;
@@ -359,7 +359,7 @@ DATETIME - ARRAY
             return string.Join(";", array);
         }{@EndSection}
 
-{@Section(FromString,DateTime,Array)}public override bool TryConvertFromString(string s, out {@CType} array)
+{@Section(DateTime,Array,FromString)}public override bool TryConvertFromString(string s, out {@CType} array)
         {
             try
             {
@@ -381,7 +381,7 @@ DATETIME - ARRAY
             }
         }{@EndSection}
 
-{@Section(UsingBlock,DateTime,Array)}using System;
+{@Section(DateTime,Array,UsingBlock)}using System;
 using System.Globalization;
 {@EndSection}
 
@@ -389,7 +389,7 @@ using System.Globalization;
 DATETIME - NULLABLE, ARRAY
 =====================================================================
 
-{@Section(ToString,DateTime,NullableArray)}public override string ConvertToString({@CType} array)
+{@Section(DateTime,NullableArray,ToString)}public override string ConvertToString({@CType} array)
         {
             if (array == null)
                 return string.Empty;
@@ -397,7 +397,7 @@ DATETIME - NULLABLE, ARRAY
             return string.Join(";", array.Select(v => v.HasValue ? v.Value.ToString() : string.Empty));
         }{@EndSection}
 
-{@Section(FromString,DateTime,NullableArray)}public override bool TryConvertFromString(string s, out {@CType} array)
+{@Section(DateTime,NullableArray,FromString)}public override bool TryConvertFromString(string s, out {@CType} array)
         {
             try
             {
@@ -420,7 +420,7 @@ DATETIME - NULLABLE, ARRAY
             }
         }{@EndSection}
 
-{@Section(UsingBlock,DateTime,NullableArray)}using System;
+{@Section(DateTime,NullableArray,UsingBlock)}using System;
 using System.Globalization;
 using System.Linq;
 {@EndSection}

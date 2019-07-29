@@ -5,7 +5,7 @@ using System;
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class NullableGuidConverter : CustomConverter<Guid?>
+    internal class NullableGuidConverter : DataConverter<Guid?>
     {
         public override string ConvertToString(Guid? value) => value.HasValue ? value.Value.ToString() : string.Empty;
 

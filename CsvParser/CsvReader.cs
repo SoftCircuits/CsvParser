@@ -15,7 +15,7 @@ namespace SoftCircuits.CsvParser
     {
         // Private members
         private StreamReader Reader;
-        internal CsvSettings Settings;
+        protected CsvSettings Settings;
 
         private string Line;
         private int CurrPos;
@@ -136,7 +136,7 @@ namespace SoftCircuits.CsvParser
         {
             ArrayManager<string> results = new ArrayManager<string>(columns);
 
-ReadNextLine:
+        ReadNextLine:
             // Read next line from the file
             Line = Reader.ReadLine();
             CurrPos = 0;

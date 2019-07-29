@@ -13,13 +13,12 @@ namespace SoftCircuits.CsvParser
         public const int InvalidIndex = -1;
 
         /// <summary>
-        /// The column name. Can be different from the member name if overridden
-        /// by mapping.
+        /// The column name, which can be different from the property name.
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// The original member name.
+        /// The original property name.
         /// </summary>
         public string MemberName => Member.Name;
 
@@ -35,9 +34,9 @@ namespace SoftCircuits.CsvParser
         public bool Exclude { get; set; }
 
         /// <summary>
-        /// Object that converts this member to a string, and back again.
+        /// Object that converts this property to a string, and back again.
         /// </summary>
-        public ICustomConverter Converter { get; set; }
+        public IDataConverter Converter { get; set; }
 
         /// <summary>
         /// Reflection data for this property.
@@ -57,7 +56,7 @@ namespace SoftCircuits.CsvParser
             Name = string.IsNullOrWhiteSpace(attribute?.Name) ? member.Name : attribute.Name;
             Index = attribute?.Index ?? InvalidIndex;
             Exclude = attribute?.Exclude ?? false;
-            Converter = Dispatcher.GetConverter(member.Type);
+            Converter = DataConverters.GetConverter(member.Type);
             Member = member;
         }
 
@@ -94,7 +93,7 @@ namespace SoftCircuits.CsvParser
                 {
                     // Unable to parse data
                     if (invalidDataRaisesException)
-                        throw new InvalidDataException(s, Member.Name);
+                        throw new InvalidDataException(s, Member.Name, Member.Type.FullName);
                     // Otherwise, assign default value
                     value = GetDefaultValue(Member.Type);
                 }

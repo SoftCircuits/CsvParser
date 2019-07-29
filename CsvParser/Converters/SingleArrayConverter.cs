@@ -5,7 +5,7 @@ using System;
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class SingleArrayConverter : CustomConverter<float[]>
+    internal class SingleArrayConverter : DataConverter<float[]>
     {
         public override string ConvertToString(float[] array)
         {

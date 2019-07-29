@@ -36,7 +36,7 @@ namespace SoftCircuits.CsvParser
                 member = expression.Body as MemberExpression;
 
             if (member == null)
-                throw new InvalidOperationException("Unsupported expression type used to identify property.");
+                throw new InvalidOperationException("Unsupported expression type used to identify class property.");
 
             ColumnMap propertyMap = new ColumnMap(member.Member.Name);
             Maps.Add(propertyMap);

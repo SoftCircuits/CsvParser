@@ -4,7 +4,7 @@
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class BooleanConverter : CustomConverter<bool>
+    internal class BooleanConverter : DataConverter<bool>
     {
         public override string ConvertToString(bool value) => value.ToString();
 

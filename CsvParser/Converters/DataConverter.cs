@@ -6,9 +6,9 @@ using System;
 namespace SoftCircuits.CsvParser.Converters
 {
     /// <summary>
-    /// Interface for all custom type converters.
+    /// Interface for all data converters.
     /// </summary>
-    public interface ICustomConverter
+    public interface IDataConverter
     {
         /// <summary>
         /// Converts the object to a string.
@@ -31,13 +31,14 @@ namespace SoftCircuits.CsvParser.Converters
     }
 
     /// <summary>
-    /// Base class for strongly typed custom type converters.
-    /// For best results, derive your custom converter classes
-    /// from this class with the appropriate data type.
+    /// Base class for strongly typed data converters. The easiest way
+    /// to implement <see cref="IDataConverter"/> in a type-safe way is
+    /// to derive your data converter class from this class with the
+    /// appropriate data type.
     /// </summary>
     /// <typeparam name="T">The data type that is being converted to
     /// a string, and back again.</typeparam>
-    public abstract class CustomConverter<T> : ICustomConverter
+    public abstract class DataConverter<T> : IDataConverter
     {
         /// <summary>
         /// Converts the variable to a string.
@@ -97,7 +98,7 @@ namespace SoftCircuits.CsvParser.Converters
     /// Converter for unsupported type. Throws an exception when converting
     /// from string.
     /// </summary>
-    internal class UnsupportedConverter : ICustomConverter
+    internal class UnsupportedConverter : IDataConverter
     {
         private readonly Type Type;
 

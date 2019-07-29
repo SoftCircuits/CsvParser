@@ -22,7 +22,7 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Make List&lt;ColumnInfo&gt;.Add() private.
+        /// Make <see cref="List{ColumnInfo}"></see> private.
         /// </summary>
         /// <param name="column"></param>
         private new void Add(ColumnInfo column) => base.Add(column);
@@ -32,23 +32,28 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         public void BuildColumnInfoCollection<T>() where T : class, new()
         {
-            int index = 0;
+            // If we set an initial column index value (for columns not already
+            // set), we seem to have more cases where the code just works than
+            // if we don't do this. However, it's not clear if this is best in
+            // all cases. For example, if caller has set the indexes for just
+            // some of the columns, we are setting the remaining columns with
+            // indexes that are not at all coordinated with those already set.
+            // In the end, the caller should be explicit with all non-excluded
+            // columns. But this logic may need to be revisited.
+            //
+            // Start our indexes much higher than anything the caller is
+            // likely to use.
+            int index = 1000;
 
             Clear();
             foreach (IMember member in GetPropertiesAndFields(typeof(T)))
             {
                 ColumnInfo column = new ColumnInfo(member);
-                // If we set initial column index values (for columns not already
-                // set), we seem to have a few more cases where the code just works
-                // than if we don't do this. However, it's not clear if this is
-                // best in all cases. For example, if caller has set the indexes
-                // for just some of the columns, we are setting the remaining
-                // columns with indexes that are not at all coordinated with those
-                // already set. In the end, the caller should be explicit with all
-                // non-excluded columns. But this logic may need to be revisited.
                 if (column.Index == ColumnInfo.InvalidIndex)
+                {
                     column.Index = index;
-                index++;
+                    index++;
+                }
                 Add(column);
             }
         }
@@ -88,23 +93,23 @@ namespace SoftCircuits.CsvParser
             // Validate mapping property references
             foreach (ColumnMap columnMap in columnMaps)
             {
-                ColumnInfo column = this.FirstOrDefault(ci => ci.MemberName == columnMap._PropertyName);
+                ColumnInfo column = this.FirstOrDefault(ci => ci.MemberName == columnMap.PropertyName_);
                 if (column == null)
-                    throw new InvalidOperationException($"Custom map for '{columnMap._PropertyName}' references an unknown member.");
+                    throw new InvalidOperationException($"Custom map for '{columnMap.PropertyName_}' references an unknown member.");
 
-                if (!string.IsNullOrWhiteSpace(columnMap._Name))
-                    column.Name = columnMap._Name.Trim();
-                if (columnMap._Index != ColumnInfo.InvalidIndex)
-                    column.Index = columnMap._Index;
-                if (columnMap._Exclude.HasValue)
-                    column.Exclude = columnMap._Exclude.Value;
+                if (!string.IsNullOrWhiteSpace(columnMap.Name_))
+                    column.Name = columnMap.Name_.Trim();
+                if (columnMap.Index_ != ColumnInfo.InvalidIndex)
+                    column.Index = columnMap.Index_;
+                if (columnMap.Exclude_.HasValue)
+                    column.Exclude = columnMap.Exclude_.Value;
 
-                if (columnMap._Converter != null)
+                if (columnMap.Converter_ != null)
                 {
                     // NOTE: In the case where we are given an object that inherits from
-                    // CustomConverter<T>, it would be nice to confirm that the type 'T'
+                    // DataConverter<T>, it would be good to confirm that the type 'T'
                     // matches the property type.
-                    column.Converter = columnMap._Converter;
+                    column.Converter = columnMap.Converter_;
                 }
             }
             return SortAndFilter();
@@ -124,7 +129,7 @@ namespace SoftCircuits.CsvParser
         /// <summary>
         /// Returns all the properties and fields of a type.
         /// </summary>
-        /// <param name="type">The type from which to return the members.</param>
+        /// <param name="type">The type for which to return the members.</param>
         private IEnumerable<IMember> GetPropertiesAndFields(Type type)
         {
             foreach (MemberInfo member in type.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))

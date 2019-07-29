@@ -4,7 +4,7 @@
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class SByteConverter : CustomConverter<sbyte>
+    internal class SByteConverter : DataConverter<sbyte>
     {
         public override string ConvertToString(sbyte value) => value.ToString();
 

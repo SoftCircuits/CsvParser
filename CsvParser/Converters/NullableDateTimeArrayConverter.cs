@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class NullableDateTimeArrayConverter : CustomConverter<DateTime?[]>
+    internal class NullableDateTimeArrayConverter : DataConverter<DateTime?[]>
     {
         public override string ConvertToString(DateTime?[] array)
         {

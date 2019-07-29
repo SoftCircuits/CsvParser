@@ -5,7 +5,7 @@ using System;
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class BooleanArrayConverter : CustomConverter<bool[]>
+    internal class BooleanArrayConverter : DataConverter<bool[]>
     {
         public override string ConvertToString(bool[] array)
         {

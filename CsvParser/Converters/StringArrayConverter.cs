@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class StringArrayConverter : CustomConverter<string[]>
+    internal class StringArrayConverter : DataConverter<string[]>
     {
         public override string ConvertToString(string[] array)
         {

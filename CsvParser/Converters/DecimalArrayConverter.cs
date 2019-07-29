@@ -5,7 +5,7 @@ using System;
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class DecimalArrayConverter : CustomConverter<decimal[]>
+    internal class DecimalArrayConverter : DataConverter<decimal[]>
     {
         public override string ConvertToString(decimal[] array)
         {

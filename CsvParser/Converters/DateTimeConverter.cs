@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class DateTimeConverter : CustomConverter<DateTime>
+    internal class DateTimeConverter : DataConverter<DateTime>
     {
         public override string ConvertToString(DateTime value) => value.ToString();
 

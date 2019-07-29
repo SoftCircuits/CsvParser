@@ -5,7 +5,7 @@ using System;
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class GuidArrayConverter : CustomConverter<Guid[]>
+    internal class GuidArrayConverter : DataConverter<Guid[]>
     {
         public override string ConvertToString(Guid[] array)
         {

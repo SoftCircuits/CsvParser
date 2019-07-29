@@ -4,7 +4,7 @@
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class CharConverter : CustomConverter<char>
+    internal class CharConverter : DataConverter<char>
     {
         public override string ConvertToString(char value) => value.ToString();
 

@@ -5,7 +5,7 @@ using System;
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class StringConverter : CustomConverter<string>
+    internal class StringConverter : DataConverter<string>
     {
         public override string ConvertToString(string value) => value;
 

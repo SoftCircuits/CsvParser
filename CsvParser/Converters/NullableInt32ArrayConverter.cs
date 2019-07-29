@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class NullableInt32ArrayConverter : CustomConverter<int?[]>
+    internal class NullableInt32ArrayConverter : DataConverter<int?[]>
     {
         public override string ConvertToString(int?[] array)
         {

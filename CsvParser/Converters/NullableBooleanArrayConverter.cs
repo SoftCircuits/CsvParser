@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class NullableBooleanArrayConverter : CustomConverter<bool?[]>
+    internal class NullableBooleanArrayConverter : DataConverter<bool?[]>
     {
         public override string ConvertToString(bool?[] array)
         {

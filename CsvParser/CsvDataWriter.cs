@@ -9,6 +9,11 @@ using System.Text;
 
 namespace SoftCircuits.CsvParser
 {
+    /// <summary>
+    /// Class to write to a CSV file with automatic mapping from object properties
+    /// to CSV columns.
+    /// </summary>
+    /// <typeparam name="T">The object type being written.</typeparam>
     public class CsvDataWriter<T> : CsvWriter where T : class, new()
     {
         private ColumnInfoCollection ColumnsInfo;
@@ -77,18 +82,16 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// 
+        /// Applies <see cref="ColumnMaps{T}"></see> mappings to the writer.
         /// </summary>
-        /// <param name="columnMaps"></param>
         public void MapColumns<TMaps>() where TMaps : ColumnMaps<T>, new()
         {
             TMaps columnMaps = Activator.CreateInstance<TMaps>();
-            List<ColumnMap> mapping = columnMaps.GetCustomMaps();
             MappedColumnsInfo = ColumnsInfo.ApplyMapping(columnMaps.GetCustomMaps());
         }
 
         /// <summary>
-        /// Writes column headers to the underlying <c>CsvWriter</c>.
+        /// Writes column headers to the output stream.
         /// </summary>
         public void WriteHeaders()
         {
@@ -105,7 +108,7 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Writes the specified item to the underlying <c>CsvWriter</c>.
+        /// Writes the specified item to the output stream.
         /// </summary>
         /// <param name="item">The item to write.</param>
         public void Write(T item)
@@ -126,7 +129,7 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Writes the specified items to the underlying <c>CsvWriter</c>.
+        /// Writes the specified items to the output stream.
         /// </summary>
         /// <param name="items">The items to write.</param>
         public void Write(IEnumerable<T> items)

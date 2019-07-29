@@ -4,7 +4,7 @@
 
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class Int16Converter : CustomConverter<short>
+    internal class Int16Converter : DataConverter<short>
     {
         public override string ConvertToString(short value) => value.ToString();
 
