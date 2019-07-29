@@ -8,13 +8,13 @@ Install-Package SoftCircuits.CsvParser
 
 ## Overview
 
-CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files. It includes basic classes to read and write CSV columns and also higher level classes that can automatically map data between columns and class members. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines.
+CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files (or files with other delimiters). It includes basic classes to read and write CSV columns, and also higher level classes that can automatically map your class properties to CSV columns. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines. CsvParser is very efficient and is designed to handle large data files without loading everything into memory.
 
-In addition, there are a number of option settings. For example, you can change the column delimiter to another character. Additional options include changing the quote character and how blank lines are handled.
+In addition, the library's behavior can be customized. For example, you can change the column delimiter to another character (like the tab character, for example), change the quote character, customize how blank lines are handled, etc.
 
 ## CsvWriter and CsvReader Classes
 
-These classes provide the simplest way to read and write CSV files. The example below writes several rows of data to a CSV file and then reads it back. Note that the `CsvWriter.WriteRow()` method is overloaded to also accept `string[]` and `IEnumerable<string>`.
+These classes provide the simplest way to read and write CSV files. The example below writes several rows of data to a CSV file and then reads it back. Note that the `CsvWriter.WriteRow()` method is overloaded to also accept a `string[]` or `IEnumerable<string>` argument.
 
 ```cs
 // Write some data to disk
@@ -41,9 +41,9 @@ using (CsvReader reader = new CsvReader(path))
 }
 ```
 
-## CsvDataWriter and CsvDataReader Classes
+## CsvDataWriter<T> and CsvDataReader<T> Classes
 
-These higher-level classes will automatically map data between class members and CSV columns. The following example defines a class and a collection with several instances of that class. It then uses `CsvDataWriter` to write the data to a CSV file, and `CsvDataReader` to read it back again.
+These are higher level classes and will automatically map data between class properties and CSV columns. The following example defines a class, and a collection with several instances of that class. It then uses `CsvDataWriter<T>` to write the data to a CSV file, and `CsvDataReader<T>` to read it back again.
 
 ```cs
 // This class will represent the data in the CSV file
@@ -66,9 +66,12 @@ List<Person> People = new List<Person>
 };
 
 // Write the data to disk
+// Since all records are already in memory, you could replace the
+// write loop with: writer.Write(People)
 using (CsvDataWriter<Person> writer = new CsvDataWriter<Person>(path))
 {
     writer.WriteHeaders();
+
     foreach (Person person in People)
         writer.Write(person);
 }
@@ -85,23 +88,21 @@ using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
 }
 ```
 
-It is important to note in the above example where the code that writes the data calls `CsvDataWriter.WriteHeaders()`. This writes a row with the name of each column. The code that reads the data calls `CsvDataReader.ReadHeaders()` to read that header data. Because the argument to `CsvDataReader.ReadHeaders()` is `true`, this tells the code to use the header data to determine how to map the columns in the rest of the file. For example, maybe the columns are in a different order, or maybe some of the columns are excluded.
+It is important to note in the above example where the code that writes the data calls `CsvDataWriter<T>.WriteHeaders()`. This writes a row with the name of each column. The code that reads the data calls `CsvDataReader<T>.ReadHeaders()` to read that header data. Because the argument to `CsvDataReader<T>.ReadHeaders()` is `true`, this tells the code to use the header data to determine how to map the columns in the rest of the file. For example, maybe the columns are in a different order, or maybe some of the columns are excluded.
 
-Here, the code maps the class members to columns based on the headers. This is critical to making the CSV classes work correctly. The following sections will talk about other ways to map class members to columns.
+Correctly mapping the class properties to the CSV columns is critical for these classes to work correctly. Here, the code maps the class properties to columns based on the headers. The following sections will discuss other ways to map class properties to columns.
 
 ## ColumnMap Attribute
 
-The `ColumnMapAttribute` can be applied to any class property or field to specify how that member is mapped to a CSV column. This attribute includes the following properties:
+The `ColumnMapAttribute` can be applied to any class property or field to specify how that property or field is mapped to a CSV column. This attribute includes the following properties:
 
-**Name:** Specifies a column name, allowing the column name to be different from the class member name.
+**Name:** Specifies a column name, allowing the column name to be different from the class property name.
 
 **Index:** Specifies the column position for this member. Note that if not all indexes assigned are sequential and starting from 0, the actual index numbers can vary from the ones specified.
 
-**Exclude:** Specifies that the class member should be excluded and not written or read to or from any column.
+**Exclude:** Specifies that the class property should be excluded, and not written to or read from any column.
 
-The following example modifies the `Person` class created earlier with `ColumnMap` attributes. The attributes are used to set the columns to be in the opposite order from how the class members are declared, gives the columns completely different names, and excludes the `Id` column.
-
-With the `Person` class defined as follows, the previous example will work correctly without the calls to `WriteHeaders()` and `ReadHeaders()`.
+The following example modifies the `Person` class shown earlier with `ColumnMap` attributes. The attributes are used to set the columns to be in the opposite order from how the class properties are declared, give the columns completely different names, and exclude the `Id` column.
 
 ```cs
 // Add column mapping attributes to our data class
@@ -118,15 +119,17 @@ class Person
 }
 ```
 
-## Custom Mapping
+With the `Person` class defined as shown above, the previous example will work correctly without the calls to `WriteHeaders()` and `ReadHeaders()`.
 
-Class members can also be mapped to columns using custom mapping. Custom mapping is useful if you cannot directly modify the class you are working with. Custom mapping allows you to do anything you can do with `ColumnMapAttribute` and, in addition, it also allows you to provide custom data converters.
+## MapColumns() Method
 
-Data converters convert class members to strings, and then back again from strings to class members. The CsvParser library includes converters for all basic types (including Guid and DateTime), nullable basic types, basic type arrays and nullable basic type arrays. But you can override the data convert used for any class member. You might want to write your own data converter to support custom member types, or when you are working with data not formatted as expected by the built-in data converters. For example, parsing `DateTime`s can be problematic as there are many different ways to format dates and time.
+Class properties can also be mapped to columns using `CsvDataWriter<T>.MapColumns()` and `CsvDataReader<T>.MapColumns`. This is useful when you can't directly modify the class you are working with. This approach allows you to do anything you can do with a `ColumnMapAttribute` attribute. It also allows you to provide custom data converters (something not supported via the `ColumnMapAttribute` attribute).
 
-The following example starts by defining the `CustomDateTimeConverter` class. This class must implement the `IDataConverter` interface. The easiest way to do this in a type-safe manner is to derive your class from `DataConverter<T>`, where `T` is the type of the property or field you are converting. The `DataConverter<T>` class has two abstract methods that must be implemented, `ConvertToString()` and `TryConvertFromString()`.
+Data converters convert class properties to strings, and then back again from strings to class properties. The CsvParser library includes converters for all basic data types (including `Guid` and `DateTime`), nullable basic data types, basic data type arrays and nullable basic data type arrays. But you can override the data convert used for any class property. For example, you might want to write your own data converter to support custom property types, or when you are working with data not formatted as expected by the built-in data converters. A good example of this is `DateTime` data because there are so many ways to format date and time values.
 
-Next, the example defines the `PersonMaps` class to define the custom mapping. This class must derive from `ColumnMaps<T>`, where `T` is the type of data class you are writing or reading to or from CSV files. The constructor of this class must call `MapColumn()` for each member it maps. This method supports a fluent interface to set the various mapping properties for each member. The meaning of these properties is described above in the *ColumnMap Attribute* section but supports one additional setting:
+The following example starts by defining the `DateTimeConverter` class to convert between `DateTime` values and strings. This class must implement the `IDataConverter` interface. The easiest way to do this in a type-safe manner is to derive your class from `DataConverter<T>`, where `T` is the type of the class property you are converting. The `DataConverter<T>` class has two abstract methods, `ConvertToString()` and `TryConvertFromString()`, that must be overridden in your derived class.
+
+Next, the example defines the `PersonMaps` class to define the column mapping. This class must derive from `ColumnMaps<T>`, where `T` is the type of data class you are writing to or reading from CSV files. The constructor of this class must call `MapColumn()` for each class property that it maps. This method supports a fluent interface to set the various mapping properties for each class property. The meaning of these properties is described above in the *ColumnMap Attribute* section. In addition, it supports the `Converter` mapping property.
 
 **Converter():** Specifies a custom data converter as described above. See the example below.
 
