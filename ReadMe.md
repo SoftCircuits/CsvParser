@@ -41,7 +41,7 @@ using (CsvReader reader = new CsvReader(path))
 }
 ```
 
-## CsvDataWriter<T> and CsvDataReader<T> Classes
+## CsvDataWriter&lt;T&gt; and CsvDataReader&lt;T&gt; Classes
 
 These are higher level classes and will automatically map data between class properties and CSV columns. The following example defines a class, and a collection with several instances of that class. It then uses `CsvDataWriter<T>` to write the data to a CSV file, and `CsvDataReader<T>` to read it back again.
 
