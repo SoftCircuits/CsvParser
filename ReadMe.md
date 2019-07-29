@@ -129,9 +129,7 @@ Data converters convert class properties to strings, and then back again from st
 
 The following example starts by defining the `DateTimeConverter` class to convert between `DateTime` values and strings. This class must implement the `IDataConverter` interface. The easiest way to do this in a type-safe manner is to derive your class from `DataConverter<T>`, where `T` is the type of the class property you are converting. The `DataConverter<T>` class has two abstract methods, `ConvertToString()` and `TryConvertFromString()`, that must be overridden in your derived class.
 
-Next, the example defines the `PersonMaps` class to define the column mapping. This class must derive from `ColumnMaps<T>`, where `T` is the type of data class you are writing to or reading from CSV files. The constructor of this class must call `MapColumn()` for each class property that it maps. This method supports a fluent interface to set the various mapping properties for each class property. The meaning of these properties is described above in the *ColumnMap Attribute* section. In addition, it supports the `Converter` mapping property.
-
-**Converter():** Specifies a custom data converter as described above. See the example below.
+Next, the example defines the `PersonMaps` class to define the column mapping. This class must derive from `ColumnMaps<T>`, where `T` is the type of data class you are writing to or reading from CSV files. The constructor of this class must call `MapColumn()` for each class property that it maps. This method supports a fluent interface to set the various mapping properties for each class property. The meaning of these properties is described above in the *ColumnMap Attribute* section. In addition, it supports setting the `Converter` property, which specifies a custom data converter as described above (also see the example below).
 
 Finally, the example calls the `CsvDataWriter.MapColumns<T>()` method to register the custom mappings. The code that reads the CSV file also calls the `CsvDataReader.MapColumns<T>()` method in the same way. Both must use the same mapping in order for the data to be interpreted correctly. The easiest way to do this is to pass the same class to both methods.
 
@@ -176,7 +174,7 @@ class PersonMaps : ColumnMaps<Person>
     }
 }
 
-// Write sample data to disk
+// Write data to disk
 using (CsvDataWriter<Person> writer = new CsvDataWriter<Person>(path))
 {
     // Register our custom mapping
@@ -202,11 +200,11 @@ using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
 }
 ```
 
-Notice that the example above still calls `CsvDataWriter.WriteHeaders()` and `CsvDataReader.ReadHeaders()`. However, since the code has explicitly mapped all of the columns, this is just for completeness and is completely unnecessary. Also notice that `false` is passed to `CsvDataReader.ReadHeaders()` because we do not need the library to use the headers to determine column order, etc.
+Notice that the example above still calls `CsvDataWriter.WriteHeaders()` and `CsvDataReader.ReadHeaders()`. However, since the code has explicitly mapped all of the columns, this is just for completeness if anyone should view the CSV file and is completely unnecessary for correct operation. Also notice that `false` is passed to `CsvDataReader.ReadHeaders()` because we do not need the library to use the headers to determine column order, etc.
 
 ## CsvSettings Class
 
-You can customize the way the library behaves by passing your own instance of the `CsvSettings` class to any of the reader or writer constructors, as demonstrated in the following example. This code uses the `CsvSettings` class to read a tab-separated-values (TSV) file. It sets the `ColumnDelimiter` property to a tab. It also sets it to use single quotes instead of double quotes (something you would probably rarely do, but is fully supported).
+You can customize the way the library behaves by passing your own instance of the `CsvSettings` class to any of the reader or writer constructors, as demonstrated in the following example. This code uses the `CsvSettings` class to read a tab-separated-values (TSV) file. It sets the `ColumnDelimiter` property to a tab. It also sets it to use single quotes instead of double quotes (something not useful very often, but is fully supported).
 
 ```cs
 // Set custom settings
