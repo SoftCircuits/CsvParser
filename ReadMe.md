@@ -124,7 +124,7 @@ Class members can also be mapped to columns using custom mapping. Custom mapping
 
 Data converters convert class members to strings, and then back again from strings to class members. The CsvParser library includes converters for all basic types (including Guid and DateTime), nullable basic types, basic type arrays and nullable basic type arrays. But you can override the data convert used for any class member. You might want to write your own data converter to support custom member types, or when you are working with data not formatted as expected by the built-in data converters. For example, parsing `DateTime`s can be problematic as there are many different ways to format dates and time.
 
-The following example starts by defining the `CustomDateTimeConverter` class. This class must implement the `ICustomConverter` interface. The easiest way to do this in a type-safe manner is to derive your class from `CustomConverter<T>`, where `T` is the type of the property or field you are converting. The `CustomConverter<T>` class has two abstract methods that must be implemented, `ConvertToString()` and `TryConvertFromString()`.
+The following example starts by defining the `CustomDateTimeConverter` class. This class must implement the `IDataConverter` interface. The easiest way to do this in a type-safe manner is to derive your class from `DataConverter<T>`, where `T` is the type of the property or field you are converting. The `DataConverter<T>` class has two abstract methods that must be implemented, `ConvertToString()` and `TryConvertFromString()`.
 
 Next, the example defines the `PersonMaps` class to define the custom mapping. This class must derive from `ColumnMaps<T>`, where `T` is the type of data class you are writing or reading to or from CSV files. The constructor of this class must call `MapColumn()` for each member it maps. This method supports a fluent interface to set the various mapping properties for each member. The meaning of these properties is described above in the *ColumnMap Attribute* section but supports one additional setting:
 
@@ -134,7 +134,7 @@ Finally, the example calls the `CsvDataWriter.MapColumns<T>()` method to registe
 
 ```cs
 // Create a custom data converter for DateTime values
-class CustomDateTimeConverter : CustomConverter<DateTime>
+class DateTimeConverter : DataConverter<DateTime>
 {
     const string FormatString = "yyyyMMddHHmmss";
 
@@ -157,7 +157,7 @@ class PersonMaps : ColumnMaps<Person>
         MapColumn(m => m.Id).Exclude(true);
         MapColumn(m => m.Name).Index(2).Name("abc");
         MapColumn(m => m.Zip).Index(1).Name("def");
-        MapColumn(m => m.Birthday).Index(0).Name("ghi").Converter(new CustomDateTimeConverter());
+        MapColumn(m => m.Birthday).Index(0).Name("ghi").Converter(new DateTimeConverter());
     }
 }
 
