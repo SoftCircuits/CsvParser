@@ -138,7 +138,7 @@ namespace SoftCircuits.CsvParser
         public void MapColumns<TMaps>() where TMaps : ColumnMaps<T>, new()
         {
             TMaps columnMaps = Activator.CreateInstance<TMaps>();
-            MappedColumnsInfo = ColumnsInfo.ApplyMapping(columnMaps.GetCustomMaps());
+            MappedColumnsInfo = ColumnsInfo.ApplyColumnMaps(columnMaps.GetCustomMaps());
         }
 
         /// <summary>
@@ -153,12 +153,9 @@ namespace SoftCircuits.CsvParser
         {
             if (ReadRow(ref Columns))
             {
+                // If header row is empty, no columns will be interpreted
                 if (mapColumnsFromHeaders)
-                {
-                    if (Columns.Length == 0)
-                        throw new Exception("Cannot read column headers from empty row.");
                     MappedColumnsInfo = ColumnsInfo.ApplyHeaders(Columns, Settings.ColumnHeaderStringComparison);
-                }
                 return true;
             }
             return false;
@@ -172,13 +169,11 @@ namespace SoftCircuits.CsvParser
         public bool Read(out T item)
         {
             Debug.Assert(MappedColumnsInfo != null);
-            if (MappedColumnsInfo.Length == 0)
-                throw new Exception("No column mapping found. Mapping data must come from member attributes, column headers or custom column mapping.");
-
             if (ReadRow(ref Columns))
             {
                 item = Activator.CreateInstance<T>();
-                for (int i = 0; i < Columns.Length; i++)
+                int count = Math.Min(Columns.Length, MappedColumnsInfo.Length);
+                for (int i = 0; i < count; i++)
                     MappedColumnsInfo[i].SetValue(item, Columns[i], Settings.InvalidDataRaisesException);
                 return true;
             }

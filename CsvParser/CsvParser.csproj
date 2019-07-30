@@ -7,18 +7,18 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Jonathan Wood</Authors>
     <Company>SoftCircuits</Company>
-    <Description>CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files. It includes basic classes to read and write CSV columns and also higher level classes that automatically map data between columns and class properties. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines.
+    <Description>CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files (or files with other delimiters). It includes basic classes to read and write CSV columns, and also higher level classes that can automatically map your class properties to CSV columns. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines. CsvParser is very efficient and is designed to handle large data files without loading everything into memory.
 
-In addition, there are a number of option settings. For example, you can change the column delimiter to another character. Additional options include changing the quote character and how blank lines are handled.</Description>
+In addition, the library's behavior can be customized. For example, you can change the column delimiter to another character (like the tab character, for example), change the quote character, customize how blank lines are handled, etc.</Description>
     <Copyright>Copyright © 2019 SoftCircuits</Copyright>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/SoftCircuits/CsvParser</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>csv tsv csv-parser parser</PackageTags>
-    <PackageReleaseNotes>Version 2 added higher level CsvDataReader and CsvDataWriter classes. These classes can automatically map data between columns and class members.</PackageReleaseNotes>
+    <PackageTags>csv tsv parser csv-parser tsv-parser comma tab separated values delimited</PackageTags>
+    <PackageReleaseNotes>Added more documentation comments and reworked documentation; Several minor tweaks and changes; BREAKING CHANGES: ICustomConverter renamed to IDataConverter, CustomConverter&lt;T&gt; renamed to DataConverter&lt;T&gt;.</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>2.0.0</Version>
+    <Version>2.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

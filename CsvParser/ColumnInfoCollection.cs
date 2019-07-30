@@ -60,7 +60,9 @@ namespace SoftCircuits.CsvParser
 
         /// <summary>
         /// Applies sorting and filtering information internally from column headers, and
-        /// then returns a sorted and filtered list based on the new information.
+        /// then returns a sorted and filtered list based on the new information. Overrides
+        /// the mapping index for any column found in <paramref name="headers"/>, and
+        /// overrides the mapping exclude flag for every column.
         /// </summary>
         /// <param name="headers">Column headers.</param>
         /// <param name="stringComparison">Comparison type used to compare header names
@@ -70,22 +72,26 @@ namespace SoftCircuits.CsvParser
             if (headers == null)
                 throw new ArgumentNullException(nameof(headers));
 
-            for (int i = 0; i < headers.Length; i++)
+            foreach (ColumnInfo column in this)
             {
-                string header = headers[i].Trim();
-                ColumnInfo column = this.FirstOrDefault(ci => ci.Name.Equals(header, StringComparison.CurrentCultureIgnoreCase));
-                if (column != null)
+                int i = headers.IndexOf(h => h.Equals(column.Name, stringComparison));
+                if (i >= 0)
+                {
                     column.Index = i;
+                    column.Exclude = false;
+                }
+                else column.Exclude = true;
             }
             return SortAndFilter();
         }
 
         /// <summary>
         /// Applies column mapping information internally and then returns a sorted and filtered list
-        /// based on the new information.
+        /// based on the new information. Overrides only the mapping properties explicitly set for
+        /// only the columns explicitly specified.
         /// </summary>
         /// <param name="columnMaps">Mapping data.</param>
-        public ColumnInfo[] ApplyMapping(IEnumerable<ColumnMap> columnMaps)
+        public ColumnInfo[] ApplyColumnMaps(IEnumerable<ColumnMap> columnMaps)
         {
             if (columnMaps == null)
                 throw new ArgumentNullException(nameof(columnMaps));

@@ -87,7 +87,7 @@ namespace SoftCircuits.CsvParser
         public void MapColumns<TMaps>() where TMaps : ColumnMaps<T>, new()
         {
             TMaps columnMaps = Activator.CreateInstance<TMaps>();
-            MappedColumnsInfo = ColumnsInfo.ApplyMapping(columnMaps.GetCustomMaps());
+            MappedColumnsInfo = ColumnsInfo.ApplyColumnMaps(columnMaps.GetCustomMaps());
         }
 
         /// <summary>
