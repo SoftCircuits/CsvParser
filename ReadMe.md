@@ -41,7 +41,7 @@ using (CsvReader reader = new CsvReader(path))
 }
 ```
 
-## CsvDataWriter<T> and CsvDataReader<T> Classes
+## CsvDataWriter&lt;T&gt; and CsvDataReader&lt;T&gt; Classes
 
 These are higher level classes and will automatically map data between class properties and CSV columns. The following example defines a class, and a collection with several instances of that class. It then uses `CsvDataWriter<T>` to write the data to a CSV file, and `CsvDataReader<T>` to read it back again.
 
@@ -200,7 +200,7 @@ using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
 }
 ```
 
-Notice that the example above still calls `CsvDataWriter.WriteHeaders()` and `CsvDataReader.ReadHeaders()`. However, since the code has explicitly mapped all of the columns, this is just for completeness if anyone should view the CSV file and is completely unnecessary for correct operation. Also notice that `false` is passed to `CsvDataReader.ReadHeaders()` because we do not need the library to use the headers to determine column order, etc.
+Notice that the example above still calls `CsvDataWriter.WriteHeaders()` and `CsvDataReader.ReadHeaders()`. However, since the code has explicitly mapped all of the columns, this is just for the benefit of anyone viewing the file or maybe other software that must read it. It is completely unnecessary in the example above. Also notice that `false` is passed to `CsvDataReader.ReadHeaders()` because we do not need the library to use the headers to determine column order, etc. (If `true` is passed to `CsvDataReader.ReadHeaders()` here, it would override any existing `Index` and `Exclude` mapping properties.)
 
 ## CsvSettings Class
 
