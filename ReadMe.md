@@ -200,7 +200,7 @@ using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
 }
 ```
 
-Notice that the example above still calls `CsvDataWriter.WriteHeaders()` and `CsvDataReader.ReadHeaders()`. However, since the code has explicitly mapped all of the columns, this is just for completeness if anyone should view the CSV file and is completely unnecessary for correct operation. Also notice that `false` is passed to `CsvDataReader.ReadHeaders()` because we do not need the library to use the headers to determine column order, etc. (If `true` is passed to `CsvDataReader.ReadHeaders()` here, it would override any existing `Index` and `Exclude` mapping properties.)
+Notice that the example above still calls `CsvDataWriter.WriteHeaders()` and `CsvDataReader.ReadHeaders()`. However, since the code has explicitly mapped all of the columns, this is just for the benefit of anyone viewing the file or maybe other software that must read it. It is completely unnecessary in the example above. Also notice that `false` is passed to `CsvDataReader.ReadHeaders()` because we do not need the library to use the headers to determine column order, etc. (If `true` is passed to `CsvDataReader.ReadHeaders()` here, it would override any existing `Index` and `Exclude` mapping properties.)
 
 ## CsvSettings Class
 
