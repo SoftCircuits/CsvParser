@@ -17,7 +17,7 @@ namespace SoftCircuits.CsvParser
     public class CsvDataWriter<T> : CsvWriter where T : class, new()
     {
         private ColumnInfoCollection ColumnsInfo;
-        private ColumnInfo[] MappedColumnsInfo = null;
+        private ColumnInfo[] MappedColumnsInfo;
         private string[] Columns;
 
         /// <summary>

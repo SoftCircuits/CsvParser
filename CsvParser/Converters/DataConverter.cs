@@ -11,6 +11,12 @@ namespace SoftCircuits.CsvParser.Converters
     public interface IDataConverter
     {
         /// <summary>
+        /// Returns the data type this object converts.
+        /// </summary>
+        /// <returns>Returns the data type this object converts.</returns>
+        Type GetDataType();
+
+        /// <summary>
         /// Converts the object to a string.
         /// </summary>
         /// <param name="value">The object to be converted to a string.</param>
@@ -40,6 +46,12 @@ namespace SoftCircuits.CsvParser.Converters
     /// a string, and back again.</typeparam>
     public abstract class DataConverter<T> : IDataConverter
     {
+        /// <summary>
+        /// Returns the type this converter supports.
+        /// </summary>
+        /// <returns>Returns the type this converter supports.</returns>
+        public Type GetDataType() => typeof(T);
+
         /// <summary>
         /// Converts the variable to a string.
         /// </summary>
@@ -95,14 +107,20 @@ namespace SoftCircuits.CsvParser.Converters
     }
 
     /// <summary>
-    /// Converter for unsupported type. Throws an exception when converting
-    /// from string.
+    /// Converter for unsupported types. Throws an exception if called to convert
+    /// from a string.
     /// </summary>
-    internal class UnsupportedConverter : IDataConverter
+    internal class UnsupportedTypeConverter : IDataConverter
     {
         private readonly Type Type;
 
-        public UnsupportedConverter(Type type)
+        /// <summary>
+        /// Returns the type this converter supports.
+        /// </summary>
+        /// <returns>Returns the type this converter supports.</returns>
+        public Type GetDataType() => Type;
+
+        public UnsupportedTypeConverter(Type type)
         {
             Type = type;
         }

@@ -3,7 +3,6 @@
 //
 using SoftCircuits.CsvParser.Converters;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace SoftCircuits.CsvParser
@@ -64,7 +63,7 @@ namespace SoftCircuits.CsvParser
         /// Returns the value of this property on <paramref name="item"/> as a string.
         /// </summary>
         /// <param name="item">The object whose property value will be returned.</param>
-        /// <returns></returns>
+        /// <returns>A string representation of <see cref="item"/>.</returns>
         public string GetValue(object item)
         {
             Debug.Assert(Member != null);
@@ -91,34 +90,14 @@ namespace SoftCircuits.CsvParser
             {
                 if (!Converter.TryConvertFromString(s, out object value))
                 {
-                    // Unable to parse data
+                    // String could not be converted to property value. Throw exception
+                    // if requested. Otherwise, just assign default value returned from
+                    // TryConvertFromString().
                     if (invalidDataRaisesException)
-                        throw new InvalidDataException(s, Member.Name, Member.Type.FullName);
-                    // Otherwise, assign default value
-                    value = GetDefaultValue(Member.Type);
+                        throw new BadDataFormatException(s, Member.Name, Member.Type.FullName);
                 }
                 Member.SetValue(item, value);
             }
         }
-
-        #region Static methods
-
-        private static readonly Dictionary<Type, object> DefaultValueCache = new Dictionary<Type, object>();
-
-        private static object GetDefaultValue(Type type)
-        {
-            // Return null for all reference types
-            if (!type.IsValueType)
-                return null;
-            // Return cached value if one has been created
-            if (DefaultValueCache.TryGetValue(type, out object value))
-                return value;
-            // Else 
-            value = Activator.CreateInstance(type);
-            DefaultValueCache.Add(type, value);
-            return value;
-        }
-
-        #endregion
     }
 }

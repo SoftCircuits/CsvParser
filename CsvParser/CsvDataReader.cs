@@ -16,7 +16,7 @@ namespace SoftCircuits.CsvParser
     public class CsvDataReader<T> : CsvReader where T : class, new()
     {
         private ColumnInfoCollection ColumnsInfo;
-        private ColumnInfo[] MappedColumnsInfo = null;
+        private ColumnInfo[] MappedColumnsInfo;
         private string[] Columns;
 
         /// <summary>
@@ -143,8 +143,7 @@ namespace SoftCircuits.CsvParser
 
         /// <summary>
         /// Reads a row of columns from the input stream. If <paramref name="mapColumnsFromHeaders"/>
-        /// is true, the column headers are used to map columns to class members. The data read is
-        /// discarded.
+        /// is true, the column headers are used to map columns to class members.
         /// </summary>
         /// <param name="mapColumnsFromHeaders">Specifies whether the column headers
         /// should be used to map columns to class members.</param>

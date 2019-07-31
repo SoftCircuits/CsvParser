@@ -112,9 +112,9 @@ namespace SoftCircuits.CsvParser
 
                 if (columnMap.Converter_ != null)
                 {
-                    // NOTE: In the case where we are given an object that inherits from
-                    // DataConverter<T>, it would be good to confirm that the type 'T'
-                    // matches the property type.
+                    // Confirm converter handles the correct data type
+                    if (columnMap.Converter_.GetDataType() != column.Member.Type)
+                        throw new DataConverterTypeMismatchException(column.MemberName, column.Member.Type, columnMap.Converter_.GetDataType());
                     column.Converter = columnMap.Converter_;
                 }
             }

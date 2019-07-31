@@ -89,7 +89,7 @@ namespace SoftCircuits.CsvParser.Converters
         {
             return ConverterLookup.TryGetValue(type, out Func<IDataConverter> func) ?
                 func() :
-                new UnsupportedConverter(type);
+                new UnsupportedTypeConverter(type);
         }
     }
 }

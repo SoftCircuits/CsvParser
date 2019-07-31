@@ -70,7 +70,7 @@ namespace SoftCircuits.CsvParser
 
         /// <summary>
         /// If true, <see cref="CsvDataReader{T}"></see> will raise an
-        /// <see cref="InvalidDataException"></see> exception when it encounters
+        /// <see cref="BadDataFormatException"></see> exception when it encounters
         /// data that cannot be converted to the corresponding data type. True
         /// by default.
         /// </summary>
