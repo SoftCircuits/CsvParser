@@ -13,9 +13,9 @@ namespace SoftCircuits.CsvParser.Converters
         {
             value = null;
 
-            if (s == string.Empty)
-                return true;
-            
+            if (string.IsNullOrWhiteSpace(s))
+                return (s != null);
+
             if (Guid.TryParse(s, out Guid temp))
             {
                 value = temp;

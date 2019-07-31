@@ -91,8 +91,8 @@ namespace SoftCircuits.CsvParser
                 if (!Converter.TryConvertFromString(s, out object value))
                 {
                     // String could not be converted to property value. Throw exception
-                    // if requested. Otherwise, just assign default value returned from
-                    // TryConvertFromString().
+                    // if requested. Otherwise, just assign the default value returned
+                    // from TryConvertFromString().
                     if (invalidDataRaisesException)
                         throw new BadDataFormatException(s, Member.Name, Member.Type.FullName);
                 }

@@ -10,7 +10,7 @@ namespace SoftCircuits.CsvParser.Converters
     {
         public override string ConvertToString(float?[] array)
         {
-            if (array == null)
+            if (array == null || array.Length == 0)
                 return string.Empty;
 
             return string.Join(";", array.Select(v => v.HasValue ? v.Value.ToString() : string.Empty));
@@ -23,7 +23,7 @@ namespace SoftCircuits.CsvParser.Converters
                 if (string.IsNullOrWhiteSpace(s))
                 {
                     array = null;
-                    return true;
+                    return (s != null);
                 }
 
                 string[] tokens = s.Split(';');

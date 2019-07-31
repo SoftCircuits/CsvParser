@@ -10,7 +10,7 @@ namespace SoftCircuits.CsvParser.Converters
 
         public override bool TryConvertFromString(string s, out char[] array)
         {
-            if (s == null)
+            if (s == null || s.Length == 0)
             {
                 array = null;
                 return false;

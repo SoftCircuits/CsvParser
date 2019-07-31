@@ -52,9 +52,9 @@ DEFAULT - NULLABLE
         {
             value = null;
 
-            if (s == string.Empty)
-                return true;
-            
+            if (string.IsNullOrWhiteSpace(s))
+                return (s != null);
+
             if ({@TypeCName}.TryParse(s, out {@TypeCName} temp))
             {
                 value = temp;
@@ -71,7 +71,7 @@ DEFAULT - ARRAY
 
 {@Section(Default,Array,ToString)}public override string ConvertToString({@CType} array)
         {
-            if (array == null)
+            if (array == null || array.Length == 0)
                 return string.Empty;
 
             return string.Join(";", array);
@@ -81,10 +81,11 @@ DEFAULT - ARRAY
         {
             try
             {
-                array = null;
-
                 if (string.IsNullOrWhiteSpace(s))
-                    return false;
+                {
+                    array = null;
+                    return (s != null);
+                }
 
                 string[] tokens = s.Split(';');
                 array = new {@TypeCName}[tokens.Length];
@@ -108,7 +109,7 @@ DEFAULT - NULLABLE, ARRAY
 
 {@Section(Default,NullableArray,ToString)}public override string ConvertToString({@CType} array)
         {
-            if (array == null)
+            if (array == null || array.Length == 0)
                 return string.Empty;
 
             return string.Join(";", array.Select(v => v.HasValue ? v.Value.ToString() : string.Empty));
@@ -121,7 +122,7 @@ DEFAULT - NULLABLE, ARRAY
                 if (string.IsNullOrWhiteSpace(s))
                 {
                     array = null;
-                    return true;
+                    return (s != null);
                 }
 
                 string[] tokens = s.Split(';');
@@ -136,7 +137,7 @@ DEFAULT - NULLABLE, ARRAY
                 return false;
             }
         }{@EndSection}
-        
+
 {@Section(Default,NullableArray,UsingBlock)}using System;
 using System.Linq;
 {@EndSection}
@@ -145,7 +146,7 @@ using System.Linq;
 STRING - STANDARD
 =====================================================================
 
-{@Section(String,Standard,ToString)}public override string ConvertToString({@CType} value) => value;{@EndSection}
+{@Section(String,Standard,ToString)}public override string ConvertToString({@CType} value) => value ?? string.Empty;{@EndSection}
 
 {@Section(String,Standard,FromString)}public override bool TryConvertFromString(string s, out {@CType} value)
         {
@@ -162,17 +163,16 @@ STRING - ARRAY
 
 {@Section(String,Array,ToString)}public override string ConvertToString({@CType} array)
         {
-            StringBuilder builder = new StringBuilder();
-
-            if (array == null)
+            if (array == null || array.Length == 0)
                 return string.Empty;
 
+            StringBuilder builder = new StringBuilder();
             for (int i = 0; i < array.Length; i++)
             {
                 if (i > 0)
                     builder.Append(';');
                 if (array[i].IndexOfAny(new[] { ';', '"', '\r', '\n' }) >= 0)
-                    builder.Append(string.Format("\"{0}\"", array[i].Replace("\"", "\"\"")));
+                    builder.Append($"\"{array[i].Replace("\"", "\"\"")}\"");
                 else
                     builder.Append(array[i]);
             }
@@ -181,14 +181,14 @@ STRING - ARRAY
 
 {@Section(String,Array,FromString)}public override bool TryConvertFromString(string s, out {@CType} array)
         {
-            List<string> list = new List<string>();
-            int pos = 0;
-
             if (s == null)
             {
                 array = null;
                 return false;
             }
+
+            List<string> list = new List<string>();
+            int pos = 0;
 
             while (pos < s.Length)
             {
@@ -196,7 +196,6 @@ STRING - ARRAY
                 {
                     // Parse quoted value
                     StringBuilder builder = new StringBuilder();
-
                     // Skip starting quote
                     pos++;
                     while (pos < s.Length)
@@ -234,7 +233,7 @@ STRING - ARRAY
             array = list.ToArray();
             return true;
         }{@EndSection}
-        
+
 {@Section(String,Array,UsingBlock)}using System.Collections.Generic;
 using System.Text;
 {@EndSection}
@@ -247,7 +246,7 @@ CHAR - ARRAY
 
 {@Section(Char,Array,FromString)}public override bool TryConvertFromString(string s, out char[] array)
         {
-            if (s == null)
+            if (s == null || s.Length == 0)
             {
                 array = null;
                 return false;
@@ -264,7 +263,7 @@ CHAR - NULLABLE, ARRAY
 
 {@Section(Char,NullableArray,ToString)}public override string ConvertToString({@CType} array)
         {
-            if (array == null)
+            if (array == null || array.Length == 0)
                 return string.Empty;
 
             return string.Join(";", array.Select(c => c.HasValue ? ((int)c).ToString() : string.Empty));
@@ -277,7 +276,7 @@ CHAR - NULLABLE, ARRAY
                 if (string.IsNullOrWhiteSpace(s))
                 {
                     array = null;
-                    return true;
+                    return (s != null);
                 }
 
                 string[] tokens = s.Split(';');
@@ -332,8 +331,8 @@ DATETIME - NULLABLE
         {
             value = null;
 
-            if (s == string.Empty)
-                return true;
+            if (string.IsNullOrWhiteSpace(s))
+                return (s != null);
             
             if ({@TypeCName}.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.None, out {@TypeCName} temp))
             {
@@ -353,7 +352,7 @@ DATETIME - ARRAY
 
 {@Section(DateTime,Array,ToString)}public override string ConvertToString({@CType} array)
         {
-            if (array == null)
+            if (array == null || array.Length == 0)
                 return string.Empty;
 
             return string.Join(";", array);
@@ -363,10 +362,11 @@ DATETIME - ARRAY
         {
             try
             {
-                array = null;
-
                 if (string.IsNullOrWhiteSpace(s))
-                    return false;
+                {
+                    array = null;
+                    return (s != null);
+                }
 
                 string[] tokens = s.Split(';');
                 array = new {@TypeCName}[tokens.Length];
@@ -391,7 +391,7 @@ DATETIME - NULLABLE, ARRAY
 
 {@Section(DateTime,NullableArray,ToString)}public override string ConvertToString({@CType} array)
         {
-            if (array == null)
+            if (array == null || array.Length == 0)
                 return string.Empty;
 
             return string.Join(";", array.Select(v => v.HasValue ? v.Value.ToString() : string.Empty));
@@ -404,7 +404,7 @@ DATETIME - NULLABLE, ARRAY
                 if (string.IsNullOrWhiteSpace(s))
                 {
                     array = null;
-                    return true;
+                    return (s != null);
                 }
 
                 string[] tokens = s.Split(';');

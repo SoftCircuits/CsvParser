@@ -12,9 +12,9 @@ namespace SoftCircuits.CsvParser.Converters
         {
             value = null;
 
-            if (s == string.Empty)
-                return true;
-            
+            if (string.IsNullOrWhiteSpace(s))
+                return (s != null);
+
             if (ushort.TryParse(s, out ushort temp))
             {
                 value = temp;

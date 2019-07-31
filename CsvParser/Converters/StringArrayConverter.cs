@@ -10,17 +10,16 @@ namespace SoftCircuits.CsvParser.Converters
     {
         public override string ConvertToString(string[] array)
         {
-            StringBuilder builder = new StringBuilder();
-
-            if (array == null)
+            if (array == null || array.Length == 0)
                 return string.Empty;
 
+            StringBuilder builder = new StringBuilder();
             for (int i = 0; i < array.Length; i++)
             {
                 if (i > 0)
                     builder.Append(';');
                 if (array[i].IndexOfAny(new[] { ';', '"', '\r', '\n' }) >= 0)
-                    builder.Append(string.Format("\"{0}\"", array[i].Replace("\"", "\"\"")));
+                    builder.Append($"\"{array[i].Replace("\"", "\"\"")}\"");
                 else
                     builder.Append(array[i]);
             }
@@ -29,14 +28,14 @@ namespace SoftCircuits.CsvParser.Converters
 
         public override bool TryConvertFromString(string s, out string[] array)
         {
-            List<string> list = new List<string>();
-            int pos = 0;
-
             if (s == null)
             {
                 array = null;
                 return false;
             }
+
+            List<string> list = new List<string>();
+            int pos = 0;
 
             while (pos < s.Length)
             {
@@ -44,7 +43,6 @@ namespace SoftCircuits.CsvParser.Converters
                 {
                     // Parse quoted value
                     StringBuilder builder = new StringBuilder();
-
                     // Skip starting quote
                     pos++;
                     while (pos < s.Length)

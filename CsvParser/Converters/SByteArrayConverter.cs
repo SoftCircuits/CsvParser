@@ -9,7 +9,7 @@ namespace SoftCircuits.CsvParser.Converters
     {
         public override string ConvertToString(sbyte[] array)
         {
-            if (array == null)
+            if (array == null || array.Length == 0)
                 return string.Empty;
 
             return string.Join(";", array);
@@ -19,10 +19,11 @@ namespace SoftCircuits.CsvParser.Converters
         {
             try
             {
-                array = null;
-
                 if (string.IsNullOrWhiteSpace(s))
-                    return false;
+                {
+                    array = null;
+                    return (s != null);
+                }
 
                 string[] tokens = s.Split(';');
                 array = new sbyte[tokens.Length];

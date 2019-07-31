@@ -14,8 +14,8 @@ namespace SoftCircuits.CsvParser.Converters
         {
             value = null;
 
-            if (s == string.Empty)
-                return true;
+            if (string.IsNullOrWhiteSpace(s))
+                return (s != null);
             
             if (DateTime.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime temp))
             {

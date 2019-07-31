@@ -26,7 +26,8 @@ namespace SoftCircuits.CsvParser.Converters
         /// <summary>
         /// Converts a string back to an object. Returns <c>true</c> if
         /// successful or <c>false</c> if the string could not be
-        /// converted.
+        /// converted. If the string cannot be converted, <paramref name="value"/>
+        /// should be set to its default value.
         /// </summary>
         /// <param name="s">The string to convert to an object.</param>
         /// <param name="value">Receives the resulting value that was
@@ -80,7 +81,7 @@ namespace SoftCircuits.CsvParser.Converters
             return false;
         }
 
-        #region Overridables
+        #region Abstract methods
 
         /// <summary>
         /// Override this abstract method to implement your own logic to convert

@@ -7,7 +7,7 @@ namespace SoftCircuits.CsvParser.Converters
 {
     internal class StringConverter : DataConverter<string>
     {
-        public override string ConvertToString(string value) => value;
+        public override string ConvertToString(string value) => value ?? string.Empty;
 
         public override bool TryConvertFromString(string s, out string value)
         {
