@@ -13,7 +13,7 @@ namespace SoftCircuits.CsvParser.Converters
             if (s == null || s.Length == 0)
             {
                 array = null;
-                return false;
+                return (s != null);
             }
             array = s.ToCharArray();
             return true;
