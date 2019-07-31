@@ -167,6 +167,9 @@ class PersonMaps : ColumnMaps<Person>
 {
     public PersonMaps()
     {
+        // Note that only those properties set, and for only those columns referenced
+        // will be modified. All columns and settings not referenced here retain their
+        // previous values.
         MapColumn(m => m.Id).Exclude(true);
         MapColumn(m => m.Name).Index(2).Name("nombre");
         MapColumn(m => m.Zip).Index(1).Name("código postal");
