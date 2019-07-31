@@ -140,8 +140,8 @@ class DateTimeConverter : DataConverter<DateTime>
 {
     public override string ConvertToString(DateTime value)
     {
-        int i = ((value.Day - 1) & 0b00011111) |
-            (((value.Month - 1) & 0b00001111) << 5) |
+        int i = ((value.Day - 1) & 0x1f) |
+            (((value.Month - 1) & 0x0f) << 5) |
             (value.Year) << 9;
         return i.ToString("x");
     }
@@ -151,7 +151,7 @@ class DateTimeConverter : DataConverter<DateTime>
         try
         {
             int i = Convert.ToInt32(s, 16);
-            value = new DateTime(i >> 9, ((i >> 5) & 0b00001111) + 1, (i & 0b11111) + 1);
+            value = new DateTime(i >> 9, ((i >> 5) & 0x0f) + 1, (i & 0x1f) + 1);
             return true;
         }
         catch (Exception)
