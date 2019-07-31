@@ -98,7 +98,7 @@ The `ColumnMapAttribute` can be applied to any class property or field to specif
 
 **Name:** Specifies a column name, allowing the column name to be different from the class property name.
 
-**Index:** Specifies the column position for this member. Note that if not all indexes assigned are sequential and starting from 0, the actual index numbers can vary from the ones specified.
+**Index:** Specifies a property's 0-based column position. Note that if all indexes assigned are not sequential and start from 0, this value is interpreted as the column order and the actual index will be different than the value assigned.
 
 **Exclude:** Specifies that the class property should be excluded, and not written to or read from any column.
 
@@ -123,7 +123,7 @@ With the `Person` class defined as shown above, the previous example will work c
 
 ## MapColumns() Method
 
-Class properties can also be mapped to columns using `CsvDataWriter<T>.MapColumns()` and `CsvDataReader<T>.MapColumns`. This is useful when you can't directly modify the class you are working with. This approach allows you to do anything you can do with a `ColumnMapAttribute` attribute. It also allows you to provide custom data converters (something not supported via the `ColumnMapAttribute` attribute).
+Class properties can also be mapped to columns using the `CsvDataWriter<T>.MapColumns()` and `CsvDataReader<T>.MapColumns()` methods. This is useful if you can't directly modify the class you are working with. This approach allows you to do anything you can do with a `ColumnMapAttribute` attribute. It also allows you to provide custom data converters (something not supported via the `ColumnMapAttribute` attribute).
 
 Data converters convert class properties to strings, and then back again from strings to class properties. The CsvParser library includes converters for all basic data types (including `Guid` and `DateTime`), nullable basic data types, basic data type arrays and nullable basic data type arrays. But you can override the data convert used for any class property. For example, you might want to write your own data converter to support custom property types, or when you are working with data not formatted as expected by the built-in data converters. A good example of this is `DateTime` data because there are so many ways to format date and time values.
 
