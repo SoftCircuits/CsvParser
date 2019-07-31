@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-[assembly:InternalsVisibleTo("TestCsvParser")]
+[assembly:InternalsVisibleTo("CsvParserTests")]
 
 namespace SoftCircuits.CsvParser.Converters
 {

@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.29025.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvParser", "CsvParser\CsvParser.csproj", "{E9B5A3B4-A792-44CB-90BA-43EBCDA2289F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestCsvParser", "TestCsvParser\TestCsvParser.csproj", "{1E052ABE-6C96-42EC-A9AF-77031BB94455}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsvParserTests", "TestCsvParser\CsvParserTests.csproj", "{1E052ABE-6C96-42EC-A9AF-77031BB94455}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildConverters", "BuildConverters\BuildConverters.csproj", "{4E4ADB13-22C2-4816-A501-DBD5DCE6C08E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildConverters", "BuildConverters\BuildConverters.csproj", "{4E4ADB13-22C2-4816-A501-DBD5DCE6C08E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

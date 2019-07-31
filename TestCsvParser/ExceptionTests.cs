@@ -10,7 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace TestCsvParser
+namespace CsvParserTests
 {
     [TestClass]
     public class ExceptionTests
