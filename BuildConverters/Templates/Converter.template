@@ -8,10 +8,10 @@ defined for various placeholders, types and modes.
 
 Tag Meaning Examples:
 {@ClassName} = "NullableBooleanArrayConverter"
-{@TypeName} = "Boolean"
-{@TypeCName} = "bool"
-{@Type} = "Boolean?[]"
-{@CType} = "bool?[]"
+{@BaseTypeName} = "Boolean"
+{@BaseTypeCName} = "bool"
+{@FullTypeName} = "Boolean?[]"
+{@FullTypeCName} = "bool?[]"
 
 =====================================================================
 TEMPLATE BODY
@@ -23,7 +23,7 @@ TEMPLATE BODY
 {@UsingBlock}
 namespace SoftCircuits.CsvParser.Converters
 {
-    internal class {@ClassName} : DataConverter<{@CType}>
+    internal class {@ClassName} : DataConverter<{@FullTypeCName}>
     {
         {@ToString}
 
@@ -36,9 +36,9 @@ namespace SoftCircuits.CsvParser.Converters
 DEFAULT - STANDARD
 =====================================================================
 
-{@Section(Default,Standard,ToString)}public override string ConvertToString({@CType} value) => value.ToString();{@EndSection}
+{@Section(Default,Standard,ToString)}public override string ConvertToString({@FullTypeCName} value) => value.ToString();{@EndSection}
 
-{@Section(Default,Standard,FromString)}public override bool TryConvertFromString(string s, out {@TypeCName} value) => {@TypeCName}.TryParse(s, out value);{@EndSection}
+{@Section(Default,Standard,FromString)}public override bool TryConvertFromString(string s, out {@BaseTypeCName} value) => {@BaseTypeCName}.TryParse(s, out value);{@EndSection}
 
 {@Section(Default,Standard,UsingBlock)}{@EndSection}
 
@@ -46,16 +46,16 @@ DEFAULT - STANDARD
 DEFAULT - NULLABLE
 =====================================================================
 
-{@Section(Default,Nullable,ToString)}public override string ConvertToString({@CType} value) => value.HasValue ? value.Value.ToString() : string.Empty;{@EndSection}
+{@Section(Default,Nullable,ToString)}public override string ConvertToString({@FullTypeCName} value) => value.HasValue ? value.Value.ToString() : string.Empty;{@EndSection}
 
-{@Section(Default,Nullable,FromString)}public override bool TryConvertFromString(string s, out {@CType} value)
+{@Section(Default,Nullable,FromString)}public override bool TryConvertFromString(string s, out {@FullTypeCName} value)
         {
             value = null;
 
             if (string.IsNullOrWhiteSpace(s))
                 return (s != null);
 
-            if ({@TypeCName}.TryParse(s, out {@TypeCName} temp))
+            if ({@BaseTypeCName}.TryParse(s, out {@BaseTypeCName} temp))
             {
                 value = temp;
                 return true;
@@ -69,7 +69,7 @@ DEFAULT - NULLABLE
 DEFAULT - ARRAY
 =====================================================================
 
-{@Section(Default,Array,ToString)}public override string ConvertToString({@CType} array)
+{@Section(Default,Array,ToString)}public override string ConvertToString({@FullTypeCName} array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -77,7 +77,7 @@ DEFAULT - ARRAY
             return string.Join(";", array);
         }{@EndSection}
 
-{@Section(Default,Array,FromString)}public override bool TryConvertFromString(string s, out {@CType} array)
+{@Section(Default,Array,FromString)}public override bool TryConvertFromString(string s, out {@FullTypeCName} array)
         {
             try
             {
@@ -88,9 +88,9 @@ DEFAULT - ARRAY
                 }
 
                 string[] tokens = s.Split(';');
-                array = new {@TypeCName}[tokens.Length];
+                array = new {@BaseTypeCName}[tokens.Length];
                 for (int i = 0; i < tokens.Length; i++)
-                    array[i] = {@TypeCName}.Parse(tokens[i]);
+                    array[i] = {@BaseTypeCName}.Parse(tokens[i]);
                 return true;
             }
             catch (Exception)
@@ -107,7 +107,7 @@ DEFAULT - ARRAY
 DEFAULT - NULLABLE, ARRAY
 =====================================================================
 
-{@Section(Default,NullableArray,ToString)}public override string ConvertToString({@CType} array)
+{@Section(Default,NullableArray,ToString)}public override string ConvertToString({@FullTypeCName} array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -115,7 +115,7 @@ DEFAULT - NULLABLE, ARRAY
             return string.Join(";", array.Select(v => v.HasValue ? v.Value.ToString() : string.Empty));
         }{@EndSection}
 
-{@Section(Default,NullableArray,FromString)}public override bool TryConvertFromString(string s, out {@CType} array)
+{@Section(Default,NullableArray,FromString)}public override bool TryConvertFromString(string s, out {@FullTypeCName} array)
         {
             try
             {
@@ -126,9 +126,9 @@ DEFAULT - NULLABLE, ARRAY
                 }
 
                 string[] tokens = s.Split(';');
-                array = new {@TypeCName}?[tokens.Length];
+                array = new {@BaseTypeCName}?[tokens.Length];
                 for (int i = 0; i < tokens.Length; i++)
-                    array[i] = (tokens[i].Length > 0) ? ({@TypeCName}?){@TypeCName}.Parse(tokens[i]) : null;
+                    array[i] = (tokens[i].Length > 0) ? ({@BaseTypeCName}?){@BaseTypeCName}.Parse(tokens[i]) : null;
                 return true;
             }
             catch (Exception)
@@ -146,9 +146,9 @@ using System.Linq;
 STRING - STANDARD
 =====================================================================
 
-{@Section(String,Standard,ToString)}public override string ConvertToString({@CType} value) => value ?? string.Empty;{@EndSection}
+{@Section(String,Standard,ToString)}public override string ConvertToString({@FullTypeCName} value) => value ?? string.Empty;{@EndSection}
 
-{@Section(String,Standard,FromString)}public override bool TryConvertFromString(string s, out {@CType} value)
+{@Section(String,Standard,FromString)}public override bool TryConvertFromString(string s, out {@FullTypeCName} value)
         {
             value = s;
             return (value != null);
@@ -161,7 +161,7 @@ STRING - STANDARD
 STRING - ARRAY
 =====================================================================
 
-{@Section(String,Array,ToString)}public override string ConvertToString({@CType} array)
+{@Section(String,Array,ToString)}public override string ConvertToString({@FullTypeCName} array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -179,7 +179,7 @@ STRING - ARRAY
             return builder.ToString();
         }{@EndSection}
 
-{@Section(String,Array,FromString)}public override bool TryConvertFromString(string s, out {@CType} array)
+{@Section(String,Array,FromString)}public override bool TryConvertFromString(string s, out {@FullTypeCName} array)
         {
             if (s == null)
             {
@@ -261,7 +261,7 @@ CHAR - ARRAY
 CHAR - NULLABLE, ARRAY
 =====================================================================
 
-{@Section(Char,NullableArray,ToString)}public override string ConvertToString({@CType} array)
+{@Section(Char,NullableArray,ToString)}public override string ConvertToString({@FullTypeCName} array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -269,7 +269,7 @@ CHAR - NULLABLE, ARRAY
             return string.Join(";", array.Select(c => c.HasValue ? ((int)c).ToString() : string.Empty));
         }{@EndSection}
 
-{@Section(Char,NullableArray,FromString)}public override bool TryConvertFromString(string s, out {@CType} array)
+{@Section(Char,NullableArray,FromString)}public override bool TryConvertFromString(string s, out {@FullTypeCName} array)
         {
             try
             {
@@ -280,9 +280,9 @@ CHAR - NULLABLE, ARRAY
                 }
 
                 string[] tokens = s.Split(';');
-                array = new {@TypeCName}?[tokens.Length];
+                array = new {@BaseTypeCName}?[tokens.Length];
                 for (int i = 0; i < tokens.Length; i++)
-                    array[i] = (tokens[i].Length > 0) ? ({@TypeCName}?)int.Parse(tokens[i]) : null;
+                    array[i] = (tokens[i].Length > 0) ? ({@BaseTypeCName}?)int.Parse(tokens[i]) : null;
                 return true;
             }
             catch (Exception)
@@ -310,11 +310,11 @@ GUID
 DATETIME - STANDARD
 =====================================================================
 
-{@Section(DateTime,Standard,ToString)}public override string ConvertToString({@CType} value) => value.ToString();{@EndSection}
+{@Section(DateTime,Standard,ToString)}public override string ConvertToString({@FullTypeCName} value) => value.ToString();{@EndSection}
 
-{@Section(DateTime,Standard,FromString)}public override bool TryConvertFromString(string s, out {@CType} value)
+{@Section(DateTime,Standard,FromString)}public override bool TryConvertFromString(string s, out {@FullTypeCName} value)
         {
-            return {@TypeCName}.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.None, out value);
+            return {@BaseTypeCName}.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.None, out value);
         }{@EndSection}
         
 {@Section(DateTime,Standard,UsingBlock)}using System;
@@ -325,16 +325,16 @@ using System.Globalization;
 DATETIME - NULLABLE
 =====================================================================
 
-{@Section(DateTime,Nullable,ToString)}public override string ConvertToString({@CType} value) => value.HasValue ? value.Value.ToString() : string.Empty;{@EndSection}
+{@Section(DateTime,Nullable,ToString)}public override string ConvertToString({@FullTypeCName} value) => value.HasValue ? value.Value.ToString() : string.Empty;{@EndSection}
 
-{@Section(DateTime,Nullable,FromString)}public override bool TryConvertFromString(string s, out {@CType} value)
+{@Section(DateTime,Nullable,FromString)}public override bool TryConvertFromString(string s, out {@FullTypeCName} value)
         {
             value = null;
 
             if (string.IsNullOrWhiteSpace(s))
                 return (s != null);
             
-            if ({@TypeCName}.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.None, out {@TypeCName} temp))
+            if ({@BaseTypeCName}.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.None, out {@BaseTypeCName} temp))
             {
                 value = temp;
                 return true;
@@ -350,7 +350,7 @@ using System.Globalization;
 DATETIME - ARRAY
 =====================================================================
 
-{@Section(DateTime,Array,ToString)}public override string ConvertToString({@CType} array)
+{@Section(DateTime,Array,ToString)}public override string ConvertToString({@FullTypeCName} array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -358,7 +358,7 @@ DATETIME - ARRAY
             return string.Join(";", array);
         }{@EndSection}
 
-{@Section(DateTime,Array,FromString)}public override bool TryConvertFromString(string s, out {@CType} array)
+{@Section(DateTime,Array,FromString)}public override bool TryConvertFromString(string s, out {@FullTypeCName} array)
         {
             try
             {
@@ -369,9 +369,9 @@ DATETIME - ARRAY
                 }
 
                 string[] tokens = s.Split(';');
-                array = new {@TypeCName}[tokens.Length];
+                array = new {@BaseTypeCName}[tokens.Length];
                 for (int i = 0; i < tokens.Length; i++)
-                    array[i] = {@TypeCName}.Parse(tokens[i], CultureInfo.InvariantCulture);
+                    array[i] = {@BaseTypeCName}.Parse(tokens[i], CultureInfo.InvariantCulture);
                 return true;
             }
             catch (Exception)
@@ -389,7 +389,7 @@ using System.Globalization;
 DATETIME - NULLABLE, ARRAY
 =====================================================================
 
-{@Section(DateTime,NullableArray,ToString)}public override string ConvertToString({@CType} array)
+{@Section(DateTime,NullableArray,ToString)}public override string ConvertToString({@FullTypeCName} array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -397,7 +397,7 @@ DATETIME - NULLABLE, ARRAY
             return string.Join(";", array.Select(v => v.HasValue ? v.Value.ToString() : string.Empty));
         }{@EndSection}
 
-{@Section(DateTime,NullableArray,FromString)}public override bool TryConvertFromString(string s, out {@CType} array)
+{@Section(DateTime,NullableArray,FromString)}public override bool TryConvertFromString(string s, out {@FullTypeCName} array)
         {
             try
             {
@@ -408,9 +408,9 @@ DATETIME - NULLABLE, ARRAY
                 }
 
                 string[] tokens = s.Split(';');
-                array = new {@TypeCName}?[tokens.Length];
+                array = new {@BaseTypeCName}?[tokens.Length];
                 for (int i = 0; i < tokens.Length; i++)
-                    array[i] = (tokens[i].Length > 0) ? ({@TypeCName}?){@TypeCName}.Parse(tokens[i], CultureInfo.InvariantCulture) : null;
+                    array[i] = (tokens[i].Length > 0) ? ({@BaseTypeCName}?){@BaseTypeCName}.Parse(tokens[i], CultureInfo.InvariantCulture) : null;
                 return true;
             }
             catch (Exception)

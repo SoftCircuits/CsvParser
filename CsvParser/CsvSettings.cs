@@ -35,20 +35,18 @@ namespace SoftCircuits.CsvParser
     /// </summary>
     public class CsvSettings
     {
+
+        #region Special Characters
+
         /// <summary>
         /// These are special characters in CSV files. If a column contains any
         /// of these characters, the entire column is wrapped in quotes.
         /// </summary>
         private char[] SpecialCharacters;
 
-        // Indices into SpecialCharacters
+        // Indexes into SpecialCharacters
         private const int ColumnDelimiterIndex = 0;
         private const int QuoteCharacterIndex = 1;
-
-        /// <summary>
-        /// Specifies how blank lines are interpreted by CsvReader.
-        /// </summary>
-        public EmptyLineBehavior EmptyLineBehavior;
 
         /// <summary>
         /// Gets/sets the character used to delimit columns.
@@ -69,24 +67,36 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// If true, <see cref="CsvDataReader{T}"></see> will raise an
+        /// Returns <c>true</c> is the given string contains any special characters.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        internal bool HasSpecialCharacter(string s) => s.IndexOfAny(SpecialCharacters) >= 0;
+
+        #endregion
+
+        /// <summary>
+        /// Specifies how blank lines are interpreted by CsvReader.
+        /// </summary>
+        public EmptyLineBehavior EmptyLineBehavior;
+
+        /// <summary>
+        /// If true, <see cref="CsvDataReader{T}"></see> will raise a
         /// <see cref="BadDataFormatException"></see> exception when it encounters
-        /// data that cannot be converted to the corresponding data type. True
-        /// by default.
+        /// data that cannot be converted to the corresponding data type. This
+        /// setting is <c>true</c> by default.
         /// </summary>
         public bool InvalidDataRaisesException { get; set; }
 
         /// <summary>
-        /// Specifies the string comparison type when
-        /// <see cref="CsvDataReader.ReadHeaders(bool)"></see> is called with
-        /// a <c>true</c> argument and compares the column headers with the
-        /// column names. The default is
-        /// <see cref="StringComparison.InvariantCultureIgnoreCase"></see>.
+        /// Specifies the string comparison type used by
+        /// <see cref="CsvDataReader.ReadHeaders(bool)"></see> to compare column
+        /// names against column headers when it's passed a <c>true</c> argument.
+        /// This setting is set to
+        /// <see cref="StringComparison.InvariantCultureIgnoreCase"></see> by
+        /// default.
         /// </summary>
         public StringComparison ColumnHeaderStringComparison { get; set; }
-
-        // Returns true if string contains any special characters.
-        internal bool HasSpecialCharacter(string s) => s.IndexOfAny(SpecialCharacters) >= 0;
 
         /// <summary>
         /// Initializes a new <c>CsvSettings</c> instance.

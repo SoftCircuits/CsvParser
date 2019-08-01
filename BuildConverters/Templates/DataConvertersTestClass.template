@@ -1,0 +1,125 @@
+﻿// Copyright (c) 2019 Jonathan Wood (www.softcircuits.com)
+// Licensed under the MIT license.
+//
+using System;
+using System.Diagnostics;
+using System.Reflection;
+
+namespace CsvParserTests
+{
+    public class DataConvertersTestClass
+    {
+{@DataConverterMembers}
+        #region IEquatable
+
+        public override int GetHashCode()
+        {
+            // No good option here
+            return 1;
+        }
+
+        public override bool Equals(object obj) => Equals(obj as DataConvertersTestClass);
+
+        /// <summary>
+        /// Uses reflection to compares this instance to <paramref name="other"/>.
+        /// </summary>
+        /// <param name="other">The instance to compare to.</param>
+        /// <returns>True if both instances are equal.</returns>
+        public bool Equals(DataConvertersTestClass other)
+        {
+            if (other == null)
+                return false;
+
+            PropertyInfo[] properties1 = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            PropertyInfo[] properties2 = other.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            if (properties1.Length != properties2.Length)
+            {
+                Debug.Assert(false);
+                return false;
+            }
+
+            // Compare property values
+            for (int i = 0; i < properties1.Length; i++)
+            {
+                if (!ObjectsAreEqual(properties1[i].GetValue(this), properties2[i].GetValue(other)))
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Compares two <see cref="object"/>s.
+        /// </summary>
+        /// <param name="a">First object.</param>
+        /// <param name="b">Second object.</param>
+        /// <returns>True if both items are equal.</returns>
+        private bool ObjectsAreEqual(object a, object b)
+        {
+            // Handle null cases
+            if (a == null || b == null)
+                return (a == null && b == null);
+
+            // Verify same type
+            Type type = a.GetType();
+            if (type != b.GetType())
+            {
+                Debug.Assert(false);
+                return false;
+            }
+
+            // Value types
+            if (type.IsValueType)
+                return (a is DateTime) ? DateTimesAreEqual((DateTime)a, (DateTime)b) : a.Equals(b);
+
+            // Hande arrays
+            if (type.IsArray)
+            {
+                Array aArray = (Array)a;
+                Array bArray = (Array)b;
+
+                if (aArray.Length != bArray.Length)
+                    return false;
+                for (int i = 0; i <  aArray.Length; i++)
+                {
+                    if (!ObjectsAreEqual(aArray.GetValue(i), bArray.GetValue(i)))
+                        return false;
+                }
+                return true;
+            }
+
+            // Non-null reference types
+            return (a.Equals(b));
+        }
+
+        /// <summary>
+        /// Compares the main elements of two <see cref="DateTime"/> values.
+        /// Used because the default DateTimeConverter does not store
+        /// milliseconds, time zone, etc.
+        /// </summary>
+        /// <param name="a">First DateTime value.</param>
+        /// <param name="b">Second DateTime value.</param>
+        /// <returns>True if both items are equal.</returns>
+        private bool DateTimesAreEqual(DateTime a, DateTime b)
+        {
+            if (a.Year != b.Year)
+                return false;
+            if (a.Month != b.Month)
+                return false;
+            if (a.Day != b.Day)
+                return false;
+            if (a.Hour != b.Hour)
+                return false;
+            if (a.Minute != b.Minute)
+                return false;
+            if (a.Second != b.Second)
+                return false;
+            return true;
+        }
+
+        #endregion
+
+        public static DataConvertersTestClass[] TestData = new DataConvertersTestClass[]
+        {
+{@DataConverterInitializers}        };
+    }
+}

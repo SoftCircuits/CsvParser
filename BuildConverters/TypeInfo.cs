@@ -8,9 +8,9 @@ namespace BuildConverters
 {
     public class TypeInfo
     {
-        public Type Type { get; private set; }
         private Random Random;
 
+        public Type Type { get; private set; }
         public string Name => Type.Name;
         public string CName => CSharpNameLookup[Type];
         public bool IsValueType => Type.IsValueType;
@@ -22,33 +22,25 @@ namespace BuildConverters
         }
 
         /// <summary>
-        /// Creates a test-data line item.
-        /// </summary>
-        public string ToTestData(TemplateMode mode)
-        {
-            return $"(typeof({CodeTemplate.GetCTypeName(this, mode)}), {GetSampleData(mode)}),";
-        }
-
-        /// <summary>
         /// Generates sample data for the specified mode.
         /// </summary>
-        private string GetSampleData(TemplateMode mode)
+        public string GetSampleData(TypeVariation mode)
         {
             Func<TypeInfo, string> func = SampleDataLookup[Type];
 
-            if (mode == TemplateMode.Standard || mode == TemplateMode.Nullable)
+            if (mode == TypeVariation.Standard || mode == TypeVariation.Nullable)
             {
                 string s;
-                if (mode == TemplateMode.Standard)
+                if (mode == TypeVariation.Standard)
                     s = func(this);
                 else // Nullable
-                    s = (Random.Next(2) == 1) ? func(this) : "null";
-                return $"({CodeTemplate.GetCTypeName(this, mode)}){s}";
+                    s = (Random.Next(3) != 1) ? func(this) : "null";
+                return $"({CompleteType.GetFullTypeCName(this, mode)}){s}";
             }
             else // Array or NullableArray
             {
                 string[] array = new string[10];
-                if (mode == TemplateMode.Array)
+                if (mode == TypeVariation.Array)
                 {
                     for (int i = 0; i < array.Length; i++)
                         array[i] = func(this);
@@ -56,9 +48,9 @@ namespace BuildConverters
                 else // NullableArray
                 {
                     for (int i = 0; i < array.Length; i++)
-                        array[i] = (Random.Next(2) == 1) ? func(this) : "null";
+                        array[i] = (Random.Next(3) != 1) ? func(this) : "null";
                 }
-                return $"new {CodeTemplate.GetCTypeName(this, mode)} {{ {string.Join(", ", array)} }}";
+                return $"new {CompleteType.GetFullTypeCName(this, mode)} {{ {string.Join(", ", array)} }}";
             }
         }
 

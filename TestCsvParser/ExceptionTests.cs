@@ -5,10 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftCircuits.CsvParser;
 using SoftCircuits.CsvParser.Converters;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Text;
 
 namespace CsvParserTests
 {
@@ -99,28 +96,21 @@ namespace CsvParserTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(DataConverterTypeMismatchException))]
-        public void DataConverterTypeMismatchExceptionTest()
+        [ExpectedException(typeof(BadDataFormatException))]
+        public void BadDataFormatExceptionTest()
         {
-            byte[] buffer;
+            MemoryFile file = new MemoryFile();
 
-            using (MemoryStream stream = new MemoryStream())
-            using (CsvDataWriter<Customer> writer = new CsvDataWriter<Customer>(stream))
+            using (CsvWriter writer = new CsvWriter(file))
             {
-                writer.MapColumns<CustomerMaps>();
-                writer.WriteHeaders();
-                writer.Write(Customers);
-
-                writer.Flush();
-                buffer = stream.ToArray();
+                writer.WriteRow("Name", "Street", "City", "Region", "Zip", "Age", "Score", "IsRegistered");
+                writer.WriteRow("Rafael Pitts", "Ap #883-4246 Nunc Avenue", "Maiduguri", "BO", "52319", "19", "123.45", "true");
+                writer.WriteRow("Joel Schmidt", "6768 Dictum Street", "Berlin", "Berlin", "86692", "52", "5.9", "true");
+                writer.WriteRow("Alden Horn", "521 Consequat, Street", "Whithorn", "Wigtownshire", "46603", "abc", "1.0", "false");
             }
 
-            //string text = Encoding.UTF8.GetString(buffer);
-
-            using (MemoryStream stream = new MemoryStream(buffer))
-            using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(stream))
+            using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file))
             {
-                reader.MapColumns<CustomerMaps>();
                 reader.ReadHeaders(true);
                 while (reader.Read(out Customer person))
                     Debug.WriteLine(person);
@@ -128,28 +118,43 @@ namespace CsvParserTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(BadDataFormatException))]
-        public void InvalidDataExceptionTest()
+        public void BadDataFormatExceptionSuppressionTest()
         {
-            byte[] buffer;
+            MemoryFile file = new MemoryFile();
 
-            using (MemoryStream stream = new MemoryStream())
-            using (CsvWriter writer = new CsvWriter(stream))
+            using (CsvWriter writer = new CsvWriter(file))
             {
                 writer.WriteRow("Name", "Street", "City", "Region", "Zip", "Age", "Score", "IsRegistered");
                 writer.WriteRow("Rafael Pitts", "Ap #883-4246 Nunc Avenue", "Maiduguri", "BO", "52319", "19", "123.45", "true");
                 writer.WriteRow("Joel Schmidt", "6768 Dictum Street", "Berlin", "Berlin", "86692", "52", "5.9", "true");
                 writer.WriteRow("Alden Horn", "521 Consequat, Street", "Whithorn", "Wigtownshire", "46603", "abc", "1.0", "false");
-
-                writer.Flush();
-                buffer = stream.ToArray();
             }
 
-            //string text = Encoding.UTF8.GetString(buffer);
-
-            using (MemoryStream stream = new MemoryStream(buffer))
-            using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(stream))
+            CsvSettings settings = new CsvSettings { InvalidDataRaisesException = false };
+            using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file, settings))
             {
+                reader.ReadHeaders(true);
+                while (reader.Read(out Customer person))
+                    Debug.WriteLine(person);
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(DataConverterTypeMismatchException))]
+        public void DataConverterTypeMismatchExceptionTest()
+        {
+            MemoryFile file = new MemoryFile();
+
+            using (CsvDataWriter<Customer> writer = new CsvDataWriter<Customer>(file))
+            {
+                writer.MapColumns<CustomerMaps>();
+                writer.WriteHeaders();
+                writer.Write(Customers);
+            }
+
+            using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file))
+            {
+                reader.MapColumns<CustomerMaps>();
                 reader.ReadHeaders(true);
                 while (reader.Read(out Customer person))
                     Debug.WriteLine(person);
@@ -160,22 +165,15 @@ namespace CsvParserTests
         [ExpectedException(typeof(UnsupportedDataTypeException))]
         public void UnsupportedDataTypeTest()
         {
-            byte[] buffer;
+            MemoryFile file = new MemoryFile();
 
-            using (MemoryStream stream = new MemoryStream())
-            using (CsvDataWriter<Customer> writer = new CsvDataWriter<Customer>(stream))
+            using (CsvDataWriter<Customer> writer = new CsvDataWriter<Customer>(file))
             {
                 writer.WriteHeaders();
                 writer.Write(Customers);
-
-                writer.Flush();
-                buffer = stream.ToArray();
             }
 
-            //string text = Encoding.UTF8.GetString(buffer);
-
-            using (MemoryStream stream = new MemoryStream(buffer))
-            using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(stream))
+            using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file))
             {
                 reader.ReadHeaders(true);
                 while (reader.Read(out Customer person))

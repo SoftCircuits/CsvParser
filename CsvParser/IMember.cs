@@ -25,7 +25,7 @@ namespace SoftCircuits.CsvParser
     /// </summary>
     internal class PropertyMember : IMember
     {
-        private PropertyInfo Property;
+        private readonly PropertyInfo Property;
 
         public PropertyMember(PropertyInfo property)
         {
@@ -46,7 +46,7 @@ namespace SoftCircuits.CsvParser
     /// </summary>
     internal class FieldMember : IMember
     {
-        private FieldInfo Field;
+        private readonly FieldInfo Field;
 
         public FieldMember(FieldInfo field)
         {

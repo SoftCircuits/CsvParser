@@ -1,4 +1,4 @@
-// Copyright (c) 2019 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,7 +13,7 @@ namespace CsvParserTests
     [TestClass]
     public class CsvParserTests
     {
-        private List<(string, string, string)> RawIniFile = new List<(string, string, string)>
+        List<(string, string, string)> RawCsvFile = new List<(string, string, string)>
         {
             ("Abc", "Def", "Ghi"),
             ("@Abc", "D\"e\"f", "G,h'i"),
@@ -41,80 +41,99 @@ namespace CsvParserTests
         };
 
         [TestMethod]
-        public void TestCsvValues()
+        public void ParserTest()
         {
-            // Default settings
-            CsvSettings settings = new CsvSettings();
-            RunStreamTest(settings);
-            RunFileTests(settings);
-            // Vary settings
-            settings.ColumnDelimiter = '\t';
-            settings.QuoteCharacter = '\'';
-            RunStreamTest(settings);
-            RunFileTests(settings);
-        }
-
-        public void RunStreamTest(CsvSettings settings)
-        {
-            byte[] buffer;
-            List<(string, string, string)> actual = new List<(string, string, string)>();
-
-            using (MemoryStream stream = new MemoryStream())
-            using (CsvWriter writer = new CsvWriter(stream, settings))
+            using (MemoryFile file = new MemoryFile())
             {
-                foreach (var data in RawIniFile)
-                    writer.WriteRow(data.Item1, data.Item2, data.Item3);
-                writer.Flush();
-                buffer = stream.ToArray();
-            }
+                List<(string, string, string)> actual = new List<(string, string, string)>();
 
-            using (MemoryStream stream = new MemoryStream(buffer))
-            using (CsvReader reader = new CsvReader(stream, settings))
-            {
-                string[] columns = null;
-                while (reader.ReadRow(ref columns))
+                using (CsvWriter writer = new CsvWriter(file))
                 {
-                    Assert.AreEqual(3, columns.Length);
-                    actual.Add((columns[0], columns[1], columns[2]));
+                    foreach (var data in RawCsvFile)
+                        writer.WriteRow(data.Item1, data.Item2, data.Item3);
                 }
-                CollectionAssert.AreEqual(RawIniFile, actual);
-            }
-        }
 
-        public void RunFileTests(CsvSettings settings)
-        {
-            string path = @"C:\TEMP\TEMP.CSV";
-            List<(string, string, string)> actual = new List<(string, string, string)>();
-
-            using (CsvWriter writer = new CsvWriter(path, settings))
-            {
-                foreach (var data in RawIniFile)
-                    writer.WriteRow((IEnumerable<string>)new[] { data.Item1, data.Item2, data.Item3 });
-                writer.Close();
-            }
-
-            using (CsvReader reader = new CsvReader(path, settings))
-            {
-                string[] columns = null;
-                while (reader.ReadRow(ref columns))
+                using (CsvReader reader = new CsvReader(file))
                 {
-                    Assert.AreEqual(3, columns.Length);
-                    actual.Add((columns[0], columns[1], columns[2]));
+                    string[] columns = null;
+                    while (reader.ReadRow(ref columns))
+                    {
+                        Assert.AreEqual(3, columns.Length);
+                        actual.Add((columns[0], columns[1], columns[2]));
+                    }
+                    CollectionAssert.AreEqual(RawCsvFile, actual);
                 }
-                CollectionAssert.AreEqual(RawIniFile, actual);
             }
         }
 
-        private List<string> EmptyLineTestData = new List<string>
+        [TestMethod]
+        public void TabDelimiterTest()
         {
-            "\"abc\",\"def\",\"ghi\"",
-            "\"abc\",\"def\",\"ghi\"",
+            using (MemoryFile file = new MemoryFile())
+            {
+                CsvSettings settings = new CsvSettings();
+                settings.ColumnDelimiter = '\t';
+
+                List<(string, string, string)> actual = new List<(string, string, string)>();
+
+                using (CsvWriter writer = new CsvWriter(file, settings))
+                {
+                    foreach (var data in RawCsvFile)
+                        writer.WriteRow(data.Item1, data.Item2, data.Item3);
+                }
+
+                using (CsvReader reader = new CsvReader(file, settings))
+                {
+                    string[] columns = null;
+                    while (reader.ReadRow(ref columns))
+                    {
+                        Assert.AreEqual(3, columns.Length);
+                        actual.Add((columns[0], columns[1], columns[2]));
+                    }
+                    CollectionAssert.AreEqual(RawCsvFile, actual);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void SingleQuotesTest()
+        {
+            using (MemoryFile file = new MemoryFile())
+            {
+                CsvSettings settings = new CsvSettings();
+                settings.QuoteCharacter = '\'';
+
+                List<(string, string, string)> actual = new List<(string, string, string)>();
+
+                using (CsvWriter writer = new CsvWriter(file, settings))
+                {
+                    foreach (var data in RawCsvFile)
+                        writer.WriteRow(data.Item1, data.Item2, data.Item3);
+                }
+
+                using (CsvReader reader = new CsvReader(file, settings))
+                {
+                    string[] columns = null;
+                    while (reader.ReadRow(ref columns))
+                    {
+                        Assert.AreEqual(3, columns.Length);
+                        actual.Add((columns[0], columns[1], columns[2]));
+                    }
+                    CollectionAssert.AreEqual(RawCsvFile, actual);
+                }
+            }
+        }
+
+        List<string> EmptyLineTestData = new List<string>
+        {
+            "abc,def,ghi",
+            "abc,def,ghi",
             "",
-            "\"abc\",\"def\",\"ghi\"",
-            "\"abc\",\"def\",\"ghi\"",
+            "abc,def,ghi",
+            "abc,def,ghi",
         };
 
-        private List<List<string>>[] EmptyLineTestResults = new List<List<string>>[]
+        List<List<string>>[] EmptyLineTestResults = new List<List<string>>[]
         {
             // EmptyLineBehavior.NoColumns
             new List<List<string>>
@@ -153,36 +172,35 @@ namespace CsvParserTests
         [TestMethod]
         public void TestEmptyLineBehavior()
         {
-            CsvSettings settings = new CsvSettings();
-            foreach (EmptyLineBehavior emptyLineBehavior in Enum.GetValues(typeof(EmptyLineBehavior)))
+            using (MemoryFile file = new MemoryFile())
             {
-                settings.EmptyLineBehavior = emptyLineBehavior;
-                byte[] buffer;
-                List<List<string>> actual = new List<List<string>>();
-
-                using (MemoryStream stream = new MemoryStream())
-                using (StreamWriter writer = new StreamWriter(stream))
+                CsvSettings settings = new CsvSettings();
+                foreach (EmptyLineBehavior emptyLineBehavior in Enum.GetValues(typeof(EmptyLineBehavior)))
                 {
-                    foreach (string line in EmptyLineTestData)
-                        writer.WriteLine(line);
-                    writer.Flush();
-                    buffer = stream.ToArray();
-                }
+                    settings.EmptyLineBehavior = emptyLineBehavior;
+                    List<List<string>> actual = new List<List<string>>();
 
-                using (MemoryStream stream = new MemoryStream(buffer))
-                using (CsvReader reader = new CsvReader(stream, settings))
-                {
-                    string[] columns = null;
-                    while (reader.ReadRow(ref columns))
-                        actual.Add(columns.ToList());
-                }
+                    using (MemoryStream stream = new MemoryStream())
+                    using (StreamWriter writer = new StreamWriter(file))
+                    {
+                        foreach (string line in EmptyLineTestData)
+                            writer.WriteLine(line);
+                    }
 
-                int resultIndex = (int)emptyLineBehavior;
-                Assert.AreEqual(EmptyLineTestResults[resultIndex].Count, actual.Count);
-                if (EmptyLineTestResults[resultIndex].Count == actual.Count)
-                {
-                    for (int i = 0; i < actual.Count; i++)
-                        CollectionAssert.AreEqual(EmptyLineTestResults[resultIndex][i], actual[i]);
+                    using (CsvReader reader = new CsvReader(file, settings))
+                    {
+                        string[] columns = null;
+                        while (reader.ReadRow(ref columns))
+                            actual.Add(columns.ToList());
+                    }
+
+                    int resultIndex = (int)emptyLineBehavior;
+                    Assert.AreEqual(EmptyLineTestResults[resultIndex].Count, actual.Count);
+                    if (EmptyLineTestResults[resultIndex].Count == actual.Count)
+                    {
+                        for (int i = 0; i < actual.Count; i++)
+                            CollectionAssert.AreEqual(EmptyLineTestResults[resultIndex][i], actual[i]);
+                    }
                 }
             }
         }

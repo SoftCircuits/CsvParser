@@ -16,7 +16,7 @@ In addition, the library's behavior can be customized. For example, you can chan
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csv tsv parser csv-parser tsv-parser comma tab separated values delimited</PackageTags>
-    <PackageReleaseNotes>Minor fix to CharArrayConverter.</PackageReleaseNotes>
+    <PackageReleaseNotes>Fix to CharArrayConverter.</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
     <Version>2.0.5</Version>
   </PropertyGroup>

@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 //
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -33,9 +34,12 @@ namespace BuildConverters
         };
 
         const string DataConvertersPlaceholder = "{@DataConvertersData}";
-        const string TestDataPlaceholder = "{@TestData}";
+        const string DataConverterMembersPlaceholder = "{@DataConverterMembers}";
+        const string DataConverterInitializersPlaceholder = "{@DataConverterInitializers}";
         static StringBuilder DataConvertersData;
-        static StringBuilder TestData;
+
+        static StringBuilder TestMembers;
+        static StringBuilder TestInitializers;
 
         static void Main(string[] args)
         {
@@ -46,43 +50,57 @@ namespace BuildConverters
 
             // Load templates
             string dataConvertersTemplate = File.ReadAllText(Path.Combine(templatePath, "DataConverters.template"));
-            string testDataTemplate = File.ReadAllText(Path.Combine(templatePath, "TestData.template"));
+            string testDataTemplate = File.ReadAllText(Path.Combine(templatePath, "DataConvertersTestClass.template"));
             DataConvertersData = new StringBuilder();
-            TestData = new StringBuilder();
+            TestMembers = new StringBuilder();
+            TestInitializers = new StringBuilder();
 
-            // Load converter templates
+            // Load converter code template
             CodeTemplate template = new CodeTemplate();
             template.LoadTemplate(Path.Combine(templatePath, "Converter.template"));
 
-            foreach (TypeInfo type in TypeData)
+            IEnumerable<CompleteType> completeTypes = BuildCompleteTypes();
+            foreach (CompleteType type in completeTypes)
             {
-                // Standard
-                WriteType(type, template, TemplateMode.Standard, outputPath);
-                // Nullable
-                if (type.IsValueType)
-                    WriteType(type, template, TemplateMode.Nullable, outputPath);
-                // Array
-                WriteType(type, template, TemplateMode.Array, outputPath);
-                // Nullable array
-                if (type.IsValueType)
-                    WriteType(type, template, TemplateMode.NullableArray, outputPath);
+                // Write convert class
+                string path = Path.Combine(outputPath, $"{type.ClassName}.cs");
+                File.WriteAllText(path, template.BuildTemplate(type));
+                // Write DataConvert row
+                DataConvertersData.AppendLine($"            [typeof({type.FullTypeCName})] = () => new {type.ClassName}(),");
+                // Write test data member
+                TestMembers.AppendLine($"        public {type.FullTypeCName} {type.TypeName}Member {{ get; set; }}");
             }
 
-            // DataConverters.cs
+            // Write DataConverters.cs
             File.WriteAllText(Path.Combine(outputPath, $"DataConverters.cs"),
                 dataConvertersTemplate.Replace(DataConvertersPlaceholder, DataConvertersData.ToString()));
-            // TypeConverterData.cs
-            File.WriteAllText(Path.Combine(testPath, $"TypeConvertersData.cs"),
-                testDataTemplate.Replace(TestDataPlaceholder, TestData.ToString()));
+
+            // DataConverterTestType.cs
+            for (int i = 0; i < 5; i++)
+            {
+                TestInitializers.AppendLine("            new DataConvertersTestClass {");
+                foreach (CompleteType type in completeTypes)
+                    TestInitializers.AppendLine($"                {type.TypeName}Member = {type.SampleData},");
+                TestInitializers.AppendLine("            },");
+            }
+            string content = testDataTemplate.Replace(DataConverterMembersPlaceholder, TestMembers.ToString());
+            content = content.Replace(DataConverterInitializersPlaceholder, TestInitializers.ToString());
+            File.WriteAllText(Path.Combine(testPath, $"DataConvertersTestClass.cs"), content);
         }
 
-        private static void WriteType(TypeInfo type, CodeTemplate template, TemplateMode mode, string outputPath)
+        // Build a list of all type variations
+        private static IEnumerable<CompleteType> BuildCompleteTypes()
         {
-            string className = CodeTemplate.GetClassName(type, mode);
-            string path = Path.Combine(outputPath, $"{className}.cs");
-            File.WriteAllText(path, template.BuildTemplate(type, mode));
-            DataConvertersData.AppendLine($"            [typeof({CodeTemplate.GetCTypeName(type, mode)})] = () => new {className}(),");
-            TestData.AppendLine($"            {type.ToTestData(mode)}");
+            foreach (TypeInfo type in TypeData)
+            {
+                yield return new CompleteType(type, TypeVariation.Standard);
+                yield return new CompleteType(type, TypeVariation.Array);
+                if (type.IsValueType)
+                {
+                    yield return new CompleteType(type, TypeVariation.Nullable);
+                    yield return new CompleteType(type, TypeVariation.NullableArray);
+                }
+            }
         }
     }
 }

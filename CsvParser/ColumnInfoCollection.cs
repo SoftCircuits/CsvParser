@@ -66,7 +66,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="headers">Column headers.</param>
         /// <param name="stringComparison">Comparison type used to compare header names
-        /// with column names.</param>
+        /// against column names.</param>
         public ColumnInfo[] ApplyHeaders(string[] headers, StringComparison stringComparison)
         {
             if (headers == null)

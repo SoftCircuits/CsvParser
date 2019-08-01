@@ -18,16 +18,16 @@ namespace BuildConverters
 
         // Tag Meanings:
         // {@ClassName} = "NullableBooleanArrayConverter"
-        // {@TypeName} = "Boolean"
-        // {@TypeCName} = "bool"
-        // {@Type} = "Boolean?[]"
-        // {@CType} = "bool?[]"
+        // {@BaseTypeName} = "Boolean"
+        // {@BaseTypeCName} = "bool"
+        // {@FullTypeName} = "Boolean?[]"
+        // {@FullTypeCName} = "bool?[]"
 
         private static readonly string ClassNameTag = "{@ClassName}";
-        private static readonly string TypeNameTag = "{@TypeName}";
-        private static readonly string TypeCNameTag = "{@TypeCName}";
-        private static readonly string TypeTag = "{@Type}";
-        private static readonly string CTypeTag = "{@CType}";
+        private static readonly string BaseTypeNameTag = "{@BaseTypeName}";
+        private static readonly string BaseTypeCNameTag = "{@BaseTypeCName}";
+        private static readonly string FullTypeNameTag = "{@FullTypeName}";
+        private static readonly string FullTypeCNameTag = "{@FullTypeCName}";
 
         private static readonly string DefaultType = "Default";
 
@@ -40,55 +40,55 @@ namespace BuildConverters
             Sections = new List<Section>();
         }
 
-        public string BuildTemplate(TypeInfo type, TemplateMode mode)
+        public string BuildTemplate(CompleteType type)
         {
             string text = TemplateText;
 
             // Get placholder groups for the current mode
-            foreach (var group in Sections.Where(s => s.Mode == mode).GroupBy(s => s.Placeholder))
+            foreach (var group in Sections.Where(s => s.Variation == type.Variation).GroupBy(s => s.Placeholder))
             {
                 // Look for type-specific section
-                Section section = group.FirstOrDefault(s => s.Type == type.Name);
+                Section section = group.FirstOrDefault(s => s.Type == type.BaseTypeName);
                 // If not found, look for default type
                 if (section == null)
                 {
                     section = group.FirstOrDefault(s => s.Type == DefaultType);
                     if (section == null)
-                        throw new Exception($"Template file missing '{StartSectionTag}({group.Key},{type.Name},{mode})}}, and no suitable default found.");
+                        throw new Exception($"Template file missing '{StartSectionTag}({group.Key},{type.BaseTypeName},{type.Variation})}}, and no suitable default found.");
                 }
                 // Replace this placeholder
                 text = text.Replace($"{{@{group.Key}}}", section.Text);
             }
             // Final tag replacements
-            text = text.Replace(ClassNameTag, GetClassName(type, mode));
-            text = text.Replace(TypeNameTag, type.Name);
-            text = text.Replace(TypeCNameTag, type.CName);
-            text = text.Replace(TypeTag, GetTypeName(type, mode));
-            text = text.Replace(CTypeTag, GetCTypeName(type, mode));
+            text = text.Replace(ClassNameTag, type.ClassName);
+            text = text.Replace(BaseTypeNameTag, type.BaseTypeName);
+            text = text.Replace(BaseTypeCNameTag, type.BaseTypeCName);
+            text = text.Replace(FullTypeNameTag, type.FullTypeName);
+            text = text.Replace(FullTypeCNameTag, type.FullTypeCName);
             return text;
         }
 
-        static Dictionary<TemplateMode, string> ClassNameLookup = new Dictionary<TemplateMode, string>
-        {
-            [TemplateMode.Standard] = "{@TypeName}Converter",
-            [TemplateMode.Array] = "{@TypeName}ArrayConverter",
-            [TemplateMode.Nullable] = "Nullable{@TypeName}Converter",
-            [TemplateMode.NullableArray] = "Nullable{@TypeName}ArrayConverter",
-        };
+        //static Dictionary<TypeVariation, string> ClassNameLookup = new Dictionary<TypeVariation, string>
+        //{
+        //    [TypeVariation.Standard] = "{@BaseTypeName}Converter",
+        //    [TypeVariation.Array] = "{@BaseTypeName}ArrayConverter",
+        //    [TypeVariation.Nullable] = "Nullable{@BaseTypeName}Converter",
+        //    [TypeVariation.NullableArray] = "Nullable{@BaseTypeName}ArrayConverter",
+        //};
 
-        public static string GetClassName(TypeInfo type, TemplateMode mode) => ClassNameLookup[mode].Replace(TypeNameTag, type.Name);
+        //public static string GetClassName(TypeInfo type, TypeVariation mode) => ClassNameLookup[mode].Replace(TypeNameTag, type.Name);
 
-        static Dictionary<TemplateMode, string> TypeDeclarationLookup = new Dictionary<TemplateMode, string>
-        {
-            [TemplateMode.Standard] = "{@TypeCName}",
-            [TemplateMode.Array] = "{@TypeCName}[]",
-            [TemplateMode.Nullable] = "{@TypeCName}?",
-            [TemplateMode.NullableArray] = "{@TypeCName}?[]",
-        };
+        //static Dictionary<TypeVariation, string> TypeDeclarationLookup = new Dictionary<TypeVariation, string>
+        //{
+        //    [TypeVariation.Standard] = "{@BaseTypeCName}",
+        //    [TypeVariation.Array] = "{@BaseTypeCName}[]",
+        //    [TypeVariation.Nullable] = "{@BaseTypeCName}?",
+        //    [TypeVariation.NullableArray] = "{@BaseTypeCName}?[]",
+        //};
 
-        public static string GetTypeName(TypeInfo type, TemplateMode mode) => TypeDeclarationLookup[mode].Replace(TypeCNameTag, type.Name);
+        //public static string GetTypeName(TypeInfo type, TypeVariation mode) => TypeDeclarationLookup[mode].Replace(TypeCNameTag, type.Name);
 
-        public static string GetCTypeName(TypeInfo type, TemplateMode mode) => TypeDeclarationLookup[mode].Replace(TypeCNameTag, type.CName);
+        //public static string GetCTypeName(TypeInfo type, TypeVariation mode) => TypeDeclarationLookup[mode].Replace(TypeCNameTag, type.CName);
 
         #region Loading and parsing template
 
