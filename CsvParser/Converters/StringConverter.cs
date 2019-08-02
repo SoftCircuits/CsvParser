@@ -3,7 +3,7 @@
 //
 using System;
 
-namespace SoftCircuits.CsvParser.Converters
+namespace SoftCircuits.CsvParser
 {
     internal class StringConverter : DataConverter<string>
     {

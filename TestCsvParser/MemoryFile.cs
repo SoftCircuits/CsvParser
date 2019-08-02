@@ -25,10 +25,9 @@ namespace CsvParserTests
 
         private MemoryStream GetStream()
         {
-            if (Stream != null)
-                Stream = new MemoryStream(Stream.ToArray());
-            else
-                Stream = new MemoryStream();
+            Stream = (Stream != null) ?
+                new MemoryStream(Stream.ToArray()) :
+                new MemoryStream();
             return Stream;
         }
 

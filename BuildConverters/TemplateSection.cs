@@ -13,7 +13,7 @@ namespace BuildConverters
         NullableArray,
     }
 
-    internal class Section
+    internal class TemplateSection
     {
         private static readonly string SectionTag = "{@Section}";
 
@@ -22,7 +22,7 @@ namespace BuildConverters
         public TypeVariation Variation { get; private set; }
         public string Placeholder { get; private set; }
 
-        public Section(string[] args)
+        public TemplateSection(string[] args)
         {
             if (args.Length != 3)
                 throw new Exception($"Number of arguments to '{SectionTag}' should be 3. Found {args.Length}.");

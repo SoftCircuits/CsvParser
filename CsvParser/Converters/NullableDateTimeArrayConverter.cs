@@ -5,7 +5,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 
-namespace SoftCircuits.CsvParser.Converters
+namespace SoftCircuits.CsvParser
 {
     internal class NullableDateTimeArrayConverter : DataConverter<DateTime?[]>
     {

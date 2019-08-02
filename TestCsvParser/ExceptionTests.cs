@@ -3,7 +3,6 @@
 //
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftCircuits.CsvParser;
-using SoftCircuits.CsvParser.Converters;
 using System;
 using System.Diagnostics;
 
@@ -99,43 +98,45 @@ namespace CsvParserTests
         [ExpectedException(typeof(BadDataFormatException))]
         public void BadDataFormatExceptionTest()
         {
-            MemoryFile file = new MemoryFile();
-
-            using (CsvWriter writer = new CsvWriter(file))
+            using (MemoryFile file = new MemoryFile())
             {
-                writer.WriteRow("Name", "Street", "City", "Region", "Zip", "Age", "Score", "IsRegistered");
-                writer.WriteRow("Rafael Pitts", "Ap #883-4246 Nunc Avenue", "Maiduguri", "BO", "52319", "19", "123.45", "true");
-                writer.WriteRow("Joel Schmidt", "6768 Dictum Street", "Berlin", "Berlin", "86692", "52", "5.9", "true");
-                writer.WriteRow("Alden Horn", "521 Consequat, Street", "Whithorn", "Wigtownshire", "46603", "abc", "1.0", "false");
-            }
+                using (CsvWriter writer = new CsvWriter(file))
+                {
+                    writer.WriteRow("Name", "Street", "City", "Region", "Zip", "Age", "Score", "IsRegistered");
+                    writer.WriteRow("Rafael Pitts", "Ap #883-4246 Nunc Avenue", "Maiduguri", "BO", "52319", "19", "123.45", "true");
+                    writer.WriteRow("Joel Schmidt", "6768 Dictum Street", "Berlin", "Berlin", "86692", "52", "5.9", "true");
+                    writer.WriteRow("Alden Horn", "521 Consequat, Street", "Whithorn", "Wigtownshire", "46603", "abc", "1.0", "false");
+                }
 
-            using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file))
-            {
-                reader.ReadHeaders(true);
-                while (reader.Read(out Customer person))
-                    Debug.WriteLine(person);
+                using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file))
+                {
+                    reader.ReadHeaders(true);
+                    while (reader.Read(out Customer person))
+                        Debug.WriteLine(person);
+                }
             }
         }
 
         [TestMethod]
         public void BadDataFormatExceptionSuppressionTest()
         {
-            MemoryFile file = new MemoryFile();
-
-            using (CsvWriter writer = new CsvWriter(file))
+            using (MemoryFile file = new MemoryFile())
             {
-                writer.WriteRow("Name", "Street", "City", "Region", "Zip", "Age", "Score", "IsRegistered");
-                writer.WriteRow("Rafael Pitts", "Ap #883-4246 Nunc Avenue", "Maiduguri", "BO", "52319", "19", "123.45", "true");
-                writer.WriteRow("Joel Schmidt", "6768 Dictum Street", "Berlin", "Berlin", "86692", "52", "5.9", "true");
-                writer.WriteRow("Alden Horn", "521 Consequat, Street", "Whithorn", "Wigtownshire", "46603", "abc", "1.0", "false");
-            }
+                using (CsvWriter writer = new CsvWriter(file))
+                {
+                    writer.WriteRow("Name", "Street", "City", "Region", "Zip", "Age", "Score", "IsRegistered");
+                    writer.WriteRow("Rafael Pitts", "Ap #883-4246 Nunc Avenue", "Maiduguri", "BO", "52319", "19", "123.45", "true");
+                    writer.WriteRow("Joel Schmidt", "6768 Dictum Street", "Berlin", "Berlin", "86692", "52", "5.9", "true");
+                    writer.WriteRow("Alden Horn", "521 Consequat, Street", "Whithorn", "Wigtownshire", "46603", "abc", "1.0", "false");
+                }
 
-            CsvSettings settings = new CsvSettings { InvalidDataRaisesException = false };
-            using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file, settings))
-            {
-                reader.ReadHeaders(true);
-                while (reader.Read(out Customer person))
-                    Debug.WriteLine(person);
+                CsvSettings settings = new CsvSettings { InvalidDataRaisesException = false };
+                using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file, settings))
+                {
+                    reader.ReadHeaders(true);
+                    while (reader.Read(out Customer person))
+                        Debug.WriteLine(person);
+                }
             }
         }
 
@@ -143,21 +144,22 @@ namespace CsvParserTests
         [ExpectedException(typeof(DataConverterTypeMismatchException))]
         public void DataConverterTypeMismatchExceptionTest()
         {
-            MemoryFile file = new MemoryFile();
-
-            using (CsvDataWriter<Customer> writer = new CsvDataWriter<Customer>(file))
+            using (MemoryFile file = new MemoryFile())
             {
-                writer.MapColumns<CustomerMaps>();
-                writer.WriteHeaders();
-                writer.Write(Customers);
-            }
+                using (CsvDataWriter<Customer> writer = new CsvDataWriter<Customer>(file))
+                {
+                    writer.MapColumns<CustomerMaps>();
+                    writer.WriteHeaders();
+                    writer.Write(Customers);
+                }
 
-            using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file))
-            {
-                reader.MapColumns<CustomerMaps>();
-                reader.ReadHeaders(true);
-                while (reader.Read(out Customer person))
-                    Debug.WriteLine(person);
+                using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file))
+                {
+                    reader.MapColumns<CustomerMaps>();
+                    reader.ReadHeaders(true);
+                    while (reader.Read(out Customer person))
+                        Debug.WriteLine(person);
+                }
             }
         }
 
@@ -165,19 +167,20 @@ namespace CsvParserTests
         [ExpectedException(typeof(UnsupportedDataTypeException))]
         public void UnsupportedDataTypeTest()
         {
-            MemoryFile file = new MemoryFile();
-
-            using (CsvDataWriter<Customer> writer = new CsvDataWriter<Customer>(file))
+            using (MemoryFile file = new MemoryFile())
             {
-                writer.WriteHeaders();
-                writer.Write(Customers);
-            }
+                using (CsvDataWriter<Customer> writer = new CsvDataWriter<Customer>(file))
+                {
+                    writer.WriteHeaders();
+                    writer.Write(Customers);
+                }
 
-            using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file))
-            {
-                reader.ReadHeaders(true);
-                while (reader.Read(out Customer person))
-                    Debug.WriteLine(person);
+                using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file))
+                {
+                    reader.ReadHeaders(true);
+                    while (reader.Read(out Customer person))
+                        Debug.WriteLine(person);
+                }
             }
         }
     }

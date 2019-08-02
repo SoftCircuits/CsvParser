@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SoftCircuits.CsvParser.Converters
+namespace SoftCircuits.CsvParser
 {
     internal class StringArrayConverter : DataConverter<string[]>
     {

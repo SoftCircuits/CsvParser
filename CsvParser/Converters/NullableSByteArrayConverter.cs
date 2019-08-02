@@ -4,7 +4,7 @@
 using System;
 using System.Linq;
 
-namespace SoftCircuits.CsvParser.Converters
+namespace SoftCircuits.CsvParser
 {
     internal class NullableSByteArrayConverter : DataConverter<sbyte?[]>
     {

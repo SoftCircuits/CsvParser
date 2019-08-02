@@ -133,6 +133,9 @@ namespace SoftCircuits.CsvParser
         /// <param name="items">The items to write.</param>
         public void Write(IEnumerable<T> items)
         {
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+
             foreach (T item in items)
                 Write(item);
         }

@@ -3,7 +3,6 @@
 //
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftCircuits.CsvParser;
-using SoftCircuits.CsvParser.Converters;
 using System.Collections.Generic;
 using System.Linq;
 

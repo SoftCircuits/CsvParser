@@ -167,6 +167,7 @@ namespace SoftCircuits.CsvParser
         public bool Read(out T item)
         {
             Debug.Assert(MappedColumnsInfo != null);
+
             if (ReadRow(ref Columns))
             {
                 item = Activator.CreateInstance<T>();
@@ -175,6 +176,7 @@ namespace SoftCircuits.CsvParser
                     MappedColumnsInfo[i].SetValue(item, Columns[i], Settings.InvalidDataRaisesException);
                 return true;
             }
+
             item = default;
             return false;
         }

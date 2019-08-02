@@ -3,7 +3,7 @@
 //
 using System;
 
-namespace SoftCircuits.CsvParser.Converters
+namespace SoftCircuits.CsvParser
 {
     /// <summary>
     /// Interface for all data converters.

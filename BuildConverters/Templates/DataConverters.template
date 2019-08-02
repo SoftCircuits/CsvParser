@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 [assembly:InternalsVisibleTo("CsvParserTests")]
 
-namespace SoftCircuits.CsvParser.Converters
+namespace SoftCircuits.CsvParser
 {
     internal static class DataConverters
     {

@@ -21,7 +21,7 @@ TEMPLATE BODY
 // Licensed under the MIT license.
 //
 {@UsingBlock}
-namespace SoftCircuits.CsvParser.Converters
+namespace SoftCircuits.CsvParser
 {
     internal class {@ClassName} : DataConverter<{@FullTypeCName}>
     {

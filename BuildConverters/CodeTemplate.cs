@@ -32,12 +32,12 @@ namespace BuildConverters
         private static readonly string DefaultType = "Default";
 
         private string TemplateText;
-        private List<Section> Sections;
+        private List<TemplateSection> Sections;
 
         public CodeTemplate()
         {
             TemplateText = string.Empty;
-            Sections = new List<Section>();
+            Sections = new List<TemplateSection>();
         }
 
         public string BuildTemplate(CompleteType type)
@@ -48,7 +48,7 @@ namespace BuildConverters
             foreach (var group in Sections.Where(s => s.Variation == type.Variation).GroupBy(s => s.Placeholder))
             {
                 // Look for type-specific section
-                Section section = group.FirstOrDefault(s => s.Type == type.BaseTypeName);
+                TemplateSection section = group.FirstOrDefault(s => s.Type == type.BaseTypeName);
                 // If not found, look for default type
                 if (section == null)
                 {
@@ -67,28 +67,6 @@ namespace BuildConverters
             text = text.Replace(FullTypeCNameTag, type.FullTypeCName);
             return text;
         }
-
-        //static Dictionary<TypeVariation, string> ClassNameLookup = new Dictionary<TypeVariation, string>
-        //{
-        //    [TypeVariation.Standard] = "{@BaseTypeName}Converter",
-        //    [TypeVariation.Array] = "{@BaseTypeName}ArrayConverter",
-        //    [TypeVariation.Nullable] = "Nullable{@BaseTypeName}Converter",
-        //    [TypeVariation.NullableArray] = "Nullable{@BaseTypeName}ArrayConverter",
-        //};
-
-        //public static string GetClassName(TypeInfo type, TypeVariation mode) => ClassNameLookup[mode].Replace(TypeNameTag, type.Name);
-
-        //static Dictionary<TypeVariation, string> TypeDeclarationLookup = new Dictionary<TypeVariation, string>
-        //{
-        //    [TypeVariation.Standard] = "{@BaseTypeCName}",
-        //    [TypeVariation.Array] = "{@BaseTypeCName}[]",
-        //    [TypeVariation.Nullable] = "{@BaseTypeCName}?",
-        //    [TypeVariation.NullableArray] = "{@BaseTypeCName}?[]",
-        //};
-
-        //public static string GetTypeName(TypeInfo type, TypeVariation mode) => TypeDeclarationLookup[mode].Replace(TypeCNameTag, type.Name);
-
-        //public static string GetCTypeName(TypeInfo type, TypeVariation mode) => TypeDeclarationLookup[mode].Replace(TypeCNameTag, type.CName);
 
         #region Loading and parsing template
 
@@ -135,7 +113,7 @@ namespace BuildConverters
 
                 string arguments = text.Substring(pos, pos2 - pos);
                 arguments = arguments.Trim(' ', '\t', '(', ')');
-                Section section = new Section(arguments.Split(new[] { ',' }));
+                TemplateSection section = new TemplateSection(arguments.Split(new[] { ',' }));
                 Sections.Add(section);
 
                 pos = pos2 + 1;

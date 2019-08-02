@@ -4,7 +4,7 @@
 using System;
 using System.Globalization;
 
-namespace SoftCircuits.CsvParser.Converters
+namespace SoftCircuits.CsvParser
 {
     internal class DateTimeArrayConverter : DataConverter<DateTime[]>
     {

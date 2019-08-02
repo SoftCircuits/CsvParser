@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 //
 
-namespace SoftCircuits.CsvParser.Converters
+namespace SoftCircuits.CsvParser
 {
     internal class CharConverter : DataConverter<char>
     {
