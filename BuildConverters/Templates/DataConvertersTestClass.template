@@ -30,18 +30,11 @@ namespace CsvParserTests
             if (other == null)
                 return false;
 
-            PropertyInfo[] properties1 = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            PropertyInfo[] properties2 = other.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            if (properties1.Length != properties2.Length)
-            {
-                Debug.Assert(false);
-                return false;
-            }
-
             // Compare property values
-            for (int i = 0; i < properties1.Length; i++)
+            PropertyInfo[] properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            for (int i = 0; i < properties.Length; i++)
             {
-                if (!ObjectsAreEqual(properties1[i].GetValue(this), properties2[i].GetValue(other)))
+                if (!ObjectsAreEqual(properties[i].GetValue(this), properties[i].GetValue(other)))
                     return false;
             }
             return true;
