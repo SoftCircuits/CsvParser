@@ -76,8 +76,7 @@ namespace SoftCircuits.CsvParser
         private void Initialize()
         {
             ColumnsInfo = new ColumnInfoCollection();
-            ColumnsInfo.BuildColumnInfoCollection<T>();
-            MappedColumnsInfo = ColumnsInfo.SortAndFilter();
+            MappedColumnsInfo = ColumnsInfo.BuildColumnInfoCollection<T>();
             Columns = null;
         }
 

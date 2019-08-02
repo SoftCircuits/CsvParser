@@ -30,7 +30,7 @@ namespace SoftCircuits.CsvParser
         /// <summary>
         /// Builds a <see cref="ColumnInfoCollection"></see> for the specified type.
         /// </summary>
-        public void BuildColumnInfoCollection<T>() where T : class, new()
+        public ColumnInfo[] BuildColumnInfoCollection<T>() where T : class, new()
         {
             // If we set an initial column index value (for columns not already
             // set), we seem to have more cases where the code just works than
@@ -56,6 +56,7 @@ namespace SoftCircuits.CsvParser
                 }
                 Add(column);
             }
+            return SortAndFilter();
         }
 
         /// <summary>
@@ -124,7 +125,7 @@ namespace SoftCircuits.CsvParser
         /// <summary>
         /// Returns a sorted and filtered shallow copy of the internal list. Results can be empty.
         /// </summary>
-        public ColumnInfo[] SortAndFilter()
+        private ColumnInfo[] SortAndFilter()
         {
             return (from ci in this
                     where ci.Exclude == false && ci.Index != ColumnInfo.InvalidIndex
