@@ -52,13 +52,9 @@ namespace CsvParserTests
             if (a == null || b == null)
                 return (a == null && b == null);
 
-            // Verify same type
+            // Get object type
             Type type = a.GetType();
-            if (type != b.GetType())
-            {
-                Debug.Assert(false);
-                return false;
-            }
+            Debug.Assert(type == b.GetType());
 
             // Value types
             if (type.IsValueType)
@@ -67,21 +63,21 @@ namespace CsvParserTests
             // Hande arrays
             if (type.IsArray)
             {
-                Array aArray = (Array)a;
-                Array bArray = (Array)b;
+                Array array1 = (Array)a;
+                Array array2 = (Array)b;
 
-                if (aArray.Length != bArray.Length)
+                if (array1.Length != array2.Length)
                     return false;
-                for (int i = 0; i <  aArray.Length; i++)
+                for (int i = 0; i < array1.Length; i++)
                 {
-                    if (!ObjectsAreEqual(aArray.GetValue(i), bArray.GetValue(i)))
+                    if (!ObjectsAreEqual(array1.GetValue(i), array2.GetValue(i)))
                         return false;
                 }
                 return true;
             }
 
             // Non-null reference types
-            return (a.Equals(b));
+            return a.Equals(b);
         }
 
         /// <summary>
