@@ -175,10 +175,10 @@ namespace BuildConverters
             return BitConverter.ToUInt64(buffer).ToString();
         }
 
-        private string GetSampleFloat() => $"{(float)Random.NextDouble()}F";
+        private string GetSampleFloat() => $"{(float)Math.Round(Random.NextDouble(), 4)}F";
 
         // Round to prevent micro rounding errors
-        private string GetSampleDouble() => Math.Round(Random.NextDouble(), 8).ToString();
+        private string GetSampleDouble() => Math.Round(Random.NextDouble(), 4).ToString();
 
         private string GetSampleDecimal() => $"{(decimal)Random.NextDouble()}m";
 

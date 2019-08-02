@@ -75,16 +75,16 @@ namespace CsvParserTests
             {
             }
 
-            public CustomerAttributes(Customer person)
+            public CustomerAttributes(Customer customer)
             {
-                Name = person.Name;
-                Street = person.Street;
-                City = person.City;
-                Region = person.Region;
-                Zip = person.Zip;
-                Age = person.GetAge();
-                Score = person.GetScore();
-                IsRegistered = person.IsRegistered;
+                Name = customer.Name;
+                Street = customer.Street;
+                City = customer.City;
+                Region = customer.Region;
+                Zip = customer.Zip;
+                Age = customer.GetAge();
+                Score = customer.GetScore();
+                IsRegistered = customer.IsRegistered;
             }
         }
 

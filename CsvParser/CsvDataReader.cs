@@ -151,7 +151,7 @@ namespace SoftCircuits.CsvParser
         {
             if (ReadRow(ref Columns))
             {
-                // If header row is empty, no columns will be interpreted
+                // Will delete all column mapping if headers are empty
                 if (mapColumnsFromHeaders)
                     MappedColumnsInfo = ColumnsInfo.ApplyHeaders(Columns, Settings.ColumnHeaderStringComparison);
                 return true;

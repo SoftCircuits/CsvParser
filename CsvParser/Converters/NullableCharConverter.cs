@@ -12,15 +12,14 @@ namespace SoftCircuits.CsvParser.Converters
         {
             value = null;
 
-            if (string.IsNullOrWhiteSpace(s))
+            if (string.IsNullOrEmpty(s))
                 return (s != null);
 
-            if (char.TryParse(s, out char temp))
-            {
-                value = temp;
-                return true;
-            }
-            return false;
+            if (s.Length != 1)
+                return false;
+
+            value = s[0];
+            return true;
         }
     }
 }

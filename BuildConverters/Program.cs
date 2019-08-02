@@ -13,6 +13,7 @@ namespace BuildConverters
     /// </summary>
     class Program
     {
+        static readonly int DataConvertersTestClassArraySize = 5;
         static TypeInfo[] TypeData = new TypeInfo[]
         {
             new TypeInfo(typeof(string)),
@@ -76,7 +77,7 @@ namespace BuildConverters
                 dataConvertersTemplate.Replace(DataConvertersPlaceholder, DataConvertersData.ToString()));
 
             // DataConverterTestType.cs
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < DataConvertersTestClassArraySize; i++)
             {
                 TestInitializers.AppendLine("            new DataConvertersTestClass {");
                 foreach (CompleteType type in completeTypes)
