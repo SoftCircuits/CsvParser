@@ -1,14 +1,15 @@
-﻿// Copyright (c) 2019 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2020 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
 using System.Diagnostics;
+using System.Text;
 
 namespace SoftCircuits.CsvParser
 {
     internal class ColumnInfo
     {
-        public const int InvalidIndex = -1;
+        public const int InvalidIndex = int.MaxValue;
 
         /// <summary>
         /// The column name, which can be different from the property name.
@@ -25,6 +26,12 @@ namespace SoftCircuits.CsvParser
         /// indicating the true column index.
         /// </summary>
         public int Index { get; set; }
+
+        /// <summary>
+        /// If true, the <seealso cref="Index"/> property was set explicitly
+        /// and shouldn't change.
+        /// </summary>
+        public bool ExplicitIndex { get; set; }
 
         /// <summary>
         /// If true, this column is not serialized.
@@ -53,6 +60,7 @@ namespace SoftCircuits.CsvParser
             ColumnMapAttribute attribute = member.ColumnMapAttribute;
             Name = string.IsNullOrWhiteSpace(attribute?.Name) ? member.Name : attribute.Name;
             Index = attribute?.Index ?? InvalidIndex;
+            ExplicitIndex = Index != InvalidIndex;
             Exclude = attribute?.Exclude ?? false;
             Converter = DataConverters.GetConverter(member.Type);
             Member = member;
@@ -97,6 +105,20 @@ namespace SoftCircuits.CsvParser
                 }
                 Member.SetValue(item, value);
             }
+        }
+
+        /// <summary>
+        /// For debugging.
+        /// </summary>
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.Append(Name);
+            builder.AppendFormat(", Index: {0}", Index);
+            if (Exclude)
+                builder.Append(" (Exclude)");
+            return builder.ToString();
         }
     }
 }

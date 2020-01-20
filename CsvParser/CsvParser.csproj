@@ -7,18 +7,18 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Jonathan Wood</Authors>
     <Company>SoftCircuits</Company>
-    <Description>CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files (or files with other delimiters). It includes basic classes to read and write CSV columns, and also higher level classes that can automatically map your class properties to CSV columns. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines. CsvParser is very efficient and is designed to handle large data files without loading everything into memory.
+    <Description>CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files (and files with other delimiters). It includes basic classes to read and write CSV columns, and also higher level classes that can automatically map CSV columns to your class properties. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines. CsvParser is very efficient and is designed to handle large data files without loading everything into memory.
 
 In addition, the library's behavior can be customized. For example, you can change the column delimiter to another character (like the tab character, for example), change the quote character, customize how blank lines are handled, etc.</Description>
-    <Copyright>Copyright © 2019 SoftCircuits</Copyright>
+    <Copyright>Copyright © 2019 - 2020 SoftCircuits</Copyright>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/SoftCircuits/CsvParser</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csv tsv parser csv-parser tsv-parser comma tab separated values delimited</PackageTags>
-    <PackageReleaseNotes>Fix to NullableCharConverter.</PackageReleaseNotes>
+    <PackageReleaseNotes>Reworked the logic that assigns indexes to columns after problems were detected (changes may break existing code in very uncommon scenarios); expanded unit tests to test changes; modified documentation</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>2.0.6</Version>
+    <Version>2.0.8</Version>
   </PropertyGroup>
 
   <ItemGroup>

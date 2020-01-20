@@ -1,10 +1,10 @@
-﻿// Copyright (c) 2019 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2020 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace SoftCircuits.CsvParser
@@ -16,8 +16,7 @@ namespace SoftCircuits.CsvParser
     /// <typeparam name="T">The object type being written.</typeparam>
     public class CsvDataWriter<T> : CsvWriter where T : class, new()
     {
-        private ColumnInfoCollection ColumnsInfo;
-        private ColumnInfo[] MappedColumnsInfo;
+        private ColumnInfoCollection<T> ColumnsInfo;
         private string[] Columns;
 
         /// <summary>
@@ -75,8 +74,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         private void Initialize()
         {
-            ColumnsInfo = new ColumnInfoCollection();
-            MappedColumnsInfo = ColumnsInfo.BuildColumnInfoCollection<T>();
+            ColumnsInfo = new ColumnInfoCollection<T>();
             Columns = null;
         }
 
@@ -86,7 +84,7 @@ namespace SoftCircuits.CsvParser
         public void MapColumns<TMaps>() where TMaps : ColumnMaps<T>, new()
         {
             TMaps columnMaps = Activator.CreateInstance<TMaps>();
-            MappedColumnsInfo = ColumnsInfo.ApplyColumnMaps(columnMaps.GetCustomMaps());
+            ColumnsInfo.ApplyColumnMaps(columnMaps.GetCustomMaps());
         }
 
         /// <summary>
@@ -94,14 +92,16 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         public void WriteHeaders()
         {
-            Debug.Assert(MappedColumnsInfo != null);
+            // Get column data
+            var filteredColumns = ColumnsInfo.FilteredColumns;
 
-            // Ensure correct number of columns
-            if (Columns == null || Columns.Length != MappedColumnsInfo.Length)
-                Columns = new string[MappedColumnsInfo.Length];
+            // Ensure column array is the correct size
+            if (Columns == null || Columns.Length != filteredColumns.Count())
+                Columns = new string[filteredColumns.Count()];
 
-            for (int i = 0; i < Columns.Length; i++)
-                Columns[i] = MappedColumnsInfo[i].Name;
+            int index = 0;
+            foreach (var column in filteredColumns)
+                Columns[index++] = column.Name;
 
             WriteRow(Columns);
         }
@@ -115,14 +115,16 @@ namespace SoftCircuits.CsvParser
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
 
-            Debug.Assert(MappedColumnsInfo != null);
+            // Get column data
+            var filteredColumns = ColumnsInfo.FilteredColumns;
 
-            // Ensure correct number of columns
-            if (Columns == null || Columns.Length != MappedColumnsInfo.Length)
-                Columns = new string[MappedColumnsInfo.Length];
+            // Ensure column array is the correct size
+            if (Columns == null || Columns.Length != filteredColumns.Count())
+                Columns = new string[filteredColumns.Count()];
 
-            for (int i = 0; i < Columns.Length; i++)
-                Columns[i] = MappedColumnsInfo[i].GetValue(item);
+            int index = 0;
+            foreach (var column in filteredColumns)
+                Columns[index++] = column.GetValue(item);
 
             WriteRow(Columns);
         }

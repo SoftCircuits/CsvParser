@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2020 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -18,30 +18,57 @@ namespace CsvParserTests
     {
         private MemoryStream Stream;
 
+        /// <summary>
+        /// Initializes a MemoryFile instance.
+        /// </summary>
         public MemoryFile()
         {
             Stream = null;
         }
 
+        /// <summary>
+        /// Initializes a MemoryFile with initial content.
+        /// </summary>
+        /// <param name="content"></param>
+        public MemoryFile(string content)
+        {
+            Stream = new MemoryStream();
+            Stream.Write(Encoding.UTF8.GetBytes(content));
+            Stream.Seek(0, SeekOrigin.Begin);
+        }
+
         private MemoryStream GetStream()
         {
-            Stream = (Stream != null) ?
-                new MemoryStream(Stream.ToArray()) :
-                new MemoryStream();
+            MemoryStream oldStream = Stream;
+
+            Stream = new MemoryStream();
+            if (oldStream != null)
+            {
+                Stream.Write(oldStream.ToArray());
+                Stream.Seek(0, SeekOrigin.Begin);
+            }
             return Stream;
+        }
+
+        public void Reset()
+        {
+            Stream = null;
         }
 
         public override string ToString()
         {
-            if (Stream != null)
-                return Encoding.UTF8.GetString(Stream.ToArray());
-            return string.Empty;
+            return (Stream != null) ?
+                Encoding.UTF8.GetString(Stream.ToArray()) :
+                string.Empty;
         }
 
         public void Dispose()
         {
             if (Stream != null)
+            {
                 Stream.Dispose();
+                Stream = null;
+            }
         }
 
         public static implicit operator Stream(MemoryFile f) => f.GetStream();

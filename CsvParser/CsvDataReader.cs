@@ -1,8 +1,7 @@
-﻿// Copyright (c) 2019 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2020 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -15,8 +14,7 @@ namespace SoftCircuits.CsvParser
     /// <typeparam name="T">The object type being read.</typeparam>
     public class CsvDataReader<T> : CsvReader where T : class, new()
     {
-        private ColumnInfoCollection ColumnsInfo;
-        private ColumnInfo[] MappedColumnsInfo;
+        private ColumnInfoCollection<T> ColumnsInfo;
         private string[] Columns;
 
         /// <summary>
@@ -100,6 +98,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="stream">The stream to be read.</param>
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
+        /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvDataReader(Stream stream, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
             : base(stream, detectEncodingFromByteOrderMarks, settings)
@@ -114,6 +113,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="stream">The stream to be read.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
+        /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvDataReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
             : base(stream, encoding, detectEncodingFromByteOrderMarks, settings)
@@ -126,8 +126,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         private void Initialize()
         {
-            ColumnsInfo = new ColumnInfoCollection();
-            MappedColumnsInfo = ColumnsInfo.BuildColumnInfoCollection<T>();
+            ColumnsInfo = new ColumnInfoCollection<T>();
             Columns = null;
         }
 
@@ -137,7 +136,7 @@ namespace SoftCircuits.CsvParser
         public void MapColumns<TMaps>() where TMaps : ColumnMaps<T>, new()
         {
             TMaps columnMaps = Activator.CreateInstance<TMaps>();
-            MappedColumnsInfo = ColumnsInfo.ApplyColumnMaps(columnMaps.GetCustomMaps());
+            ColumnsInfo.ApplyColumnMaps(columnMaps.GetCustomMaps());
         }
 
         /// <summary>
@@ -153,7 +152,7 @@ namespace SoftCircuits.CsvParser
             {
                 // Will delete all column mapping if headers are empty
                 if (mapColumnsFromHeaders)
-                    MappedColumnsInfo = ColumnsInfo.ApplyHeaders(Columns, Settings.ColumnHeaderStringComparison);
+                    ColumnsInfo.ApplyHeaders(Columns, Settings.ColumnHeaderStringComparison);
                 return true;
             }
             return false;
@@ -166,18 +165,17 @@ namespace SoftCircuits.CsvParser
         /// <returns>True if successful, false if the end of the file was reached.</returns>
         public bool Read(out T item)
         {
-            Debug.Assert(MappedColumnsInfo != null);
-
             if (ReadRow(ref Columns))
             {
                 item = Activator.CreateInstance<T>();
-                int count = Math.Min(Columns.Length, MappedColumnsInfo.Length);
-                for (int i = 0; i < count; i++)
-                    MappedColumnsInfo[i].SetValue(item, Columns[i], Settings.InvalidDataRaisesException);
+                foreach (ColumnInfo column in ColumnsInfo.FilteredColumns)
+                {
+                    if (column.Index < Columns.Length)
+                        column.SetValue(item, Columns[column.Index], Settings.InvalidDataRaisesException);
+                }
                 return true;
             }
-
-            item = default;
+            item = null;
             return false;
         }
     }

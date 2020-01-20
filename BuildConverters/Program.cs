@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2020 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -13,8 +13,22 @@ namespace BuildConverters
     /// </summary>
     class Program
     {
-        static readonly int DataConvertersTestClassArraySize = 5;
-        static TypeInfo[] TypeData = new TypeInfo[]
+        /// <summary>
+        /// Size of test data array in DataConvertersTestClass.
+        /// </summary>
+        private const int DataConvertersTestClassArraySize = 5;
+
+        // Replacement tags
+        private const string DataConvertersTag = "{@DataConvertersData}";
+        private const string DataConverterMembersTag = "{@DataConverterMembers}";
+        private const string DataConverterInitializersTag = "{@DataConverterInitializers}";
+
+        // Target paths
+        private const string TemplatePath = @"D:\Users\Jonathan\source\repos\CsvParser\BuildConverters\Templates";
+        private const string OutputPath = @"D:\Users\Jonathan\source\repos\CsvParser\CsvParser\Converters";
+        private const string TestPath = @"D:\Users\Jonathan\source\repos\CsvParser\TestCsvParser";
+
+        static readonly TypeInfo[] TypeData = new TypeInfo[]
         {
             new TypeInfo(typeof(string)),
             new TypeInfo(typeof(char)),
@@ -34,49 +48,44 @@ namespace BuildConverters
             new TypeInfo(typeof(DateTime)),
         };
 
-        const string DataConvertersPlaceholder = "{@DataConvertersData}";
-        const string DataConverterMembersPlaceholder = "{@DataConverterMembers}";
-        const string DataConverterInitializersPlaceholder = "{@DataConverterInitializers}";
         static StringBuilder DataConvertersData;
-
         static StringBuilder TestMembers;
         static StringBuilder TestInitializers;
 
         static void Main(string[] args)
         {
-            // Set up target paths
-            string templatePath = @"D:\Users\Jonathan\source\repos\CsvParser\BuildConverters\Templates";
-            string outputPath = @"D:\Users\Jonathan\source\repos\CsvParser\CsvParser\Converters";
-            string testPath = @"D:\Users\Jonathan\source\repos\CsvParser\TestCsvParser";
-
-            // Load templates
-            string dataConvertersTemplate = File.ReadAllText(Path.Combine(templatePath, "DataConverters.template"));
-            string testDataTemplate = File.ReadAllText(Path.Combine(templatePath, "DataConvertersTestClass.template"));
             DataConvertersData = new StringBuilder();
             TestMembers = new StringBuilder();
             TestInitializers = new StringBuilder();
 
-            // Load converter code template
-            CodeTemplate template = new CodeTemplate();
-            template.LoadTemplate(Path.Combine(templatePath, "Converter.template"));
+            // Load templates
+            string dataConvertersTemplate = File.ReadAllText(Path.Combine(TemplatePath, "DataConverters.template"));
+            string testDataTemplate = File.ReadAllText(Path.Combine(TemplatePath, "DataConvertersTestClass.template"));
 
+            // Load converter code template
+            CodeTemplate codeTemplate = new CodeTemplate();
+            codeTemplate.LoadTemplate(Path.Combine(TemplatePath, "Converter.template"));
+
+            // Get all type variations
             IEnumerable<CompleteType> completeTypes = BuildCompleteTypes();
+
+            // Build converters and some additional declarations
             foreach (CompleteType type in completeTypes)
             {
                 // Write convert class
-                string path = Path.Combine(outputPath, $"{type.ClassName}.cs");
-                File.WriteAllText(path, template.BuildTemplate(type));
+                string path = Path.Combine(OutputPath, $"{type.ClassName}.cs");
+                File.WriteAllText(path, codeTemplate.BuildTemplate(type));
                 // Write DataConvert row
                 DataConvertersData.AppendLine($"            [typeof({type.FullTypeCName})] = () => new {type.ClassName}(),");
                 // Write test data member
                 TestMembers.AppendLine($"        public {type.FullTypeCName} {type.TypeName}Member {{ get; set; }}");
             }
 
-            // Write DataConverters.cs
-            File.WriteAllText(Path.Combine(outputPath, $"DataConverters.cs"),
-                dataConvertersTemplate.Replace(DataConvertersPlaceholder, DataConvertersData.ToString()));
+            // Create DataConverters.cs
+            File.WriteAllText(Path.Combine(OutputPath, $"DataConverters.cs"),
+                dataConvertersTemplate.Replace(DataConvertersTag, DataConvertersData.ToString()));
 
-            // DataConverterTestType.cs
+            // Create DataConvertersTestClass.cs
             for (int i = 0; i < DataConvertersTestClassArraySize; i++)
             {
                 TestInitializers.AppendLine("            new DataConvertersTestClass {");
@@ -84,9 +93,9 @@ namespace BuildConverters
                     TestInitializers.AppendLine($"                {type.TypeName}Member = {type.SampleData},");
                 TestInitializers.AppendLine("            },");
             }
-            string content = testDataTemplate.Replace(DataConverterMembersPlaceholder, TestMembers.ToString());
-            content = content.Replace(DataConverterInitializersPlaceholder, TestInitializers.ToString());
-            File.WriteAllText(Path.Combine(testPath, $"DataConvertersTestClass.cs"), content);
+            string content = testDataTemplate.Replace(DataConverterMembersTag, TestMembers.ToString());
+            content = content.Replace(DataConverterInitializersTag, TestInitializers.ToString());
+            File.WriteAllText(Path.Combine(TestPath, $"DataConvertersTestClass.cs"), content);
         }
 
         // Build a list of all type variations
