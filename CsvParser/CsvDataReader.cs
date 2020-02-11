@@ -18,6 +18,12 @@ namespace SoftCircuits.CsvParser
         private string[] Columns;
 
         /// <summary>
+        /// Returns the number of columns for the last row successfully read.
+        /// Can be 0.
+        /// </summary>
+        public int ColumnCount => Columns.Length;
+
+        /// <summary>
         /// Initializes a new instance of the CsvDataReader class for the specified file name.
         /// </summary>
         /// <param name="path">The name of the CSV file to read.</param>

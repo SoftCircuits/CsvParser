@@ -16,9 +16,9 @@ In addition, the library's behavior can be customized. For example, you can chan
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csv tsv parser csv-parser tsv-parser comma tab separated values delimited</PackageTags>
-    <PackageReleaseNotes>Reworked the logic that assigns indexes to columns after problems were detected (changes may break existing code in very uncommon scenarios); expanded unit tests to test changes; modified documentation</PackageReleaseNotes>
+    <PackageReleaseNotes>Added CsvDataReader&lt;&gt;.ColumnCount property - Can be used to detect empty rows.</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>2.0.8</Version>
+    <Version>2.0.9</Version>
   </PropertyGroup>
 
   <ItemGroup>
