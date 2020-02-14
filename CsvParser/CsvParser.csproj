@@ -16,15 +16,21 @@ In addition, the library's behavior can be customized. For example, you can chan
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csv tsv parser csv-parser tsv-parser comma tab separated values delimited</PackageTags>
-    <PackageReleaseNotes>Added CsvDataReader&lt;&gt;.ColumnCount property - Can be used to detect empty rows.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.0.10; minor tweaks; added icon</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>2.0.9</Version>
+    <Version>2.0.10</Version>
+    <PackageIcon>Logo_64x64.png</PackageIcon>
+    <PackageIconUrl />
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="Old Converters\**" />
     <EmbeddedResource Remove="Old Converters\**" />
     <None Remove="Old Converters\**" />
+    <None Include="..\Logo_64x64.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

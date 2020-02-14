@@ -16,14 +16,17 @@ namespace SoftCircuits.CsvParser
         /// Empty lines are interpreted as a line with zero columns.
         /// </summary>
         NoColumns,
+
         /// <summary>
         /// Empty lines are interpreted as a line with a single empty column.
         /// </summary>
         EmptyColumn,
+
         /// <summary>
         /// Empty lines are skipped over as though they did not exist.
         /// </summary>
         Ignore,
+
         /// <summary>
         /// An empty line is interpreted as the end of the input file.
         /// </summary>
@@ -76,7 +79,8 @@ namespace SoftCircuits.CsvParser
         #endregion
 
         /// <summary>
-        /// Specifies how blank lines are interpreted by CsvReader.
+        /// Specifies how blank lines are interpreted by CsvReader. This setting is set
+        /// to <see cref="EmptyLineBehavior.NoColumns"></see> by default.
         /// </summary>
         public EmptyLineBehavior EmptyLineBehavior;
 

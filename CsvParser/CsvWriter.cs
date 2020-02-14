@@ -78,11 +78,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="columns">The list of columns to write.</param>
         public void WriteRow(params string[] columns)
         {
-            // Verify required argument
-            if (columns == null)
-                throw new ArgumentNullException(nameof(columns));
-
-            WriteRow((IEnumerable<string>)columns);
+            WriteRow(columns as IEnumerable<string>);
         }
 
         /// <summary>
