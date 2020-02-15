@@ -8,9 +8,7 @@ Install-Package SoftCircuits.CsvParser
 
 ## Overview
 
-CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files (or files with other delimiters). It includes basic classes to read and write CSV columns, and also higher level classes that can automatically map your class properties to CSV columns. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines. CsvParser is very efficient and is designed to handle large data files without loading everything into memory. This library averages about 4 times faster than CsvHelper.
-
-In addition, the library's behavior can be customized. For example, you can change the column delimiter to another character (like the tab character, for example), change the quote character, customize how blank lines are handled, etc.
+CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files. Since the delimiter is customizable, it can actually be used to work with files with any delimiter). CsvParser includes basic classes to read and write CSV data, and also higher level classes that can automatically map your class properties to CSV columns. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines. CsvParser is very efficient and is designed to handle large data files without loading everything into memory. This library averages nearly 4 times faster than the popular CsvHelper.
 
 ## CsvWriter and CsvReader Classes
 
@@ -88,7 +86,7 @@ using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
 }
 ```
 
-It is important to note in the above example where the code that writes the data calls `CsvDataWriter<T>.WriteHeaders()`. This writes a row with the name of each column. The code that reads the data calls `CsvDataReader<T>.ReadHeaders()` to read that header data. Because the argument to `CsvDataReader<T>.ReadHeaders()` is `true`, this tells the code to use the header data to determine how to map the columns in the rest of the file. For example, maybe the columns are in a different order, or maybe some of the columns are excluded.
+It is important to note in the above example where the code that writes the data calls `CsvDataWriter<T>.WriteHeaders()`. This writes a row with the name of each column. (The library gets the column names from the properties of the `Person` class.) The code that reads the data calls `CsvDataReader<T>.ReadHeaders()` to read that header data. Because the argument to `CsvDataReader<T>.ReadHeaders()` is `true`, this tells the code to use the header data to determine how to map the columns in the rest of the file. For example, maybe the columns are in a different order, or maybe some of the columns are excluded.
 
 Correctly mapping the class properties to the CSV columns is critical for these classes to work correctly. Here, the code maps the class properties to columns based on the headers. The following sections will discuss other ways to map class properties to columns.
 
@@ -96,11 +94,12 @@ Correctly mapping the class properties to the CSV columns is critical for these 
 
 The `ColumnMapAttribute` can be applied to any class property or field to specify how that property or field is mapped to a CSV column. This attribute includes the following properties:
 
-**Name:** Specifies a column name, allowing the column name to be different from the class property name.
+- **Name:**
+  Specifies a column name, allowing the column name to be different from the class property name.
 
-**Index:** Specifies a property's 0-based column position. To ensure expected results, it is generally best to set the Index for all columns when setting this property.
+- **Index:** Specifies a property's 0-based column position. To ensure expected results, it is generally best to set the Index for all columns when setting this property.
 
-**Exclude:** Specifies that the class property should be excluded, and not written to or read from any column.
+- **Exclude:** Specifies that the class property should be excluded, and not written to or read from any column.
 
 The following example modifies the `Person` class shown earlier with `ColumnMap` attributes. The attributes are used to set the columns to be in the opposite order from how the class properties are declared, give the columns completely different names, and exclude the `Id` column.
 
