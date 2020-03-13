@@ -108,7 +108,7 @@ namespace CsvParserTests
                     writer.WriteRow("Alden Horn", "521 Consequat, Street", "Whithorn", "Wigtownshire", "46603", "abc", "1.0", "false");
                 }
 
-                using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file))
+                using (CsvReader<Customer> reader = new CsvReader<Customer>(file))
                 {
                     reader.ReadHeaders(true);
                     while (reader.Read(out Customer person))
@@ -131,7 +131,7 @@ namespace CsvParserTests
                 }
 
                 CsvSettings settings = new CsvSettings { InvalidDataRaisesException = false };
-                using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file, settings))
+                using (CsvReader<Customer> reader = new CsvReader<Customer>(file, settings))
                 {
                     reader.ReadHeaders(true);
                     while (reader.Read(out Customer person))
@@ -146,14 +146,14 @@ namespace CsvParserTests
         {
             using (MemoryFile file = new MemoryFile())
             {
-                using (CsvDataWriter<Customer> writer = new CsvDataWriter<Customer>(file))
+                using (CsvWriter<Customer> writer = new CsvWriter<Customer>(file))
                 {
                     writer.MapColumns<CustomerMaps>();
                     writer.WriteHeaders();
                     writer.Write(Customers);
                 }
 
-                using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file))
+                using (CsvReader<Customer> reader = new CsvReader<Customer>(file))
                 {
                     reader.MapColumns<CustomerMaps>();
                     reader.ReadHeaders(true);
@@ -169,13 +169,13 @@ namespace CsvParserTests
         {
             using (MemoryFile file = new MemoryFile())
             {
-                using (CsvDataWriter<Customer> writer = new CsvDataWriter<Customer>(file))
+                using (CsvWriter<Customer> writer = new CsvWriter<Customer>(file))
                 {
                     writer.WriteHeaders();
                     writer.Write(Customers);
                 }
 
-                using (CsvDataReader<Customer> reader = new CsvDataReader<Customer>(file))
+                using (CsvReader<Customer> reader = new CsvReader<Customer>(file))
                 {
                     reader.ReadHeaders(true);
                     while (reader.Read(out Customer person))

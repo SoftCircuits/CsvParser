@@ -16,14 +16,14 @@ namespace CsvParserTests
             using (MemoryFile file = new MemoryFile())
             {
                 List<DataConvertersTestClass> results = new List<DataConvertersTestClass>();
-                using (CsvDataWriter<DataConvertersTestClass> writer = new CsvDataWriter<DataConvertersTestClass>(file))
+                using (CsvWriter<DataConvertersTestClass> writer = new CsvWriter<DataConvertersTestClass>(file))
                 {
                     writer.WriteHeaders();
                     foreach (var item in DataConvertersTestClass.TestData)
                         writer.Write(item);
                 }
 
-                using (CsvDataReader<DataConvertersTestClass> reader = new CsvDataReader<DataConvertersTestClass>(file))
+                using (CsvReader<DataConvertersTestClass> reader = new CsvReader<DataConvertersTestClass>(file))
                 {
                     reader.ReadHeaders(true);
                     while (reader.Read(out DataConvertersTestClass item))

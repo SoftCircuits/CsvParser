@@ -188,7 +188,7 @@ name@company.com,,1241 Willow Lane,,12345";
             {
                 List<DATA_TYPE> items = new List<DATA_TYPE>();
 
-                using (CsvDataReader<DATA_TYPE> reader = new CsvDataReader<DATA_TYPE>(file))
+                using (CsvReader<DATA_TYPE> reader = new CsvReader<DATA_TYPE>(file))
                 {
                     reader.MapColumns<MAPPING_TYPE>();
                     Assert.IsTrue(reader.ReadHeaders(mapColumnsFromHeaders));
@@ -197,7 +197,7 @@ name@company.com,,1241 Willow Lane,,12345";
                 }
 
                 file.Reset();
-                using (CsvDataWriter<DATA_TYPE> writer = new CsvDataWriter<DATA_TYPE>(file))
+                using (CsvWriter<DATA_TYPE> writer = new CsvWriter<DATA_TYPE>(file))
                 {
                     writer.MapColumns<MAPPING_TYPE>();
                     writer.WriteHeaders();

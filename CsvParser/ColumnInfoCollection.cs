@@ -109,7 +109,7 @@ namespace SoftCircuits.CsvParser
             // Override all Index values (whether explicit or not)
             for (int i = 0; i < headers.Length; i++)
             {
-                int j = headers.IndexOf(h => h.Equals(this[i].Name, stringComparison));
+                int j = Array.FindIndex(headers, h => h.Equals(this[i].Name, stringComparison));
                 if (j >= 0)
                     this[i].Index = j;
                 else
