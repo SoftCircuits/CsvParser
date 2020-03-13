@@ -39,9 +39,9 @@ using (CsvReader reader = new CsvReader(path))
 }
 ```
 
-## CsvDataWriter&lt;T&gt; and CsvDataReader&lt;T&gt; Classes
+## CsvWriter&lt;T&gt; and CsvReader&lt;T&gt; Classes
 
-These are higher level classes and will automatically map data between class properties and CSV columns. The following example defines a class, and a collection with several instances of that class. It then uses `CsvDataWriter<T>` to write the data to a CSV file, and `CsvDataReader<T>` to read it back again.
+These are higher level classes and will automatically map data between class properties and CSV columns. The following example defines a class, and a collection with several instances of that class. It then uses `CsvWriter<T>` to write the data to a CSV file, and `CsvReader<T>` to read it back again.
 
 ```cs
 // This class will represent the data in the CSV file
@@ -66,7 +66,7 @@ List<Person> People = new List<Person>
 // Write the data to disk
 // Since all records are already in memory, you could replace the
 // write loop with: writer.Write(People)
-using (CsvDataWriter<Person> writer = new CsvDataWriter<Person>(path))
+using (CsvWriter<Person> writer = new CsvWriter<Person>(path))
 {
     writer.WriteHeaders();
 
@@ -76,7 +76,7 @@ using (CsvDataWriter<Person> writer = new CsvDataWriter<Person>(path))
 
 // Read the data from disk
 List<Person> people = new List<Person>();
-using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
+using (CsvReader<Person> reader = new CsvReader<Person>(path))
 {
     // Read header and use to determine column order
     reader.ReadHeaders(true);
@@ -86,7 +86,7 @@ using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
 }
 ```
 
-It is important to note in the above example where the code that writes the data calls `CsvDataWriter<T>.WriteHeaders()`. This writes a row with the name of each column. (The library gets the column names from the properties of the `Person` class.) The code that reads the data calls `CsvDataReader<T>.ReadHeaders()` to read that header data. Because the argument to `CsvDataReader<T>.ReadHeaders()` is `true`, this tells the code to use the header data to determine how to map the columns in the rest of the file. For example, maybe the columns are in a different order, or maybe some of the columns are excluded.
+It is important to note in the above example where the code that writes the data calls `CsvWriter<T>.WriteHeaders()`. This writes a row with the name of each column. (The library gets the column names from the properties of the `Person` class.) The code that reads the data calls `CsvReader<T>.ReadHeaders()` to read that header data. Because the argument to `CsvReader<T>.ReadHeaders()` is `true`, this tells the code to use the header data to determine how to map the columns in the rest of the file. For example, maybe the columns are in a different order, or maybe some of the columns are excluded.
 
 Correctly mapping the class properties to the CSV columns is critical for these classes to work correctly. Here, the code maps the class properties to columns based on the headers. The following sections will discuss other ways to map class properties to columns.
 
@@ -122,7 +122,7 @@ With the `Person` class defined as shown above, the previous example will work c
 
 ## MapColumns() Method
 
-Class properties can also be mapped to columns using the `CsvDataWriter<T>.MapColumns()` and `CsvDataReader<T>.MapColumns()` methods. This is useful if you can't directly modify the class you are working with. This approach allows you to do anything you can do with a `ColumnMapAttribute` attribute. It also allows you to provide custom data converters (something not supported via the `ColumnMapAttribute` attribute).
+Class properties can also be mapped to columns using the `CsvWriter<T>.MapColumns()` and `CsvReader<T>.MapColumns()` methods. This is useful if you can't directly modify the class you are working with. This approach allows you to do anything you can do with a `ColumnMapAttribute` attribute. It also allows you to provide custom data converters (something not supported via the `ColumnMapAttribute` attribute).
 
 Data converters convert class properties to strings, and then back again from strings to class properties. The CsvParser library includes converters for all basic data types (including `Guid` and `DateTime`), nullable basic data types, basic data type arrays and nullable basic data type arrays. But you can override the data converter used for any class property. For example, you might want to write your own data converter to support custom property types, or when you are working with data not formatted as expected by the built-in data converters. A good example of this are `DateTime` properties because there are so many ways to format date and time values.
 
@@ -177,7 +177,7 @@ class PersonMaps : ColumnMaps<Person>
 }
 
 // Write data to disk
-using (CsvDataWriter<Person> writer = new CsvDataWriter<Person>(path))
+using (CsvWriter<Person> writer = new CsvWriter<Person>(path))
 {
     // Register our custom mapping
     writer.MapColumns<PersonMaps>();
@@ -189,7 +189,7 @@ using (CsvDataWriter<Person> writer = new CsvDataWriter<Person>(path))
 
 // Read data from disk
 List<Person> people = new List<Person>();
-using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
+using (CsvReader<Person> reader = new CsvReader<Person>(path))
 {
     // Register our custom mapping
     reader.MapColumns<PersonMaps>();
@@ -202,7 +202,7 @@ using (CsvDataReader<Person> reader = new CsvDataReader<Person>(path))
 }
 ```
 
-Notice that the example above still calls `CsvDataWriter.WriteHeaders()` and `CsvDataReader.ReadHeaders()`. However, since the code has explicitly mapped all of the columns, this is just for the benefit of anyone viewing the file or maybe other software that must read it. It is completely unnecessary in the example above. Also notice that `false` is passed to `CsvDataReader.ReadHeaders()` because we do not want the library to use the headers to determine column order, etc. (If `true` is passed to `CsvDataReader.ReadHeaders()` here, it would override any existing `Index` and `Exclude` mapping properties.)
+Notice that the example above still calls `CsvWriter.WriteHeaders()` and `CsvReader.ReadHeaders()`. However, since the code has explicitly mapped all of the columns, this is just for the benefit of anyone viewing the file or maybe other software that must read it. It is completely unnecessary in the example above. Also notice that `false` is passed to `CsvReader.ReadHeaders()` because we do not want the library to use the headers to determine column order, etc. (If `true` is passed to `CsvReader.ReadHeaders()` here, it would override any existing `Index` and `Exclude` mapping properties.)
 
 ## CsvSettings Class
 
