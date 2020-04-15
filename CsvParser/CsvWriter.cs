@@ -113,11 +113,12 @@ namespace SoftCircuits.CsvParser
         {
             if (!Settings.HasSpecialCharacter(s))
                 return s;
+
             // Ensure we're using current quote character
             if (OneQuoteString == null || OneQuoteString[0] != Settings.QuoteCharacter)
             {
-                OneQuoteString = Settings.QuoteCharacter.ToString();
-                TwoQuoteString = string.Format("{0}{0}", Settings.QuoteCharacter);
+                OneQuoteString = new string(Settings.QuoteCharacter, 1);
+                TwoQuoteString = new string(Settings.QuoteCharacter, 2);
             }
             return string.Format("{0}{1}{0}", Settings.QuoteCharacter, s.Replace(OneQuoteString, TwoQuoteString));
         }

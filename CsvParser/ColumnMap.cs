@@ -8,20 +8,19 @@ namespace SoftCircuits.CsvParser
 {
     public class ColumnMap
     {
-        // Properties named as such to prevent conflict with methods.
-        internal string _PropertyName { get; private set; }
-        internal string _Name { get; private set; }
-        internal int _Index { get; private set; }
-        internal bool? _Exclude { get; private set; }
-        internal IDataConverter _Converter { get; private set; }
+        internal string InternalPropertyName { get; private set; }
+        internal string InternalName { get; private set; }
+        internal int InternalIndex { get; private set; }
+        internal bool? InternalExclude { get; private set; }
+        internal IDataConverter InternalConverter { get; private set; }
 
         internal ColumnMap(string propertyName)
         {
-            _PropertyName = propertyName ?? throw new ArgumentNullException(nameof(propertyName));
-            _Name = null;
-            _Index = ColumnInfo.InvalidIndex;
-            _Exclude = null;
-            _Converter = null;
+            InternalPropertyName = propertyName ?? throw new ArgumentNullException(nameof(propertyName));
+            InternalName = null;
+            InternalIndex = ColumnInfo.InvalidIndex;
+            InternalExclude = null;
+            InternalConverter = null;
         }
 
         /// <summary>
@@ -30,7 +29,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="name"></param>
         public ColumnMap Name(string name)
         {
-            _Name = name ?? throw new ArgumentNullException(nameof(name));
+            InternalName = name ?? throw new ArgumentNullException(nameof(name));
             return this;
         }
 
@@ -41,7 +40,7 @@ namespace SoftCircuits.CsvParser
         /// <returns></returns>
         public ColumnMap Index(int index)
         {
-            _Index = index;
+            InternalIndex = index;
             return this;
         }
 
@@ -52,7 +51,7 @@ namespace SoftCircuits.CsvParser
         /// <returns></returns>
         public ColumnMap Exclude(bool exclude)
         {
-            _Exclude = exclude;
+            InternalExclude = exclude;
             return this;
         }
 
@@ -64,7 +63,7 @@ namespace SoftCircuits.CsvParser
         /// property. Must be for the same type as the property type.</param>
         public ColumnMap Converter(IDataConverter converter)
         {
-            _Converter = converter ?? throw new ArgumentNullException(nameof(converter));
+            InternalConverter = converter ?? throw new ArgumentNullException(nameof(converter));
             return this;
         }
 
@@ -75,12 +74,12 @@ namespace SoftCircuits.CsvParser
         {
             StringBuilder builder = new StringBuilder();
 
-            builder.Append(_PropertyName ?? "(null)");
+            builder.Append(InternalPropertyName ?? "(null)");
             builder.AppendFormat(", Index: {0}",
-                (_Index != ColumnInfo.InvalidIndex) ?
-                _Index.ToString() :
+                (InternalIndex != ColumnInfo.InvalidIndex) ?
+                InternalIndex.ToString() :
                 "(null)");
-            if (_Exclude.HasValue && _Exclude.Value)
+            if (InternalExclude.HasValue && InternalExclude.Value)
                 builder.Append(" (Exclude)");
             return builder.ToString();
         }

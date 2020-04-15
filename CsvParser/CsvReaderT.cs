@@ -8,10 +8,10 @@ using System.Text;
 namespace SoftCircuits.CsvParser
 {
     /// <summary>
-    /// Class to read from a CSV file with automatic mapping from CSV columns
-    /// to object properties.
+    /// Class to read from a CSV file with automatic mapping between class properties
+    /// and CSV columns.
     /// </summary>
-    /// <typeparam name="T">The object type being read.</typeparam>
+    /// <typeparam name="T">The type being read.</typeparam>
     public class CsvReader<T> : CsvReader where T : class, new()
     {
         private ColumnInfoCollection<T> ColumnsInfo;
@@ -21,10 +21,11 @@ namespace SoftCircuits.CsvParser
         /// Returns the number of columns for the last row successfully read.
         /// Can be 0.
         /// </summary>
-        public int ColumnCount => Columns.Length;
+        public int ColumnCount => Columns?.Length ?? 0;
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the specified file name.
+        /// Initializes a new instance of the <see cref="CsvReader{T}"></see> class for the
+        /// specified file name.
         /// </summary>
         /// <param name="path">The name of the CSV file to read.</param>
         /// <param name="settings">Optional custom settings.</param>
@@ -35,8 +36,8 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the specified file name,
-        /// with the specified character encoding.
+        /// Initializes a new instance of the <see cref="CsvReader{T}"></see> class for the
+        /// specified file name, with the specified character encoding.
         /// </summary>
         /// <param name="path">The name of the CSV file to read.</param>
         /// <param name="encoding">The character encoding to use.</param>
@@ -48,11 +49,12 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the specified file name,
-        /// with the specified byte order mark detection option.
+        /// Initializes a new instance of the <see cref="CsvReader{T}"></see> class for the
+        /// specified file name, with the specified byte order mark detection option.
         /// </summary>
         /// <param name="path">The name of the CSV file to read.</param>
-        /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
+        /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for
+        /// byte order marks at
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(string path, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
             : base(path, detectEncodingFromByteOrderMarks, settings)
@@ -61,8 +63,9 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the specified file name,
-        /// with the specified character encoding and byte order mark detection option.
+        /// Initializes a new instance of the <see cref="CsvReader{T}"></see> class for the
+        /// specified file name, with the specified character encoding and byte order mark
+        /// detection option.
         /// </summary>
         /// <param name="path">The name of the CSV file to read.</param>
         /// <param name="encoding">The character encoding to use.</param>
@@ -75,7 +78,7 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class.
+        /// Initializes a new instance of the <see cref="CsvReader{T}"></see> class.
         /// </summary>
         /// <param name="stream">The stream to be read.</param>
         /// <param name="settings">Optional custom settings.</param>
@@ -86,8 +89,8 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the specified stream,
-        /// with the specified character encoding.
+        /// Initializes a new instance of the <see cref="CsvReader{T}"></see> class for the
+        /// specified stream, with the specified character encoding.
         /// </summary>
         /// <param name="stream">The stream to be read.</param>
         /// <param name="encoding">The character encoding to use.</param>
@@ -99,8 +102,8 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the specified stream,
-        /// with the specified byte order mark detection option.
+        /// Initializes a new instance of the <see cref="CsvReader{T}"></see> class for the
+        /// specified stream, with the specified byte order mark detection option.
         /// </summary>
         /// <param name="stream">The stream to be read.</param>
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
@@ -113,8 +116,9 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the specified stream,
-        /// with the specified character encoding and byte order mark detection option.
+        /// Initializes a new instance of the <see cref="CsvReader{T}"></see> class for the
+        /// specified stream, with the specified character encoding and byte order mark
+        /// detection option.
         /// </summary>
         /// <param name="stream">The stream to be read.</param>
         /// <param name="encoding">The character encoding to use.</param>
@@ -147,7 +151,7 @@ namespace SoftCircuits.CsvParser
 
         /// <summary>
         /// Reads a row of columns from the input stream. If <paramref name="mapColumnsFromHeaders"/>
-        /// is true, the column headers are used to map columns to class members.
+        /// is <c>true</c>, the column headers are used to map columns to class members.
         /// </summary>
         /// <param name="mapColumnsFromHeaders">Specifies whether the column headers
         /// should be used to map columns to class members.</param>
@@ -156,7 +160,7 @@ namespace SoftCircuits.CsvParser
         {
             if (ReadRow(ref Columns))
             {
-                // Will delete all column mapping if headers are empty
+                // Will exclude all column mapping if headers are empty
                 if (mapColumnsFromHeaders)
                     ColumnsInfo.ApplyHeaders(Columns, Settings.ColumnHeaderStringComparison);
                 return true;

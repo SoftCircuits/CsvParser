@@ -10,12 +10,12 @@ namespace SoftCircuits.CsvParser
     /// <summary>
     /// Derive from this abstract class to implement custom column mapping.
     /// Call the <see cref="MapColumn"></see> method from the constructor
-    /// to map columns.
+    /// for each property being mapped.
     /// </summary>
-    /// <typeparam name="T">Specifies the class that implements column mapping.</typeparam>
+    /// <typeparam name="T">Specifies the class that is being mapped.</typeparam>
     public abstract class ColumnMaps<T> where T : class, new()
     {
-        private List<ColumnMap> Maps = new List<ColumnMap>();
+        private readonly List<ColumnMap> Maps = new List<ColumnMap>();
 
         /// <summary>
         /// Adds mapping information to a class property or field. Returns a
@@ -36,7 +36,7 @@ namespace SoftCircuits.CsvParser
                 member = expression.Body as MemberExpression;
 
             if (member == null)
-                throw new InvalidOperationException("Unsupported expression type used to identify class property.");
+                throw new InvalidOperationException("Unsupported expression type used to specify class property.");
 
             ColumnMap propertyMap = new ColumnMap(member.Member.Name);
             Maps.Add(propertyMap);

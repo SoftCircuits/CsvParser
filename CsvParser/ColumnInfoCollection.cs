@@ -16,7 +16,7 @@ namespace SoftCircuits.CsvParser
     internal class ColumnInfoCollection<T> : List<ColumnInfo>
     {
         /// <summary>
-        /// Initializes a new ColumnInfoCollection instance.
+        /// Initializes a new <see cref="ColumnInfoCollection{T}"></see> instance.
         /// </summary>
         public ColumnInfoCollection()
         {
@@ -51,23 +51,23 @@ namespace SoftCircuits.CsvParser
             // Validate mapping property references
             foreach (ColumnMap columnMap in columnMaps)
             {
-                int currIndex = FindIndex(ci => ci.MemberName == columnMap._PropertyName);
+                int currIndex = FindIndex(ci => ci.MemberName == columnMap.InternalPropertyName);
                 if (currIndex < 0)
-                    throw new InvalidOperationException($"Custom map for '{columnMap._PropertyName}' references an unknown member.");
+                    throw new InvalidOperationException($"Custom map for '{columnMap.InternalPropertyName}' references an unknown member.");
 
                 ColumnInfo column = this[currIndex];
-                if (!string.IsNullOrWhiteSpace(columnMap._Name))
-                    column.Name = columnMap._Name.Trim();
-                if (columnMap._Index != ColumnInfo.InvalidIndex)
-                    column.Index = columnMap._Index;
-                if (columnMap._Exclude.HasValue)
+                if (!string.IsNullOrWhiteSpace(columnMap.InternalName))
+                    column.Name = columnMap.InternalName.Trim();
+                if (columnMap.InternalIndex != ColumnInfo.InvalidIndex)
+                    column.Index = columnMap.InternalIndex;
+                if (columnMap.InternalExclude.HasValue)
                 {
                     // Has setting changed?
-                    if (column.Exclude != columnMap._Exclude.Value)
+                    if (column.Exclude != columnMap.InternalExclude.Value)
                     {
                         // Renumber non-explicit indexes
                         int index = column.Index;
-                        if (!columnMap._Exclude.Value)
+                        if (!columnMap.InternalExclude.Value)
                             index++;
                         for (int i = currIndex + 1; i < Count; i++)
                         {
@@ -78,15 +78,15 @@ namespace SoftCircuits.CsvParser
                                 index++;
                         }
                     }
-                    column.Exclude = columnMap._Exclude.Value;
+                    column.Exclude = columnMap.InternalExclude.Value;
                     column.ExplicitIndex = true;
                 }
-                if (columnMap._Converter != null)
+                if (columnMap.InternalConverter != null)
                 {
                     // Confirm converter handles the correct data type
-                    if (columnMap._Converter.GetDataType() != column.Member.Type)
-                        throw new DataConverterTypeMismatchException(column.MemberName, column.Member.Type, columnMap._Converter.GetDataType());
-                    column.Converter = columnMap._Converter;
+                    if (columnMap.InternalConverter.GetDataType() != column.Member.Type)
+                        throw new DataConverterTypeMismatchException(column.MemberName, column.Member.Type, columnMap.InternalConverter.GetDataType());
+                    column.Converter = columnMap.InternalConverter;
                 }
             }
             _filteredColumns = null;
@@ -119,9 +119,9 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Returns the 
+        /// Returns the <see cref="ColumnInfo"></see> for each column sorted by index and
+        /// filtered by the exclude flag.
         /// </summary>
-        /// <returns></returns>
         public IEnumerable<ColumnInfo> FilteredColumns
         {
             get

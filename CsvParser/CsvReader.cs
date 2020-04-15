@@ -9,12 +9,12 @@ using System.Text;
 namespace SoftCircuits.CsvParser
 {
     /// <summary>
-    /// Class for reading from comma-separated-value (CSV) files
+    /// Class for reading from comma-separated-value (CSV) files.
     /// </summary>
     public class CsvReader : IDisposable
     {
         // Private members
-        private StreamReader Reader;
+        private readonly StreamReader Reader;
         protected CsvSettings Settings;
 
         private string Line;
@@ -178,8 +178,10 @@ namespace SoftCircuits.CsvParser
                 Debug.Assert(Line[CurrPos] == Settings.ColumnDelimiter);
                 CurrPos++;
             }
+
             // Returns results
             columns = results.GetResults();
+
             // Indicate success
             return true;
         }

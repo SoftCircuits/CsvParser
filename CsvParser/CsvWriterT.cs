@@ -10,18 +10,18 @@ using System.Text;
 namespace SoftCircuits.CsvParser
 {
     /// <summary>
-    /// Class to write to a CSV file with automatic mapping from object properties
-    /// to CSV columns.
+    /// Class to write to a CSV file with automatic mapping between class properties
+    /// and CSV columns.
     /// </summary>
-    /// <typeparam name="T">The object type being written.</typeparam>
+    /// <typeparam name="T">The type being written.</typeparam>
     public class CsvWriter<T> : CsvWriter where T : class, new()
     {
         private ColumnInfoCollection<T> ColumnsInfo;
         private string[] Columns;
 
         /// <summary>
-        /// Initializes a new instance of the CsvWriter class for the specified file
-        /// using the default character encoding.
+        /// Initializes a new instance of the <see cref="CsvWriter{T}"></see> class for the
+        /// specified file using the default character encoding.
         /// </summary>
         /// <param name="path">The name of the CSV file to write to.</param>
         /// <param name="settings">Optional custom settings.</param>
@@ -32,8 +32,8 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvWriter class for the specified file
-        /// using the specified character encoding.
+        /// Initializes a new instance of the <see cref="CsvWriter{T}"></see> class for the
+        /// specified file using the specified character encoding.
         /// </summary>
         /// <param name="path">The name of the CSV file to write to.</param>
         /// <param name="encoding">The character encoding to use.</param>
@@ -45,8 +45,8 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvWriter class for the specified stream
-        /// using the default character encoding.
+        /// Initializes a new instance of the <see cref="CsvWriter{T}"></see> class for the
+        /// specified stream using the default character encoding.
         /// </summary>
         /// <param name="stream">The stream to write to.</param>
         /// <param name="settings">Optional custom settings.</param>
@@ -57,8 +57,8 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvWriter class for the specified stream
-        /// using the specified character encoding.
+        /// Initializes a new instance of the <see cref="CsvWriter{T}"></see> class for the
+        /// specified stream using the specified character encoding.
         /// </summary>
         /// <param name="stream">The stream to write to.</param>
         /// <param name="encoding">The character encoding to use.</param>
@@ -93,7 +93,7 @@ namespace SoftCircuits.CsvParser
         public void WriteHeaders()
         {
             // Get column data
-            var filteredColumns = ColumnsInfo.FilteredColumns;
+            IEnumerable<ColumnInfo> filteredColumns = ColumnsInfo.FilteredColumns;
 
             // Ensure column array is the correct size
             if (Columns == null || Columns.Length != filteredColumns.Count())

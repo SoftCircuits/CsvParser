@@ -34,7 +34,7 @@ namespace SoftCircuits.CsvParser
     }
 
     /// <summary>
-    /// Common base class for CSV reader and writer classes.
+    /// Settings class for CSV reader and writer classes.
     /// </summary>
     public class CsvSettings
     {
@@ -45,14 +45,14 @@ namespace SoftCircuits.CsvParser
         /// These are special characters in CSV files. If a column contains any
         /// of these characters, the entire column is wrapped in quotes.
         /// </summary>
-        private char[] SpecialCharacters;
+        private readonly char[] SpecialCharacters;
 
         // Indexes into SpecialCharacters
         private const int ColumnDelimiterIndex = 0;
         private const int QuoteCharacterIndex = 1;
 
         /// <summary>
-        /// Gets/sets the character used to delimit columns.
+        /// Gets or sets the character used to delimit columns.
         /// </summary>
         public char ColumnDelimiter
         {
@@ -61,7 +61,7 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Gets/sets the character used to quote values that contain special characters.
+        /// Gets or sets the character used to quote values that contain special characters.
         /// </summary>
         public char QuoteCharacter
         {
@@ -85,7 +85,7 @@ namespace SoftCircuits.CsvParser
         public EmptyLineBehavior EmptyLineBehavior;
 
         /// <summary>
-        /// If true, <see cref="CsvDataReader{T}"></see> will raise a
+        /// If true, <see cref="CsvReader{T}"></see> will raise a
         /// <see cref="BadDataFormatException"></see> exception when it encounters
         /// data that cannot be converted to the corresponding data type. This
         /// setting is <c>true</c> by default.
@@ -94,7 +94,7 @@ namespace SoftCircuits.CsvParser
 
         /// <summary>
         /// Specifies the string comparison type used by
-        /// <see cref="CsvDataReader.ReadHeaders(bool)"></see> to compare column
+        /// <see cref="CsvReader.ReadHeaders(bool)"></see> to compare column
         /// names against column headers when it's passed a <c>true</c> argument.
         /// This setting is set to
         /// <see cref="StringComparison.InvariantCultureIgnoreCase"></see> by
@@ -107,7 +107,13 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         public CsvSettings()
         {
-            SpecialCharacters = new char[] { ',', '"', '\r', '\n' };
+            SpecialCharacters = new char[]
+            {
+                ',',    // ColumnDelimiter
+                '"',    // QuoteCharacter
+                '\r',   // New line characters
+                '\n'
+            };
             EmptyLineBehavior = EmptyLineBehavior.NoColumns;
             InvalidDataRaisesException = true;
             ColumnHeaderStringComparison = StringComparison.InvariantCultureIgnoreCase;

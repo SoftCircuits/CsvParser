@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 //
 using System;
+using System.Diagnostics;
 
 namespace SoftCircuits.CsvParser
 {
@@ -14,6 +15,8 @@ namespace SoftCircuits.CsvParser
     /// <typeparam name="T">Array type.</typeparam>
     internal class ArrayManager<T>
     {
+        private const int GrowBy = 10;
+
         private T[] Items;
         private int Count;
 
@@ -23,7 +26,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="items">Initial array.</param>
         public ArrayManager(T[] items)
         {
-            Items = items ?? new T[10];
+            Items = items ?? new T[GrowBy];
             Count = 0;
         }
 
@@ -34,7 +37,10 @@ namespace SoftCircuits.CsvParser
         public void Add(T item)
         {
             if (Count >= Items.Length)
-                Array.Resize(ref Items, Count + 5);
+            {
+                Array.Resize(ref Items, Count + GrowBy);
+                Debug.Assert(Count < Items.Length);
+            }
             Items[Count++] = item;
         }
 
