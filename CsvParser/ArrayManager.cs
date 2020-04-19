@@ -39,7 +39,7 @@ namespace SoftCircuits.CsvParser
             if (Count >= Items.Length)
             {
                 Array.Resize(ref Items, Count + GrowBy);
-                Debug.Assert(Count < Items.Length);
+                Debug.Assert(Items.Length > Count);
             }
             Items[Count++] = item;
         }
@@ -49,6 +49,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         public T[] GetResults()
         {
+            Debug.Assert(Count <= Items.Length);
             if (Count < Items.Length)
                 Array.Resize(ref Items, Count);
             return Items;

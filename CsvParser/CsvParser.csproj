@@ -16,9 +16,9 @@ In addition, the library's behavior can be customized. For example, you can chan
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csv tsv parser csv-parser tsv-parser comma tab separated values delimited</PackageTags>
-    <PackageReleaseNotes>Minor tweaks and optimizations; Improved XML comments.</PackageReleaseNotes>
+    <PackageReleaseNotes>Minor tweaks and optimizations; Improved XML comments; Updated speed tests project.</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>2.1.1</Version>
+    <Version>2.1.2</Version>
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <PackageIconUrl />
   </PropertyGroup>

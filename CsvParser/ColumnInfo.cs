@@ -9,6 +9,10 @@ namespace SoftCircuits.CsvParser
 {
     internal class ColumnInfo
     {
+        /// <summary>
+        /// Represents the default, invalid column index value.
+        /// Value will sort after all valid column index values.
+        /// </summary>
         public const int InvalidIndex = int.MaxValue;
 
         /// <summary>
@@ -28,13 +32,13 @@ namespace SoftCircuits.CsvParser
         public int Index { get; set; }
 
         /// <summary>
-        /// If true, the <seealso cref="Index"/> property was set explicitly
-        /// and shouldn't change.
+        /// If true, the <see cref="Index"/> property was set explicitly
+        /// and shouldn't change unless explicitly changed.
         /// </summary>
         public bool ExplicitIndex { get; set; }
 
         /// <summary>
-        /// If true, this column is not serialized.
+        /// If true, this column is not serialized from/to file.
         /// </summary>
         public bool Exclude { get; set; }
 
@@ -51,7 +55,8 @@ namespace SoftCircuits.CsvParser
         /// <summary>
         /// Initializes a ColumnInfo instance.
         /// </summary>
-        /// <param name="member">Identifies the member this column is associated with.</param>
+        /// <param name="member">Identifies the type member this column is associated
+        /// with.</param>
         public ColumnInfo(IMember member)
         {
             if (member == null)

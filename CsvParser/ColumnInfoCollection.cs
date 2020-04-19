@@ -22,7 +22,7 @@ namespace SoftCircuits.CsvParser
         {
             // Build the column collection for the specified type
             int index = 0;
-            foreach (IMember member in GetPropertiesAndFields(typeof(T)))
+            foreach (IMember member in GetMembers(typeof(T)))
             {
                 ColumnInfo column = new ColumnInfo(member);
 
@@ -51,9 +51,9 @@ namespace SoftCircuits.CsvParser
             // Validate mapping property references
             foreach (ColumnMap columnMap in columnMaps)
             {
-                int currIndex = FindIndex(ci => ci.MemberName == columnMap.InternalPropertyName);
+                int currIndex = FindIndex(ci => ci.MemberName == columnMap.InternalMemberName);
                 if (currIndex < 0)
-                    throw new InvalidOperationException($"Custom map for '{columnMap.InternalPropertyName}' references an unknown member.");
+                    throw new InvalidOperationException($"Custom map for '{columnMap.InternalMemberName}' references an unknown member.");
 
                 ColumnInfo column = this[currIndex];
                 if (!string.IsNullOrWhiteSpace(columnMap.InternalName))
@@ -120,7 +120,7 @@ namespace SoftCircuits.CsvParser
 
         /// <summary>
         /// Returns the <see cref="ColumnInfo"></see> for each column sorted by index and
-        /// filtered by the exclude flag.
+        /// filtered by exclude flag.
         /// </summary>
         public IEnumerable<ColumnInfo> FilteredColumns
         {
@@ -142,7 +142,7 @@ namespace SoftCircuits.CsvParser
         /// Returns all the properties and fields of a type.
         /// </summary>
         /// <param name="type">The type for which to return the members.</param>
-        private IEnumerable<IMember> GetPropertiesAndFields(Type type)
+        private IEnumerable<IMember> GetMembers(Type type)
         {
             foreach (MemberInfo member in type.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
             {
