@@ -107,7 +107,7 @@ namespace SoftCircuits.CsvParser
                 throw new ArgumentNullException(nameof(headers));
 
             // Override all Index values (whether explicit or not)
-            for (int i = 0; i < headers.Length; i++)
+            for (int i = 0; i < Count; i++)
             {
                 int j = Array.FindIndex(headers, h => h.Equals(this[i].Name, stringComparison));
                 if (j >= 0)
