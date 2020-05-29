@@ -151,7 +151,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         public void Dispose()
         {
-            if (LeaveStreamOpen)
+            if (!LeaveStreamOpen)
                 Writer.Dispose();
             else
                 Flush();
