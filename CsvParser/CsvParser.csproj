@@ -16,10 +16,9 @@ In addition, the library's behavior can be customized. For example, you can chan
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csv tsv parser csv-parser tsv-parser comma tab separated values delimited</PackageTags>
-    <PackageReleaseNotes>Added CsvReader.LeaveStreamOpen and CsvWriter.LeaveStreamOpen properties to optionally leave the underlying stream object open when the CsvReader and CsvWriter objects are disposed; Added silent null checking on column values when writing rows.
-</PackageReleaseNotes>
+    <PackageReleaseNotes>CsvWriter now calls flush when being disposed and LeaveStreamOpen is true.</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>2.1.4</Version>
+    <Version>2.1.5</Version>
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <PackageIconUrl />
   </PropertyGroup>
