@@ -14,12 +14,19 @@ namespace SoftCircuits.CsvParser
     public class CsvWriter : IDisposable
     {
         // Private members
-        private StreamWriter Writer;
+        private readonly StreamWriter Writer;
         protected CsvSettings Settings;
 
         // Used for formatting quoted columns
         private string OneQuoteString = null;
         private string TwoQuoteString = null;
+
+        /// <summary>
+        /// Gets or sets whether the underlying stream is left open after the
+        /// <see cref="CsvWriter"/> object is disposed. By default, the
+        /// underlying stream is also disposed.
+        /// </summary>
+        public bool LeaveStreamOpen { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the CsvWriter class for the specified file
@@ -45,6 +52,7 @@ namespace SoftCircuits.CsvParser
         {
             Writer = new StreamWriter(path, false, encoding);
             Settings = settings ?? new CsvSettings();
+            LeaveStreamOpen = false;
         }
 
         /// <summary>
@@ -57,6 +65,7 @@ namespace SoftCircuits.CsvParser
         {
             Writer = new StreamWriter(stream);
             Settings = settings ?? new CsvSettings();
+            LeaveStreamOpen = false;
         }
 
         /// <summary>
@@ -70,6 +79,7 @@ namespace SoftCircuits.CsvParser
         {
             Writer = new StreamWriter(stream, encoding);
             Settings = settings ?? new CsvSettings();
+            LeaveStreamOpen = false;
         }
 
         /// <summary>
@@ -111,6 +121,9 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         internal string CsvEncode(string s)
         {
+            if (s == null)
+                s = string.Empty;
+
             if (!Settings.HasSpecialCharacter(s))
                 return s;
 
@@ -136,6 +149,10 @@ namespace SoftCircuits.CsvParser
         /// <summary>
         /// Releases all resources used by the CsvWriter object.
         /// </summary>
-        public void Dispose() => Writer.Dispose();
+        public void Dispose()
+        {
+            if (!LeaveStreamOpen)
+                Writer.Dispose();
+        }
     }
 }

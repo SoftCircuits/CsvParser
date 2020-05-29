@@ -21,6 +21,13 @@ namespace SoftCircuits.CsvParser
         private int CurrPos;
 
         /// <summary>
+        /// Gets or sets whether the underlying stream is left open after the
+        /// <see cref="CsvReader"/> object is disposed. By default, the
+        /// underlying stream is also disposed.
+        /// </summary>
+        public bool LeaveStreamOpen { get; set; }
+
+        /// <summary>
         /// Initializes a new instance of the CsvReader class for the specified file name.
         /// </summary>
         /// <param name="path">The name of the CSV file to read.</param>
@@ -29,6 +36,7 @@ namespace SoftCircuits.CsvParser
         {
             Reader = new StreamReader(path);
             Settings = settings ?? new CsvSettings();
+            LeaveStreamOpen = false;
         }
 
         /// <summary>
@@ -43,6 +51,7 @@ namespace SoftCircuits.CsvParser
         {
             Reader = new StreamReader(path, detectEncodingFromByteOrderMarks);
             Settings = settings ?? new CsvSettings();
+            LeaveStreamOpen = false;
         }
 
         /// <summary>
@@ -56,6 +65,7 @@ namespace SoftCircuits.CsvParser
         {
             Reader = new StreamReader(path, encoding);
             Settings = settings ?? new CsvSettings();
+            LeaveStreamOpen = false;
         }
 
         /// <summary>
@@ -71,6 +81,7 @@ namespace SoftCircuits.CsvParser
         {
             Reader = new StreamReader(path, encoding, detectEncodingFromByteOrderMarks);
             Settings = settings ?? new CsvSettings();
+            LeaveStreamOpen = false;
         }
 
         /// <summary>
@@ -82,6 +93,7 @@ namespace SoftCircuits.CsvParser
         {
             Reader = new StreamReader(stream);
             Settings = settings ?? new CsvSettings();
+            LeaveStreamOpen = false;
         }
 
         /// <summary>
@@ -96,6 +108,7 @@ namespace SoftCircuits.CsvParser
         {
             Reader = new StreamReader(stream, detectEncodingFromByteOrderMarks);
             Settings = settings ?? new CsvSettings();
+            LeaveStreamOpen = false;
         }
 
         /// <summary>
@@ -110,6 +123,7 @@ namespace SoftCircuits.CsvParser
         {
             Reader = new StreamReader(stream, encoding);
             Settings = settings ?? new CsvSettings();
+            LeaveStreamOpen = false;
         }
 
         /// <summary>
@@ -125,6 +139,7 @@ namespace SoftCircuits.CsvParser
         {
             Reader = new StreamReader(stream, encoding, detectEncodingFromByteOrderMarks);
             Settings = settings ?? new CsvSettings();
+            LeaveStreamOpen = false;
         }
 
         /// <summary>
@@ -264,6 +279,10 @@ namespace SoftCircuits.CsvParser
         /// <summary>
         /// Releases all resources used by the CsvReader object.
         /// </summary>
-        public void Dispose() => Reader.Dispose();
+        public void Dispose()
+        {
+            if (!LeaveStreamOpen)
+                Reader.Dispose();
+        }
     }
 }
