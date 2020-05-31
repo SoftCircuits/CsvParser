@@ -7,7 +7,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Jonathan Wood</Authors>
     <Company>SoftCircuits</Company>
-    <Description>CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files (and files with other delimiters). It includes basic classes to read and write CSV columns, and also higher level classes that can automatically map CSV columns to your class properties. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines. CsvParser is very efficient and is designed to handle large data files without loading everything into memory. CsvParser runs about 4 times faster than CsvHelper.
+    <Description>CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files (and files with other delimiters). It includes basic classes to read and write CSV columns, and also higher level classes that can automatically map CSV columns to your class properties. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines. CsvParser is very efficient and is designed to handle large data files without loading everything into memory. CsvParser runs almost 4 times faster than the popular CsvHelper.
 
 In addition, the library's behavior can be customized. For example, you can change the column delimiter to another character (like the tab character, for example), change the quote character, customize how blank lines are handled, etc.</Description>
     <Copyright>Copyright © 2019-2020 SoftCircuits</Copyright>
@@ -16,9 +16,9 @@ In addition, the library's behavior can be customized. For example, you can chan
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csv tsv parser csv-parser tsv-parser comma tab separated values delimited</PackageTags>
-    <PackageReleaseNotes>CsvWriter now calls flush when being disposed and LeaveStreamOpen is true.</PackageReleaseNotes>
+    <PackageReleaseNotes>Optimized CsvWriter.WriteRows() handling of columns with special characters; modified silent null checking in CsvWriter.WriteRows() and added unit tests for writing null values without errors.</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>2.1.6</Version>
+    <Version>2.1.7</Version>
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <PackageIconUrl />
   </PropertyGroup>

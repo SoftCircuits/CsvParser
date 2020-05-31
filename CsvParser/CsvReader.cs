@@ -22,13 +22,13 @@ namespace SoftCircuits.CsvParser
 
         /// <summary>
         /// Gets or sets whether the underlying stream is left open after the
-        /// <see cref="CsvReader"/> object is disposed. By default, the
-        /// underlying stream is also disposed.
+        /// <see cref="CsvReader"/> object is disposed. If <c>false</c> (the
+        /// default), the underlying stream is also disposed.
         /// </summary>
         public bool LeaveStreamOpen { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the specified file name.
+        /// Initializes a new <see cref="CsvReader"/> instance for the specified file.
         /// </summary>
         /// <param name="path">The name of the CSV file to read.</param>
         /// <param name="settings">Optional custom settings.</param>
@@ -40,7 +40,7 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the specified file name,
+        /// Initializes a new <see cref="CsvReader"/> instance for the specified file,
         /// with the specified byte order mark detection option.
         /// </summary>
         /// <param name="path">The name of the CSV file to read.</param>
@@ -55,7 +55,7 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the specified file name,
+        /// Initializes a new <see cref="CsvReader"/> instance for the specified file,
         /// with the specified character encoding.
         /// </summary>
         /// <param name="path">The name of the CSV file to read.</param>
@@ -69,7 +69,7 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the specified file name,
+        /// Initializes a new <see cref="CsvReader"/> instance for the specified file,
         /// with the specified character encoding and byte order mark detection option.
         /// </summary>
         /// <param name="path">The name of the CSV file to read.</param>
@@ -85,7 +85,7 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the specified stream.
+        /// Initializes a new <see cref="CsvReader"/> instance for the specified stream.
         /// </summary>
         /// <param name="stream">The stream to be read.</param>
         /// <param name="settings">Optional custom settings.</param>
@@ -97,7 +97,7 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the specified stream,
+        /// Initializes a new <see cref="CsvReader"/> instance for the specified stream,
         /// with the specified byte order mark detection option.
         /// </summary>
         /// <param name="stream">The stream to be read.</param>
@@ -112,7 +112,7 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the specified stream,
+        /// Initializes a new <see cref="CsvReader"/> instance for the specified stream,
         /// with the specified character encoding.
         /// </summary>
         /// <param name="stream">The stream to be read.</param>
@@ -127,7 +127,7 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvReader class for the specified stream,
+        /// Initializes a new <see cref="CsvReader"/> instance for the specified stream,
         /// with the specified character encoding and byte order mark detection option.
         /// </summary>
         /// <param name="stream">The stream to be read.</param>

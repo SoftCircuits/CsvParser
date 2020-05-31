@@ -7,13 +7,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace CsvParserTests
 {
     [TestClass]
     public class CsvParserTests
     {
-        List<(string, string, string)> RawCsvFile = new List<(string, string, string)>
+        readonly List<(string, string, string)> RawCsvFile = new List<(string, string, string)>
         {
             ("Abc", "Def", "Ghi"),
             ("@Abc", "D\"e\"f", "G,h'i"),
@@ -39,6 +40,40 @@ namespace CsvParserTests
             ("alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf"),
             ("", "", ""),
         };
+
+        [TestMethod]
+        public void WriteNullValuesTest()
+        {
+            using (MemoryFile file = new MemoryFile())
+            {
+                List<(string, string, string)> actual = new List<(string, string, string)>();
+
+                using (CsvWriter writer = new CsvWriter(file))
+                {
+                    writer.WriteRow(null, "abc", "xyz");
+                    writer.WriteRow("abc", null, "xyz");
+                    writer.WriteRow("abc", "xyz", null);
+                    writer.WriteRow(null, null, null);
+                }
+
+                using (CsvReader reader = new CsvReader(file))
+                {
+                    string[] columns = null;
+                    while (reader.ReadRow(ref columns))
+                    {
+                        Assert.AreEqual(3, columns.Length);
+                        actual.Add((columns[0], columns[1], columns[2]));
+                    }
+                    CollectionAssert.AreEqual(new List<(string, string, string)>
+                    {
+                        ("", "abc", "xyz"),
+                        ("abc", "", "xyz"),
+                        ("abc", "xyz", ""),
+                        ("", "", ""),
+                    }, actual);
+                }
+            }
+        }
 
         [TestMethod]
         public void ParserTest()

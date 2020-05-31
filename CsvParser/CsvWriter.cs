@@ -3,6 +3,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -17,19 +18,15 @@ namespace SoftCircuits.CsvParser
         private readonly StreamWriter Writer;
         protected CsvSettings Settings;
 
-        // Used for formatting quoted columns
-        private string OneQuoteString = null;
-        private string TwoQuoteString = null;
-
         /// <summary>
         /// Gets or sets whether the underlying stream is left open after the
-        /// <see cref="CsvWriter"/> object is disposed. By default, the
-        /// underlying stream is also disposed.
+        /// <see cref="CsvWriter"/> object is disposed. If <c>false</c> (the
+        /// default), the underlying stream is also disposed.
         /// </summary>
         public bool LeaveStreamOpen { get; set; }
 
         /// <summary>
-        /// Initializes a new instance of the CsvWriter class for the specified file
+        /// Initializes a new <see cref="CsvWriter"/> instance for the specified file
         /// using the default character encoding.
         /// </summary>
         /// <param name="path">The name of the CSV file to write to.</param>
@@ -42,7 +39,7 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvWriter class for the specified file
+        /// Initializes a new <see cref="CsvWriter"/> instance for the specified file
         /// using the specified character encoding.
         /// </summary>
         /// <param name="path">The name of the CSV file to write to.</param>
@@ -56,7 +53,7 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvWriter class for the specified stream
+        /// Initializes a new <see cref="CsvWriter"/> instance for the specified stream
         /// using UTF-8 character encoding.
         /// </summary>
         /// <param name="stream">The stream to write to.</param>
@@ -69,7 +66,7 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Initializes a new instance of the CsvWriter class for the specified stream
+        /// Initializes a new <see cref="CsvWriter"/> instance for the specified stream
         /// using the specified character encoding.
         /// </summary>
         /// <param name="stream">The stream to write to.</param>
@@ -111,7 +108,7 @@ namespace SoftCircuits.CsvParser
                 else
                     Writer.Write(Settings.ColumnDelimiter);
                 // Write column value
-                Writer.Write(CsvEncode(value));
+                Writer.Write(CsvEncode(value ?? string.Empty));
             }
             Writer.WriteLine();
         }
@@ -121,19 +118,11 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         internal string CsvEncode(string s)
         {
-            if (s == null)
-                s = string.Empty;
-
+            Debug.Assert(s != null);
             if (!Settings.HasSpecialCharacter(s))
                 return s;
-
-            // Ensure we're using current quote character
-            if (OneQuoteString == null || OneQuoteString[0] != Settings.QuoteCharacter)
-            {
-                OneQuoteString = new string(Settings.QuoteCharacter, 1);
-                TwoQuoteString = new string(Settings.QuoteCharacter, 2);
-            }
-            return string.Format("{0}{1}{0}", Settings.QuoteCharacter, s.Replace(OneQuoteString, TwoQuoteString));
+            s = s.Replace(Settings.OneQuoteString, Settings.TwoQuoteString);
+            return string.Format("{0}{1}{0}", Settings.QuoteCharacter, s);
         }
 
         /// <summary>
@@ -147,7 +136,7 @@ namespace SoftCircuits.CsvParser
         public void Close() => Writer.Close();
 
         /// <summary>
-        /// Releases all resources used by the CsvWriter object.
+        /// Releases all resources used by the <see cref="CsvWriter"/> object.
         /// </summary>
         public void Dispose()
         {

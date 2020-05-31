@@ -66,7 +66,11 @@ namespace SoftCircuits.CsvParser
         public char QuoteCharacter
         {
             get => SpecialCharacters[QuoteCharacterIndex];
-            set => SpecialCharacters[QuoteCharacterIndex] = value;
+            set
+            {
+                SpecialCharacters[QuoteCharacterIndex] = value;
+                InitializeQuoteStrings();
+            }
         }
 
         /// <summary>
@@ -75,6 +79,26 @@ namespace SoftCircuits.CsvParser
         /// <param name="s"></param>
         /// <returns></returns>
         internal bool HasSpecialCharacter(string s) => s.IndexOfAny(SpecialCharacters) >= 0;
+
+        /// <summary>
+        /// Gets a string with the current quote character. Used for formatting columns.
+        /// </summary>
+        internal string OneQuoteString { get; private set; }
+
+        /// <summary>
+        /// Gets a string with two quote characters. Used for formatting columns.
+        /// </summary>
+        internal string TwoQuoteString { get; private set; }
+
+        /// <summary>
+        /// Initializes <see cref="OneQuoteString"/> and <see cref="TwoQuoteString"/>
+        /// based on the value of <see cref="QuoteCharacter"/>.
+        /// </summary>
+        private void InitializeQuoteStrings()
+        {
+            OneQuoteString = new string(QuoteCharacter, 1);
+            TwoQuoteString = new string(QuoteCharacter, 2);
+        }
 
         #endregion
 
@@ -114,6 +138,7 @@ namespace SoftCircuits.CsvParser
                 '\r',   // New line characters
                 '\n'
             };
+            InitializeQuoteStrings();
             EmptyLineBehavior = EmptyLineBehavior.NoColumns;
             InvalidDataRaisesException = true;
             ColumnHeaderStringComparison = StringComparison.InvariantCultureIgnoreCase;
