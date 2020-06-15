@@ -16,7 +16,7 @@ namespace BuildConverters
         /// <summary>
         /// Size of test data array in DataConvertersTestClass.
         /// </summary>
-        private const int DataConvertersTestClassArraySize = 5;
+        private const int DataConvertersTestClassArraySize = 10;
 
         // Replacement tags
         private const string DataConvertersTag = "{@DataConvertersData}";

@@ -10,15 +10,7 @@ namespace SoftCircuits.CsvParser
 
         public override bool TryConvertFromString(string s, out char? value)
         {
-            value = null;
-
-            if (string.IsNullOrEmpty(s))
-                return (s != null);
-
-            if (s.Length != 1)
-                return false;
-
-            value = s[0];
+            value = string.IsNullOrEmpty(s) ? (char?)null : s[0];
             return true;
         }
     }

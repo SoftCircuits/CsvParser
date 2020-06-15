@@ -22,7 +22,7 @@ namespace SoftCircuits.CsvParser
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = null;
+                    array = new decimal?[0];
                     return true;
                 }
 

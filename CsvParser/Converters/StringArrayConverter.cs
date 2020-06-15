@@ -28,11 +28,7 @@ namespace SoftCircuits.CsvParser
 
         public override bool TryConvertFromString(string s, out string[] array)
         {
-            if (s == null)
-            {
-                array = null;
-                return false;
-            }
+            s = s ?? string.Empty;
 
             List<string> list = new List<string>();
             int pos = 0;

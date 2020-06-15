@@ -23,14 +23,14 @@ namespace SoftCircuits.CsvParser
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = null;
-                    return (s != null);
+                    array = new DateTime?[0];
+                    return true;
                 }
 
                 string[] tokens = s.Split(';');
                 array = new DateTime?[tokens.Length];
                 for (int i = 0; i < tokens.Length; i++)
-                    array[i] = (tokens[i].Length > 0) ? (DateTime?)DateTime.Parse(tokens[i], CultureInfo.InvariantCulture) : null;
+                    array[i] = (tokens[i].Length > 0) ? (DateTime?)DateTime.Parse(tokens[i]) : null;
                 return true;
             }
             catch (Exception)

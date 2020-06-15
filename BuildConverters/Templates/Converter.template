@@ -89,8 +89,8 @@ DEFAULT - ARRAY
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = null;
-                    return (s != null);
+                    array = new {@BaseTypeCName}[0];
+                    return true;
                 }
 
                 string[] tokens = s.Split(';');
@@ -128,7 +128,7 @@ using System.Linq;
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = null;
+                    array = new {@BaseTypeCName}?[0];
                     return true;
                 }
 
@@ -156,8 +156,8 @@ STRING - STANDARD
 
 {@Section(String,Standard,FromString)}public override bool TryConvertFromString(string s, out {@FullTypeCName} value)
         {
-            value = s;
-            return (value != null);
+            value = s ?? string.Empty;
+            return true;
         }{@EndSection}
 
 =====================================================================
@@ -188,11 +188,7 @@ using System.Text;
 
 {@Section(String,Array,FromString)}public override bool TryConvertFromString(string s, out {@FullTypeCName} array)
         {
-            if (s == null)
-            {
-                array = null;
-                return false;
-            }
+            s = s ?? string.Empty;
 
             List<string> list = new List<string>();
             int pos = 0;
@@ -245,17 +241,9 @@ using System.Text;
 CHAR - NULLABLE
 =====================================================================
 
-{@Section(Char,Nullable,FromString)}public override bool TryConvertFromString(string s, out char? value)
+{@Section(Char,Nullable,FromString)}public override bool TryConvertFromString(string s, out {@FullTypeCName} value)
         {
-            value = null;
-
-            if (string.IsNullOrEmpty(s))
-                return (s != null);
-
-            if (s.Length != 1)
-                return false;
-
-            value = s[0];
+            value = string.IsNullOrEmpty(s) ? ({@FullTypeCName})null : s[0];
             return true;
         }{@EndSection}
 
@@ -269,12 +257,7 @@ CHAR - ARRAY
 
 {@Section(Char,Array,FromString)}public override bool TryConvertFromString(string s, out char[] array)
         {
-            if (s == null || s.Length == 0)
-            {
-                array = null;
-                return (s != null);
-            }
-            array = s.ToCharArray();
+            array = string.IsNullOrWhiteSpace(s) ? new char[0] : s.ToCharArray();
             return true;
         }{@EndSection}
 
@@ -300,8 +283,8 @@ using System.Linq;
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = null;
-                    return (s != null);
+                    array = new {@BaseTypeCName}?[0];
+                    return true;
                 }
 
                 string[] tokens = s.Split(';');
@@ -339,7 +322,7 @@ using System.Globalization;
 
 {@Section(DateTime,Standard,FromString)}public override bool TryConvertFromString(string s, out {@FullTypeCName} value)
         {
-            return {@BaseTypeCName}.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.None, out value);
+            return {@BaseTypeCName}.TryParse(s, out value);
         }{@EndSection}
         
 =====================================================================
@@ -354,16 +337,19 @@ using System.Globalization;
 
 {@Section(DateTime,Nullable,FromString)}public override bool TryConvertFromString(string s, out {@FullTypeCName} value)
         {
-            value = null;
-
             if (string.IsNullOrWhiteSpace(s))
-                return (s != null);
-            
+            {
+                value = null;
+                return true;
+            }
+
             if ({@BaseTypeCName}.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.None, out {@BaseTypeCName} temp))
             {
                 value = temp;
                 return true;
             }
+
+            value = null;
             return false;
         }{@EndSection}
 
@@ -389,14 +375,14 @@ using System.Globalization;
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = null;
-                    return (s != null);
+                    array = new {@BaseTypeCName}[0];
+                    return true;
                 }
 
                 string[] tokens = s.Split(';');
                 array = new {@BaseTypeCName}[tokens.Length];
                 for (int i = 0; i < tokens.Length; i++)
-                    array[i] = {@BaseTypeCName}.Parse(tokens[i], CultureInfo.InvariantCulture);
+                    array[i] = {@BaseTypeCName}.Parse(tokens[i]);
                 return true;
             }
             catch (Exception)
@@ -429,14 +415,14 @@ using System.Linq;
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = null;
-                    return (s != null);
+                    array = new {@BaseTypeCName}?[0];
+                    return true;
                 }
 
                 string[] tokens = s.Split(';');
                 array = new {@BaseTypeCName}?[tokens.Length];
                 for (int i = 0; i < tokens.Length; i++)
-                    array[i] = (tokens[i].Length > 0) ? ({@BaseTypeCName}?){@BaseTypeCName}.Parse(tokens[i], CultureInfo.InvariantCulture) : null;
+                    array[i] = (tokens[i].Length > 0) ? ({@BaseTypeCName}?){@BaseTypeCName}.Parse(tokens[i]) : null;
                 return true;
             }
             catch (Exception)

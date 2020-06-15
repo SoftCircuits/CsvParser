@@ -11,8 +11,8 @@ namespace SoftCircuits.CsvParser
 
         public override bool TryConvertFromString(string s, out string value)
         {
-            value = s;
-            return (value != null);
+            value = s ?? string.Empty;
+            return true;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace SoftCircuits.CsvParser
 
         public override bool TryConvertFromString(string s, out DateTime value)
         {
-            return DateTime.TryParse(s, CultureInfo.InvariantCulture, DateTimeStyles.None, out value);
+            return DateTime.TryParse(s, out value);
         }
     }
 }

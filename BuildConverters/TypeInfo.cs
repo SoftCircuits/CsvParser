@@ -8,7 +8,7 @@ namespace BuildConverters
 {
     public class TypeInfo
     {
-        private Random Random;
+        private readonly Random Random;
 
         public Type Type { get; private set; }
         public string Name => Type.Name;

@@ -21,8 +21,8 @@ namespace SoftCircuits.CsvParser
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = null;
-                    return (s != null);
+                    array = new bool[0];
+                    return true;
                 }
 
                 string[] tokens = s.Split(';');
