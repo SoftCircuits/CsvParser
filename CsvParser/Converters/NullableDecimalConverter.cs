@@ -10,16 +10,19 @@ namespace SoftCircuits.CsvParser
 
         public override bool TryConvertFromString(string s, out decimal? value)
         {
-            value = null;
-
             if (string.IsNullOrWhiteSpace(s))
-                return (s != null);
+            {
+                value = null;
+                return true;
+            }
 
             if (decimal.TryParse(s, out decimal temp))
             {
                 value = temp;
                 return true;
             }
+
+            value = null;
             return false;
         }
     }

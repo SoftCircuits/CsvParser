@@ -16,9 +16,9 @@ In addition, the library's behavior can be customized. For example, you can chan
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csv tsv parser csv-parser tsv-parser comma tab separated values delimited</PackageTags>
-    <PackageReleaseNotes>Optimized CsvWriter.WriteRows() handling of columns with special characters; modified silent null checking in CsvWriter.WriteRows() and added unit tests for writing null values without errors.</PackageReleaseNotes>
+    <PackageReleaseNotes>Changes to data converter templates.</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>2.1.7</Version>
+    <Version>2.1.8</Version>
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <PackageIconUrl />
   </PropertyGroup>

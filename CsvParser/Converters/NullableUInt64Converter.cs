@@ -10,16 +10,19 @@ namespace SoftCircuits.CsvParser
 
         public override bool TryConvertFromString(string s, out ulong? value)
         {
-            value = null;
-
             if (string.IsNullOrWhiteSpace(s))
-                return (s != null);
+            {
+                value = null;
+                return true;
+            }
 
             if (ulong.TryParse(s, out ulong temp))
             {
                 value = temp;
                 return true;
             }
+
+            value = null;
             return false;
         }
     }

@@ -24,9 +24,9 @@ namespace BuildConverters
         private const string DataConverterInitializersTag = "{@DataConverterInitializers}";
 
         // Target paths
-        private const string TemplatePath = @"D:\Users\Jonathan\source\repos\CsvParser\BuildConverters\Templates";
-        private const string OutputPath = @"D:\Users\Jonathan\source\repos\CsvParser\CsvParser\Converters";
-        private const string TestPath = @"D:\Users\Jonathan\source\repos\CsvParser\TestCsvParser";
+        private const string TemplatePath = @"D:\Users\jwood\source\repos\CsvParser\BuildConverters\Templates";
+        private const string OutputPath = @"D:\Users\jwood\source\repos\CsvParser\CsvParser\Converters";
+        private const string TestPath = @"D:\Users\jwood\source\repos\CsvParser\TestCsvParser";
 
         static readonly TypeInfo[] TypeData = new TypeInfo[]
         {
