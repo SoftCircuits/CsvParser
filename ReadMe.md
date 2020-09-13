@@ -131,6 +131,8 @@ With the `Person` class defined as shown above, the previous example will work c
 
 Class properties can also be mapped to columns using the `CsvWriter<T>.MapColumns()` and `CsvReader<T>.MapColumns()` methods. This is useful if you can't directly modify the class you are working with. This approach allows you to do anything you can do with a `ColumnMapAttribute` attribute.
 
+The `MapColumns` method is demonstrated in the following section on *Custom Data Converters*.
+
 ## Custom Data Converters
 
 Data converters convert class properties to strings, and then back again from strings to class properties. The CsvParser library includes converters for all basic data types (including `Guid` and `DateTime`), nullable basic data types, basic data type arrays and nullable basic data type arrays. But you can override the data converter used for any class property. For example, you might want to write your own data converter to support custom property types, or when you are working with data not formatted as expected by the built-in data converters. A good example of this are `DateTime` properties because there are so many ways to format date and time values.
