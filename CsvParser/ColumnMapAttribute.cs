@@ -24,6 +24,11 @@ namespace SoftCircuits.CsvParser
         public bool Exclude { get; set; }
 
         /// <summary>
+        /// Object that converts this property to a string, and back again.
+        /// </summary>
+        public Type ConverterType { get; set; }
+
+        /// <summary>
         /// Initializes a new instance.
         /// </summary>
         public ColumnMapAttribute()
@@ -31,6 +36,7 @@ namespace SoftCircuits.CsvParser
             Name = null;
             Index = ColumnInfo.InvalidIndex;
             Exclude = false;
+            ConverterType = null;
         }
     }
 }

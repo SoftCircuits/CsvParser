@@ -63,11 +63,33 @@ namespace SoftCircuits.CsvParser
                 throw new ArgumentNullException(nameof(member));
 
             ColumnMapAttribute attribute = member.ColumnMapAttribute;
-            Name = string.IsNullOrWhiteSpace(attribute?.Name) ? member.Name : attribute.Name;
-            Index = attribute?.Index ?? InvalidIndex;
-            ExplicitIndex = Index != InvalidIndex;
-            Exclude = attribute?.Exclude ?? false;
-            Converter = DataConverters.GetConverter(member.Type);
+            if (attribute != null)
+            {
+                // Initialize data from attribute
+                Name = string.IsNullOrWhiteSpace(attribute.Name) ? member.Name : attribute.Name;
+                Index = attribute.Index;
+                ExplicitIndex = Index != InvalidIndex;
+                Exclude = attribute.Exclude;
+                if (attribute.ConverterType != null)
+                {
+                    // Verify converter type
+                    if (!typeof(IDataConverter).IsAssignableFrom(attribute.ConverterType))
+                        throw new ArgumentOutOfRangeException(nameof(attribute.ConverterType), "Converter type must derive from IDataConverter");
+                    Converter = Activator.CreateInstance(attribute.ConverterType) as IDataConverter;
+                    Debug.Assert(Converter != null);
+                }
+            }
+            else
+            {
+                // Initialize data
+                Name = member.Name;
+                Index = InvalidIndex;
+                ExplicitIndex = false;
+                Exclude = false;
+                Converter = null;
+            }
+            if (Converter == null)
+                Converter = DataConverters.GetConverter(member.Type);
             Member = member;
         }
 
