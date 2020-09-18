@@ -96,6 +96,8 @@ using (CsvReader<Person> reader = new CsvReader<Person>(path))
 
 It is important to note in the above example where the code that writes the data calls `CsvWriter<T>.WriteHeaders()`. This writes a row with the name of each column. (The library gets the column names from the properties of the `Person` class.) The code that reads the data calls `CsvReader<T>.ReadHeaders()` to read that header data. Because the argument to `CsvReader<T>.ReadHeaders()` is `true`, this tells the code to use the header data to determine how to map the columns. For example, it can determine the column order and also detect if one or more properties are not mapped to any column.
 
+If you can be sure the CSV file being read was created using the code above, the argument to `CsvReader<T>.ReadHeaders()` could be false because you could be confident that the columns would be in the order expected, etc. But if someone else is supplying the CSV file, setting the `CsvReader<T>.ReadHeaders()` argument to `true` would allow it to work if the supplier put the columns in a different order.
+
 Correctly mapping the class properties to the CSV columns is critical for these classes to work correctly. Here, the code maps the class properties to columns based on the column headers. The following sections will discuss other ways to map class properties to columns.
 
 ## ColumnMap Attribute
