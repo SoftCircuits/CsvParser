@@ -108,7 +108,7 @@ The `ColumnMapAttribute` can be applied to any class property or field to specif
   Specifies a column name, allowing the column name to be different from the class property name.
 
 - **Index:**
-  Specifies a property's 0-based column position. To ensure expected results, it is generally best to set the column Index for all property columns when setting this property.
+  Specifies a property's 0-based column position. To ensure expected results, it is generally best to set the column Index for all properties when setting this property.
 
 - **Exclude:**
   Specifies whether or not the class property should be excluded, and not written to or read from any column.
