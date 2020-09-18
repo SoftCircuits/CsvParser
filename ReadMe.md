@@ -10,26 +10,30 @@ Install-Package SoftCircuits.CsvParser
 
 ## Overview
 
-CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files. Since the delimiter is customizable, it can also be used to work with files with any delimiter). CsvParser includes basic classes to read and write CSV data, and also higher level classes that automatically map class properties to CSV columns. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines. CsvParser is very efficient and is designed to handle large data files without loading everything into memory. This library runs up to four times faster than the popular CsvHelper library.
+CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files. (Since you can customer the delimiter, it can also be used to work with files with any delimiter). CsvParser includes basic classes to read and write CSV data, and also higher-level classes that automatically map class properties to CSV columns. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines. CsvParser is very efficient and is designed to handle large data files without loading everything into memory. This library runs up to four times faster than the popular CsvHelper library.
 
 ## CsvWriter and CsvReader Classes
 
-These classes provide the simplest way to read and write CSV files. The example below writes several rows of data to a CSV file and then reads it back. Note that the `CsvWriter.WriteRow()` method is overloaded to also accept a `string[]` or `IEnumerable<string>` argument.
+These classes provide the simplest way to read and write CSV files. The example below writes several rows of data to a CSV file and then reads it back.
 
 ```cs
 // Write some data to disk
 using (CsvWriter writer = new CsvWriter(path))
 {
-    writer.WriteRow("Id", "Name", "Zip", "Birthday");
-    writer.WriteRow("1", "Bill Smith", "92869", "10/29/1972 12:00:00 AM");
-    writer.WriteRow("2", "Susan Carpenter", "92865", "2/17/1985 12:00:00 AM");
-    writer.WriteRow("3", "Jim Windsor", "92862", "4/23/1979 12:00:00 AM");
-    writer.WriteRow("4", "Jill Morrison", "92861", "5/2/1969 12:00:00 AM");
-    writer.WriteRow("5", "Gary Wright", "92868", "2/18/1974 12:00:00 AM");
+    // Header row
+    writer.WriteRow("Name", "Email", "Phone", "Birthday");
+    // Data rows
+    writer.WriteRow("Bill Smith", "bsmith@domain.com", "555-1234", "10/29/1982 12:00:00 AM");
+    writer.WriteRow("Susan Carpenter", "scarpenter@domain.com", "555-2345", "2/17/1995 12:00:00 AM");
+    writer.WriteRow("Jim Windsor", "jwindsor@domain.com", "555-3456", "4/23/1989 12:00:00 AM");
+    writer.WriteRow("Jill Morrison", "jmorrison@domain.com", "555-4567", "5/2/1979 12:00:00 AM");
+    writer.WriteRow("Gary Wright", "gwright@domain.com", "555-5678", "2/18/1984 12:00:00 AM");
 }
 ```
 
-This example reads all rows from a CSV file.
+Note that the `CsvWriter.WriteRow()` method accepts any number of string parameters. It is also overloaded to accept a `string[]` or `IEnumerable<string>` argument. The method correctly handles column values that contain commas, quotes or even newlines.
+
+The next example reads all rows from a CSV file.
 
 ```cs
 // Read the data from disk
@@ -41,33 +45,35 @@ using (CsvReader reader = new CsvReader(path))
 }
 ```
 
+The `CsvReader.ReadRow()` method returns `false` when the end of the file is reached. The `columns` parameter is passed by reference so it can be resized, if needed.
+
 ## CsvWriter &lt;T&gt; and CsvReader&lt;T&gt; Classes
 
-These are higher level classes and will automatically map data between class properties and CSV columns. The following example defines a class, and a collection with several instances of that class. It then uses `CsvWriter<T>` to write the data to a CSV file, and `CsvReader<T>` to read it back again.
+These are higher level classes that will automatically map data between class properties and CSV columns. The following example defines a class, declares a collection with several instances of that class, then uses `CsvWriter<T>` to write the data to a CSV file, and `CsvReader<T>` to read it back again.
 
 ```cs
 // This class will represent the data in the CSV file
 class Person
 {
-    public int Id { get; set; }
     public string Name { get; set; }
-    public string Zip { get; set; }
+    public string Email { get; set; }
+    public string Phone { get; set; }
     public DateTime Birthday { get; set; }
 }
 
 // Define some sample data
 List<Person> People = new List<Person>
 {
-    new Person { Id = 1, Name = "Bill Smith", Zip = "92869", Birthday = new DateTime(1972, 10, 29) },
-    new Person { Id = 2, Name = "Susan Carpenter", Zip = "92865", Birthday = new DateTime(1985, 2, 17) },
-    new Person { Id = 3, Name = "Jim Windsor", Zip = "92862", Birthday = new DateTime(1979, 4, 23) },
-    new Person { Id = 4, Name = "Jill Morrison", Zip = "92861", Birthday = new DateTime(1969, 5, 2) },
-    new Person { Id = 5, Name = "Gary Wright", Zip = "92868", Birthday = new DateTime(1974, 2, 18) },
+    new Person { Name = "Bill Smith", Email = "bsmith@domain.com", Phone = "555-1234", Birthday = new DateTime(1982, 10, 29) },
+    new Person { Name = "Susan Carpenter", Email = "scarpenter@domain.com", Phone = "555-2345", Birthday = new DateTime(1995, 2, 17) },
+    new Person { Name = "Jim Windsor", Email = "jwindsor@domain.com", Phone = "555-3456", Birthday = new DateTime(1989, 4, 23) },
+    new Person { Name = "Jill Morrison", Email = "jmorrison@domain.com", Phone = "555-4567", Birthday = new DateTime(1979, 5, 2) },
+    new Person { Name = "Gary Wright", Email = "gwright@domain.com", Phone = "555-5678", Birthday = new DateTime(1984, 2, 18) },
 };
 
 // Write the data to disk
-// Since all records are already in memory, you could replace the
-// write loop with: writer.Write(People)
+// Note: Since all records are already in memory, you could replace the
+// foreach loop with: writer.Write(People)
 using (CsvWriter<Person> writer = new CsvWriter<Person>(path))
 {
     writer.WriteHeaders();
@@ -88,7 +94,7 @@ using (CsvReader<Person> reader = new CsvReader<Person>(path))
 }
 ```
 
-It is important to note in the above example where the code that writes the data calls `CsvWriter<T>.WriteHeaders()`. This writes a row with the name of each column. (The library gets the column names from the properties of the `Person` class.) The code that reads the data calls `CsvReader<T>.ReadHeaders()` to read that header data. Because the argument to `CsvReader<T>.ReadHeaders()` is `true`, this tells the code to use the header data to determine how to map the columns in the rest of the file. For example, maybe the columns are in a different order, or maybe some of the columns are excluded.
+It is important to note in the above example where the code that writes the data calls `CsvWriter<T>.WriteHeaders()`. This writes a row with the name of each column. (The library gets the column names from the properties of the `Person` class.) The code that reads the data calls `CsvReader<T>.ReadHeaders()` to read that header data. Because the argument to `CsvReader<T>.ReadHeaders()` is `true`, this tells the code to use the header data to determine how to map the columns. For example, it can determine the column order and also detect if one or more properties are not mapped to any column.
 
 Correctly mapping the class properties to the CSV columns is critical for these classes to work correctly. Here, the code maps the class properties to columns based on the headers. The following sections will discuss other ways to map class properties to columns.
 
