@@ -14,7 +14,7 @@ CsvParser is a .NET library that makes it easy to work with comma-separated-valu
 
 ## CsvWriter and CsvReader Classes
 
-These classes provide the simplest way to read and write CSV files. The example below writes several rows of data to a CSV file and then reads it back.
+These classes provide the simplest way to read and write CSV files. The example below writes several rows of data to a CSV file.
 
 ```cs
 // Write some data to disk
