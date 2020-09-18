@@ -45,7 +45,7 @@ using (CsvReader reader = new CsvReader(path))
 }
 ```
 
-The `CsvReader.ReadRow()` method returns `false` when the end of the file is reached. The `columns` parameter is passed by reference so it can be resized, if needed.
+The `CsvReader.ReadRow()` method returns `false` when the end of the file has been reached and no more rows can be read. The `columns` parameter is passed by reference so it can be resized, if needed.
 
 ## CsvWriter &lt;T&gt; and CsvReader&lt;T&gt; Classes
 
