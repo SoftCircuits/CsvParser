@@ -120,7 +120,7 @@ The `ColumnMapAttribute` can be applied to any class property or field to specif
 
 The example below uses the `ColumnMap` attribute to customize the `Person` class. It sets the `Index` properties such that the CSV columns appear in the reverse order from how the properties are declared in the class, it excludes the `Phone` property, and it causes the `Birthday` header to use the name *DOB*. It also specifies a custom converter for the `Birthday` property that stores the date (no time) in a very compact format.
 
-```
+```cs
 // Add column mapping attributes to our data class
 class Person
 {
@@ -185,30 +185,22 @@ using (CsvReader<Person> reader = new CsvReader<Person>(path))
 }
 ```
 
-
-
-
-
-
-
-```cs
-// Add column mapping attributes to our data class
-class Person
-{
-    [ColumnMap(Exclude = true)]
-    public int Id { get; set; }
-    [ColumnMap(Index = 2, Name = "nombre")]
-    public string Name { get; set; }
-    [ColumnMap(Index = 1, Name = "código postal")]
-    public string Zip { get; set; }
-    [ColumnMap(Index = 0, Name = "cumpleaños")]
-    public DateTime Birthday { get; set; }
-}
-```
-
-With the `Person` class defined as shown above, the previous example will work correctly without the calls to `WriteHeaders()` and `ReadHeaders()`.
+Note that the code above will work correctly without the calls to the `CsvWriter<T>.WriteHeaders()` and `CsvReader<T>.ReadHeaders()` methods. We still included them for the beenefit of anyone looking at the contents of the CSV file. But they are optional here because we used the `ColumnMap` attribute to provide enough information about column order, etc. You can also see that we passed `false` to the `CsvReader<T>.ReadHeaders()` method. Again, this is because we have all the column information we need. However, if the file is being supplied by someone else, you might want to change this argument to `true`, so that it can handle unexpected cases such as where columns are in a different order.
 
 ## MapColumns() Method
+
+You may have 
+
+
+
+
+
+
+
+
+
+
+
 
 Class properties can also be mapped to columns using the `CsvWriter<T>.MapColumns()` and `CsvReader<T>.MapColumns()` methods. This is useful if you can't directly modify the class you are working with. This approach allows you to do anything you can do with a `ColumnMapAttribute` attribute.
 
