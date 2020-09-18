@@ -96,23 +96,25 @@ using (CsvReader<Person> reader = new CsvReader<Person>(path))
 
 It is important to note in the above example where the code that writes the data calls `CsvWriter<T>.WriteHeaders()`. This writes a row with the name of each column. (The library gets the column names from the properties of the `Person` class.) The code that reads the data calls `CsvReader<T>.ReadHeaders()` to read that header data. Because the argument to `CsvReader<T>.ReadHeaders()` is `true`, this tells the code to use the header data to determine how to map the columns. For example, it can determine the column order and also detect if one or more properties are not mapped to any column.
 
-Correctly mapping the class properties to the CSV columns is critical for these classes to work correctly. Here, the code maps the class properties to columns based on the headers. The following sections will discuss other ways to map class properties to columns.
+Correctly mapping the class properties to the CSV columns is critical for these classes to work correctly. Here, the code maps the class properties to columns based on the column headers. The following sections will discuss other ways to map class properties to columns.
 
 ## ColumnMap Attribute
 
-The `ColumnMapAttribute` can be applied to any class property or field to specify how that property or field is mapped to a CSV column. This attribute includes the following properties:
+The `ColumnMapAttribute` can be applied to any class property or field to specify how that property or field is mapped to a CSV column. This attribute accepts any of the following arguments:
 
 - **Name:**
   Specifies a column name, allowing the column name to be different from the class property name.
 
 - **Index:**
-  Specifies a property's 0-based column position. To ensure expected results, it is generally best to set the Index for all columns when setting this property.
+  Specifies a property's 0-based column position. To ensure expected results, it is generally best to set the column Index for all property columns when setting this property.
 
 - **Exclude:**
-  Specifies that the class property should be excluded, and not written to or read from any column.
+  Specifies whether or not the class property should be excluded, and not written to or read from any column.
 
 - **ConverterType:**
-   Specifies the type of a custom class that converts the class property. The type specified will normally derive from `DataConverter<>`, which implements `IDataConverter`. If the type specified does not implement `IDataConverter`, an `ArgumentOutOfRangeException` is thrown. See the *Custom Data Converters* section below for more information about writing data converters.
+   Specifies the type of the class that will convert this property. The type specified should derive from `DataConverter<>`, which implements `IDataConverter`. If the type specified does not implement `IDataConverter`, an `ArgumentOutOfRangeException` is thrown.
+
+The following example uses `ColumnMap` attributes to set the columns to be written in the opposite order from how the properties are declared.
 
 The following example modifies the `Person` class shown earlier with `ColumnMap` attributes. The attributes are used to set the columns to be in the opposite order from how the class properties are declared, give the columns completely different names, and exclude the `Id` column.
 
