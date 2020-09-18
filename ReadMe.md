@@ -249,9 +249,11 @@ You can customize the way the library behaves by passing your own instance of th
 
 ```cs
 // Set custom settings
-CsvSettings settings = new CsvSettings();
-settings.ColumnDelimiter = '\t';
-settings.QuoteCharacter = '\'';
+CsvSettings settings = new CsvSettings
+{
+    ColumnDelimiter = '\t',
+    QuoteCharacter = '\''
+};
 
 // Apply custom settings to CsvReader
 using (CsvReader reader = new CsvReader(path, settings))
