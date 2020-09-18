@@ -31,7 +31,7 @@ using (CsvWriter writer = new CsvWriter(path))
 }
 ```
 
-Note that the `CsvWriter.WriteRow()` method accepts any number of string parameters. It is also overloaded to accept a `string[]` or `IEnumerable<string>` argument. The method correctly handles column values that contain commas, quotes or even newlines.
+Note that the `CsvWriter.WriteRow()` method accepts any number of string parameters. It is also overloaded to handle a `string[]` or `IEnumerable<string>` argument.
 
 The next example reads all rows from a CSV file.
 
