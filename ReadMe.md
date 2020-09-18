@@ -118,15 +118,25 @@ The `ColumnMapAttribute` can be applied to any class property or field to specif
    
    Finally, set the `ConverterType` argument of the property's `ColumnMap` attribute to your custom convert class type. Note that if you set it to a type that does not  implements `IDataConverter`, an `ArgumentOutOfRangeException` is thrown at runtime.
 
-The example below 
-
-The example below defines a customer data converter that converts `DateTime` values to a compact string, and converts that string back to a `DateTime` value. Custom data converters must implement the `IDataConverter` interface. The easiest way to do this in a type-safe manner is to derive your class from `DataConverter<T>`, where `T` is the type of the class property you are converting.
-
-   
-
-The example below defines a customer data converter that converts `DateTime` values to a compact string, and converts that string back to a `DateTime` value.
+The example below uses the `ColumnMap` attribute to customize the `Person` class. It sets the `Index` properties such that the CSV columns appear in the reverse order from how the properties are declared in the class, it excludes the `Phone` property, and it causes the `Birthday` header to use the name *DOB*. It also specifies a custom converter for the `Birthday` property that stores the date (no time) in a very compact format.
 
 ```
+// Add column mapping attributes to our data class
+class Person
+{
+    [ColumnMap(Index = 2)]
+    public string Name { get; set; }
+
+    [ColumnMap(Index = 1)]
+    public string Email { get; set; }
+
+    [ColumnMap(Exclude = true)]
+    public string Phone { get; set; }
+
+    [ColumnMap(Index = 0, Name = "DOB", ConverterType = typeof(DateTimeConverter))]
+    public DateTime Birthday { get; set; }
+}
+
 // Create a custom data converter for DateTime values
 // Stores a date-only value (no time) in a very compact format
 class DateTimeConverter : DataConverter<DateTime>
@@ -154,10 +164,26 @@ class DateTimeConverter : DataConverter<DateTime>
         }
     }
 }
+
+using (CsvWriter<Person> writer = new CsvWriter<Person>(path))
+{
+    writer.WriteHeaders();
+
+    foreach (Person person in People)
+        writer.Write(person);
+}
+
+// Read the data from disk
+List<Person> people = new List<Person>();
+using (CsvReader<Person> reader = new CsvReader<Person>(path))
+{
+    // Read header and use to determine column order
+    reader.ReadHeaders(false);
+    // Read data
+    while (reader.Read(out Person person))
+        people.Add(person);
+}
 ```
-
-
-
 
 
 
@@ -212,12 +238,6 @@ The `DataConverter<T>` class has two abstract methods, `ConvertToString()` and `
 
 
 Finally, the example calls the `CsvWriter.MapColumns<T>()` method to register the custom mappings. The code that reads the CSV file also calls the `CsvReader.MapColumns<T>()` method in the same way. Both must use the same mapping in order for the data to be interpreted correctly. The easiest way to do this is to pass the same class to both methods.
-
-
-
-The following example uses `ColumnMap` attributes to set the columns to be written in the opposite order from how the properties are declared.
-
-The following example modifies the `Person` class shown earlier with `ColumnMap` attributes. The attributes are used to set the columns to be in the opposite order from how the class properties are declared, give the columns completely different names, and exclude the `Id` column.
 
 
 Next, the example defines the `PersonMaps` class to define the column mapping. This class must derive from `ColumnMaps<T>`, where `T` is the type of data class you are writing to or reading from CSV files. The constructor of this class must call `MapColumn()` for each class property that it maps. This method supports a fluent interface to set the various mapping properties for each class property. The meaning of these properties is described above in the *ColumnMap Attribute* section. In addition, it supports setting the `Converter` property, which specifies a custom data converter as described above (also see the example below).
