@@ -11,7 +11,7 @@ namespace SoftCircuits.CsvParser
     {
         /// <summary>
         /// Represents the default, invalid column index value.
-        /// Value will sort after all valid column index values.
+        /// When sorted, invalid indexes always come after valid column ones.
         /// </summary>
         public const int InvalidIndex = int.MaxValue;
 

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SoftCircuits.CsvParser
 {
-    [Obsolete("This class will be removed in future versions. Use 'CsvReader<T>' instead.", false)]
+    [Obsolete("This class will be removed in future versions. Please use 'CsvReader<T>' instead.", false)]
     /// <summary>
     /// Class to read from a CSV file with automatic mapping from CSV columns
     /// to object properties.

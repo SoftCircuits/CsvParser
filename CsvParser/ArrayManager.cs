@@ -36,11 +36,9 @@ namespace SoftCircuits.CsvParser
         /// <param name="item">Item to add.</param>
         public void Add(T item)
         {
-            if (Count >= Items.Length)
-            {
+            if (Items.Length <= Count)
                 Array.Resize(ref Items, Count + GrowBy);
-                Debug.Assert(Items.Length > Count);
-            }
+            Debug.Assert(Items.Length > Count);
             Items[Count++] = item;
         }
 
@@ -49,9 +47,10 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         public T[] GetResults()
         {
-            Debug.Assert(Count <= Items.Length);
-            if (Count < Items.Length)
+            Debug.Assert(Items.Length >= Count);
+            if (Items.Length > Count)
                 Array.Resize(ref Items, Count);
+            Debug.Assert(Items.Length == Count);
             return Items;
         }
     }

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SoftCircuits.CsvParser
 {
-    [Obsolete("This class will be removed in future versions. Use 'CsvWriter<T>' instead.", false)]
+    [Obsolete("This class will be removed in future versions. Please use 'CsvWriter<T>' instead.", false)]
     /// <summary>
     /// Class to write to a CSV file with automatic mapping from object properties
     /// to CSV columns.
