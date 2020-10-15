@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) 2019-2020 Jonathan Wood (www.softcircuits.com)
+// Licensed under the MIT license.
+//
+using System;
 using System.Reflection;
 
 namespace SoftCircuits.CsvParser

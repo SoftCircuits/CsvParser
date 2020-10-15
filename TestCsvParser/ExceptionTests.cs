@@ -11,13 +11,13 @@ namespace CsvParserTests
     [TestClass]
     public class ExceptionTests
     {
-        class UnsupportedType
+        private class UnsupportedType
         {
             public string SSN { get; set; }
             public bool IsCitizen { get; set; }
         }
 
-        class Customer
+        private class Customer
         {
             // Public properties
             public string Name { get; set; }
@@ -50,7 +50,7 @@ namespace CsvParserTests
         }
 
         // Test data
-        Customer[] Customers = new Customer[]
+        private readonly Customer[] Customers = new Customer[]
         {
             new Customer("Rafael Pitts", "Ap #883-4246 Nunc Avenue", "Maiduguri", "BO", "52319", 19, 123.45, true),
             new Customer("Joel Schmidt", "6768 Dictum Street", "Berlin", "Berlin", "86692", 52, 5.9, true),
@@ -59,7 +59,7 @@ namespace CsvParserTests
 
         // Create a custom data converter for DateTime values
         // Stores a date-only value (no time) in a compact format
-        class DateTimeConverter : DataConverter<DateTime>
+        private class DateTimeConverter : DataConverter<DateTime>
         {
             public override string ConvertToString(DateTime value)
             {
@@ -86,7 +86,7 @@ namespace CsvParserTests
         }
 
         // Create our custom mapping class
-        class CustomerMaps : ColumnMaps<Customer>
+        private class CustomerMaps : ColumnMaps<Customer>
         {
             public CustomerMaps()
             {

@@ -21,7 +21,7 @@ namespace SoftCircuits.CsvParser
         private int Count;
 
         /// <summary>
-        /// Initializes ArrayManager instance.
+        /// Initializes an <see cref="ArrayManager{T}"/> instance.
         /// </summary>
         /// <param name="items">Initial array.</param>
         public ArrayManager(T[] items)

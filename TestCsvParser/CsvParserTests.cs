@@ -7,114 +7,100 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace CsvParserTests
 {
     [TestClass]
     public class CsvParserTests
     {
-        readonly List<(string, string, string)> RawCsvFile = new List<(string, string, string)>
+        private readonly List<List<string>> CsvTestData = new List<List<string>>
         {
-            ("Abc", "Def", "Ghi"),
-            ("@Abc", "D\"e\"f", "G,h'i"),
-            ("The quick, brown", "fox\r\n\r\n\r\njumps over", "the \"lazy\" dog."),
-            (",,,,", "\t\t\t\t", "\r\n\r\n\r\n\r\n"),
-            ("a\tb", "\t\r\n\t", "\t\t\t"),
-            ("123", "456", "789"),
-            ("\t\r\n", "\r\nx", "\b\a\v"),
-            ("    ,    ", "    ,    ", "    ,    "),
-            (" \"abc\" ", " \"\" ", "  \" \" "),
-            ("alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf"),
-            ("alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf"),
-            ("alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf"),
-            ("alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf"),
-            ("alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf"),
-            ("alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf"),
-            ("alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf"),
-            ("alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf"),
-            ("alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf"),
-            ("alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf"),
-            ("alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf"),
-            ("alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf"),
-            ("alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf"),
-            ("", "", ""),
+            new List<string> { },
+            new List<string> { "Abc", "Def", "Ghi" },
+            new List<string> { "Abc,Def,Ghi" },
+            new List<string> { "Abc\"Def\"Ghi" },
+            new List<string> { "Abc'Def'Ghi" },
+            new List<string> { "The quick, brown", "fox\r\n\r\n\r\njumps over", "the \"lazy\" dog." },
+            new List<string> { ",,,,", "\t\t\t\t", "\r\n\r\n\r\n\r\n" },
+            new List<string> { "a\tb", "\t\r\n\t", "\t\t\t" },
+            new List<string> { "123", "456", "789" },
+            new List<string> { "\t\r\n", "\r\nx", "\b\a\v" },
+            new List<string> { "    ,    ", "    ,    ", "    ,    " },
+            new List<string> { " \"abc\" ", " \"\" ", "  \" \" " },
+            new List<string> { "abc" },
+            new List<string> { "abc", "def" },
+            new List<string> { "abc", "def", "ghi" },
+            new List<string> { "abc", "def", "ghi", "jkl" },
+            new List<string> { "abc", "def", "ghi", "jkl", "mno" },
+            new List<string> { "abc", "def", "ghi", "jkl", "mno", "pqr" },
+            new List<string> { "abc", "def", "ghi", "jkl", "mno", "pqr", "stu" },
+            new List<string> { "abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx" },
+            new List<string> { "abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx", "xz" },
+            new List<string> { "alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf" },
+            new List<string> { "", "", "" },
+            new List<string> { null, null, null },
         };
 
-        [TestMethod]
-        public void WriteNullValuesTest()
+        private class ListComparer : Comparer<List<string>>
         {
-            using (MemoryFile file = new MemoryFile())
+            public override int Compare(List<string> x, List<string> y)
             {
-                List<(string, string, string)> actual = new List<(string, string, string)>();
-
-                using (CsvWriter writer = new CsvWriter(file))
+                if (x.Count != y.Count)
+                    return x.Count - y.Count;
+                for (int i = 0; i < x.Count; i++)
                 {
-                    writer.WriteRow(null, "abc", "xyz");
-                    writer.WriteRow("abc", null, "xyz");
-                    writer.WriteRow("abc", "xyz", null);
-                    writer.WriteRow(null, null, null);
-                }
-
-                using (CsvReader reader = new CsvReader(file))
-                {
-                    string[] columns = null;
-                    while (reader.ReadRow(ref columns))
+                    if (x[i] == null || y[i] == null)
                     {
-                        Assert.AreEqual(3, columns.Length);
-                        actual.Add((columns[0], columns[1], columns[2]));
+                        // null will be empty string when read back
+                        if (!string.IsNullOrEmpty(x[i]))
+                            return 1;
+                        if (!string.IsNullOrEmpty(y[i]))
+                            return -1;
                     }
-                    CollectionAssert.AreEqual(new List<(string, string, string)>
+                    else
                     {
-                        ("", "abc", "xyz"),
-                        ("abc", "", "xyz"),
-                        ("abc", "xyz", ""),
-                        ("", "", ""),
-                    }, actual);
+                        int result = x[i].CompareTo(y[i]);
+                        if (result != 0)
+                            return result;
+                    }
                 }
+                return 0;
             }
         }
 
         [TestMethod]
-        public void ParserTest()
+        public void BasicTests()
         {
-            using (MemoryFile file = new MemoryFile())
+            // Defaults
+            RunTest(null);
+
+            // Different delimiters and quote characters
+            char[] columnDelimiters = { ',', ';', '\t' };
+            char[] quoteCharacters = { '"', '\'' };
+
+            foreach (char columnDelimiter in columnDelimiters)
             {
-                List<(string, string, string)> actual = new List<(string, string, string)>();
-
-                using (CsvWriter writer = new CsvWriter(file))
+                foreach (char quoteCharacter in quoteCharacters)
                 {
-                    foreach (var data in RawCsvFile)
-                        writer.WriteRow(data.Item1, data.Item2, data.Item3);
-                }
-
-                using (CsvReader reader = new CsvReader(file))
-                {
-                    string[] columns = null;
-                    while (reader.ReadRow(ref columns))
+                    RunTest(new CsvSettings
                     {
-                        Assert.AreEqual(3, columns.Length);
-                        actual.Add((columns[0], columns[1], columns[2]));
-                    }
-                    CollectionAssert.AreEqual(RawCsvFile, actual);
+                        ColumnDelimiter = columnDelimiter,
+                        QuoteCharacter = quoteCharacter,
+                    });
                 }
             }
         }
 
-        [TestMethod]
-        public void TabDelimiterTest()
+        private void RunTest(CsvSettings settings)
         {
             using (MemoryFile file = new MemoryFile())
             {
-                CsvSettings settings = new CsvSettings();
-                settings.ColumnDelimiter = '\t';
-
-                List<(string, string, string)> actual = new List<(string, string, string)>();
+                List<List<string>> actual = new List<List<string>>();
 
                 using (CsvWriter writer = new CsvWriter(file, settings))
                 {
-                    foreach (var data in RawCsvFile)
-                        writer.WriteRow(data.Item1, data.Item2, data.Item3);
+                    foreach (var data in CsvTestData)
+                        writer.WriteRow(data);
                 }
 
                 using (CsvReader reader = new CsvReader(file, settings))
@@ -122,44 +108,15 @@ namespace CsvParserTests
                     string[] columns = null;
                     while (reader.ReadRow(ref columns))
                     {
-                        Assert.AreEqual(3, columns.Length);
-                        actual.Add((columns[0], columns[1], columns[2]));
+                        //Assert.AreEqual(3, columns.Length);
+                        actual.Add(columns.ToList());
                     }
-                    CollectionAssert.AreEqual(RawCsvFile, actual);
+                    CollectionAssert.AreEqual(CsvTestData, actual, new ListComparer());
                 }
             }
         }
 
-        [TestMethod]
-        public void SingleQuotesTest()
-        {
-            using (MemoryFile file = new MemoryFile())
-            {
-                CsvSettings settings = new CsvSettings();
-                settings.QuoteCharacter = '\'';
-
-                List<(string, string, string)> actual = new List<(string, string, string)>();
-
-                using (CsvWriter writer = new CsvWriter(file, settings))
-                {
-                    foreach (var data in RawCsvFile)
-                        writer.WriteRow(data.Item1, data.Item2, data.Item3);
-                }
-
-                using (CsvReader reader = new CsvReader(file, settings))
-                {
-                    string[] columns = null;
-                    while (reader.ReadRow(ref columns))
-                    {
-                        Assert.AreEqual(3, columns.Length);
-                        actual.Add((columns[0], columns[1], columns[2]));
-                    }
-                    CollectionAssert.AreEqual(RawCsvFile, actual);
-                }
-            }
-        }
-
-        List<string> EmptyLineTestData = new List<string>
+        private readonly List<string> EmptyLineTestData = new List<string>
         {
             "abc,def,ghi",
             "abc,def,ghi",
@@ -168,7 +125,7 @@ namespace CsvParserTests
             "abc,def,ghi",
         };
 
-        List<List<string>>[] EmptyLineTestResults = new List<List<string>>[]
+        private readonly List<List<string>>[] EmptyLineTestResults = new List<List<string>>[]
         {
             // EmptyLineBehavior.NoColumns
             new List<List<string>>
