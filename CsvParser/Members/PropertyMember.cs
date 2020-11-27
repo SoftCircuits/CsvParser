@@ -4,7 +4,7 @@
 using System;
 using System.Reflection;
 
-namespace SoftCircuits.CsvParser
+namespace SoftCircuits.CsvParser.Members
 {
     /// <summary>
     /// Wrapper for PropertyInfo (member with getter and/or setter)

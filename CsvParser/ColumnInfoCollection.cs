@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2019-2020 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
+using SoftCircuits.CsvParser.Members;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

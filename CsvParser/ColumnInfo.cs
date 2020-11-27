@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2019-2020 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
+using SoftCircuits.CsvParser.Members;
 using System;
 using System.Diagnostics;
 using System.Text;
@@ -11,7 +12,7 @@ namespace SoftCircuits.CsvParser
     {
         /// <summary>
         /// Represents the default, invalid column index value.
-        /// When sorted, invalid indexes always come after valid column ones.
+        /// When sorted, invalid indexes always come after valid ones.
         /// </summary>
         public const int InvalidIndex = int.MaxValue;
 
@@ -33,12 +34,12 @@ namespace SoftCircuits.CsvParser
 
         /// <summary>
         /// If true, the <see cref="Index"/> property was set explicitly
-        /// and shouldn't change unless explicitly changed.
+        /// and shouldn't change unless changed explicitly.
         /// </summary>
         public bool ExplicitIndex { get; set; }
 
         /// <summary>
-        /// If true, this column is not serialized from/to file.
+        /// If true, this column is not serialized.
         /// </summary>
         public bool Exclude { get; set; }
 
@@ -88,6 +89,7 @@ namespace SoftCircuits.CsvParser
                 Exclude = false;
                 Converter = null;
             }
+            // Get standard converter if custom converter not supplied
             if (Converter == null)
                 Converter = DataConverters.GetConverter(member.Type);
             Member = member;

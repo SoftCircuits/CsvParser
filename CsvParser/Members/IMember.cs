@@ -3,7 +3,7 @@
 //
 using System;
 
-namespace SoftCircuits.CsvParser
+namespace SoftCircuits.CsvParser.Members
 {
     /// <summary>
     /// Interface for property and field members.

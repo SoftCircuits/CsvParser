@@ -4,7 +4,7 @@
 using System;
 using System.Reflection;
 
-namespace SoftCircuits.CsvParser
+namespace SoftCircuits.CsvParser.Members
 {
     /// <summary>
     /// Wrapper for FieldInfo (no getter or setter).

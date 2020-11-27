@@ -149,7 +149,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="columns">Array to hold the columns read. Okay if it's <c>null</c>.</param>
         public bool ReadRow(ref string[] columns)
         {
-            ArrayManager<string> results = new ArrayManager<string>(columns);
+            GrowableArray<string> growableArray = new GrowableArray<string>(columns);
 
         ReadNextLine:
             // Read next line from the file
@@ -185,7 +185,7 @@ namespace SoftCircuits.CsvParser
                 else
                     column = ReadUnquotedColumn();
                 // Add column to list
-                results.Add(column);
+                growableArray.Append(column);
                 // Break if we reached the end of the line
                 if (Line == null || CurrPos == Line.Length)
                     break;
@@ -194,8 +194,8 @@ namespace SoftCircuits.CsvParser
                 CurrPos++;
             }
 
-            // Returns results
-            columns = results.GetResults();
+            // Set results
+            columns = growableArray;
 
             // Indicate success
             return true;
