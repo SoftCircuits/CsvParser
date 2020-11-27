@@ -118,7 +118,7 @@ The `ColumnMapAttribute` can be applied to any class property or field to specif
 
    To override a data converter, create a class that implements the `IDataConverter` interface. The easiest way to do this in a type-safe manner is to derive your class from `DataConverter<T>`, where `T` is the type of the property you are converting. The `DataConverter<T>` class has two abstract methods, `ConvertToString()` and `TryConvertFromString()`, which must be overridden in your derived class.
    
-   Finally, set the `ConverterType` argument of the property's `ColumnMap` attribute to your custom convert class type. Note that if you set it to a type that does not  implements `IDataConverter`, an `ArgumentOutOfRangeException` is thrown at runtime.
+   Finally, set the `ConverterType` argument of the property's `ColumnMap` attribute to your custom convert class type. Note that if you set this property to a type that does not implement `IDataConverter`, an `ArgumentOutOfRangeException` exception is thrown at runtime.
 
 The example below uses the `ColumnMap` attribute to customize the `Person` class. It sets the `Index` properties such that the CSV columns appear in the reverse order from how the properties are declared in the class, it excludes the `Phone` property, and it causes the `Birthday` header to use the name *DOB*. It also specifies a custom converter for the `Birthday` property that stores the date (no time) in a very compact format.
 
