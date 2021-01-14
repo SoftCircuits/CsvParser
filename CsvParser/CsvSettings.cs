@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2020 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -24,7 +24,8 @@ namespace SoftCircuits.CsvParser
         private const int QuoteCharacterIndex = 1;
 
         /// <summary>
-        /// Gets or sets the character used to delimit columns.
+        /// Gets or sets the character used to delimit columns. Default value is a comma
+        /// (,).
         /// </summary>
         public char ColumnDelimiter
         {
@@ -34,6 +35,7 @@ namespace SoftCircuits.CsvParser
 
         /// <summary>
         /// Gets or sets the character used to quote values that contain special characters.
+        /// Default value is the double quote character (&quot;).
         /// </summary>
         public char QuoteCharacter
         {
@@ -75,16 +77,16 @@ namespace SoftCircuits.CsvParser
         #endregion
 
         /// <summary>
-        /// Specifies how blank lines are interpreted by CsvReader. This setting is set
-        /// to <see cref="EmptyLineBehavior.NoColumns"></see> by default.
+        /// Specifies how blank lines are interpreted by CsvReader. Default value is
+        /// <see cref="EmptyLineBehavior.NoColumns"></see>.
         /// </summary>
         public EmptyLineBehavior EmptyLineBehavior;
 
         /// <summary>
         /// If true, <see cref="CsvReader{T}"></see> will raise a
         /// <see cref="BadDataFormatException"></see> exception when it encounters
-        /// data that cannot be converted to the corresponding data type. This
-        /// setting is <c>true</c> by default.
+        /// data that cannot be converted to the corresponding data type. Default
+        /// value is <c>true</c>.
         /// </summary>
         public bool InvalidDataRaisesException { get; set; }
 
@@ -92,9 +94,7 @@ namespace SoftCircuits.CsvParser
         /// Specifies the string comparison type used by
         /// <see cref="CsvReader.ReadHeaders(bool)"></see> to compare column
         /// names against column headers when it's passed a <c>true</c> argument.
-        /// This setting is set to
-        /// <see cref="StringComparison.InvariantCultureIgnoreCase"></see> by
-        /// default.
+        /// Default value is <see cref="StringComparison.InvariantCultureIgnoreCase"></see>.
         /// </summary>
         public StringComparison ColumnHeaderStringComparison { get; set; }
 

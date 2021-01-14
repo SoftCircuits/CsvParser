@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2020 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -36,6 +36,7 @@ namespace SoftCircuits.CsvParser
         {
             Writer = new StreamWriter(path);
             Settings = settings ?? new CsvSettings();
+            LeaveStreamOpen = false;
         }
 
         /// <summary>
@@ -140,10 +141,10 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         public void Dispose()
         {
-            if (!LeaveStreamOpen)
-                Writer.Dispose();
-            else
+            if (LeaveStreamOpen)
                 Flush();
+            else
+                Writer.Dispose();
         }
     }
 }
