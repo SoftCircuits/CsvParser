@@ -1,14 +1,14 @@
 // Copyright (c) 2019-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
-
+using System;
 namespace SoftCircuits.CsvParser
 {
-    internal class NullableUInt64Converter : DataConverter<ulong?>
+    internal class NullableUInt64Converter : DataConverter<Nullable<ulong>>
     {
-        public override string ConvertToString(ulong? value) => value.HasValue ? value.Value.ToString() : string.Empty;
+        public override string ConvertToString(Nullable<ulong> value) => value.HasValue ? value.Value.ToString() : string.Empty;
 
-        public override bool TryConvertFromString(string s, out ulong? value)
+        public override bool TryConvertFromString(string s, out Nullable<ulong> value)
         {
             if (string.IsNullOrWhiteSpace(s))
             {

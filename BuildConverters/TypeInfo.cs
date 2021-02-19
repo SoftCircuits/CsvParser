@@ -35,7 +35,10 @@ namespace BuildConverters
                     s = func(this);
                 else // Nullable
                     s = (Random.Next(3) != 1) ? func(this) : "null";
-                return $"({CompleteType.GetFullTypeCName(this, mode)}){s}";
+                //return $"({CompleteType.GetFullTypeCName(this, mode)}){s}";
+
+                return $"{s}";
+
             }
             else // Array or NullableArray
             {
@@ -59,7 +62,7 @@ namespace BuildConverters
         /// <summary>
         /// Lookup to find C# names for each type.
         /// </summary>
-        private Dictionary<Type, string> CSharpNameLookup = new Dictionary<Type, string>
+        private readonly Dictionary<Type, string> CSharpNameLookup = new Dictionary<Type, string>
         {
             [typeof(string)] = "string",
             [typeof(char)] = "char",

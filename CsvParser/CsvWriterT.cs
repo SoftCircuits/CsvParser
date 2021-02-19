@@ -17,7 +17,7 @@ namespace SoftCircuits.CsvParser
     public class CsvWriter<T> : CsvWriter where T : class, new()
     {
         private ColumnInfoCollection<T> ColumnsInfo;
-        private string[] Columns;
+        private string[]? Columns;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CsvWriter{T}"></see> class for the
@@ -25,10 +25,11 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="path">The name of the CSV file to write to.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvWriter(string path, CsvSettings settings = null)
+        public CsvWriter(string path, CsvSettings? settings = null)
             : base(path, settings)
         {
-            Initialize();
+            ColumnsInfo = new ColumnInfoCollection<T>();
+            Columns = null;
         }
 
         /// <summary>
@@ -38,10 +39,11 @@ namespace SoftCircuits.CsvParser
         /// <param name="path">The name of the CSV file to write to.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvWriter(string path, Encoding encoding, CsvSettings settings = null)
+        public CsvWriter(string path, Encoding encoding, CsvSettings? settings = null)
             : base(path, encoding, settings)
         {
-            Initialize();
+            ColumnsInfo = new ColumnInfoCollection<T>();
+            Columns = null;
         }
 
         /// <summary>
@@ -50,10 +52,11 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="stream">The stream to write to.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvWriter(Stream stream, CsvSettings settings = null)
+        public CsvWriter(Stream stream, CsvSettings? settings = null)
             : base(stream, settings)
         {
-            Initialize();
+            ColumnsInfo = new ColumnInfoCollection<T>();
+            Columns = null;
         }
 
         /// <summary>
@@ -63,16 +66,8 @@ namespace SoftCircuits.CsvParser
         /// <param name="stream">The stream to write to.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvWriter(Stream stream, Encoding encoding, CsvSettings settings = null)
+        public CsvWriter(Stream stream, Encoding encoding, CsvSettings? settings = null)
             : base(stream, encoding, settings)
-        {
-            Initialize();
-        }
-
-        /// <summary>
-        /// Common initialization.
-        /// </summary>
-        private void Initialize()
         {
             ColumnsInfo = new ColumnInfoCollection<T>();
             Columns = null;

@@ -29,7 +29,7 @@ namespace SoftCircuits.CsvParser
             if (expression == null)
                 throw new ArgumentNullException(nameof(expression));
 
-            MemberExpression member = null;
+            MemberExpression? member = null;
             if (expression.Body.NodeType == ExpressionType.Convert)
                 member = (expression.Body as UnaryExpression)?.Operand as MemberExpression;
             else if (expression.Body.NodeType == ExpressionType.MemberAccess)

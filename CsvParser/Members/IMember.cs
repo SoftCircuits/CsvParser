@@ -14,8 +14,8 @@ namespace SoftCircuits.CsvParser.Members
         string Name { get; }
         bool CanRead { get; }
         bool CanWrite { get; }
-        ColumnMapAttribute ColumnMapAttribute { get; }
-        object GetValue(object item);
-        void SetValue(object item, object value);
+        ColumnMapAttribute? ColumnMapAttribute { get; }
+        object? GetValue(object? item);
+        void SetValue(object? item, object? value);
     }
 }

@@ -1,14 +1,14 @@
 // Copyright (c) 2019-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
-
+using System;
 namespace SoftCircuits.CsvParser
 {
-    internal class NullableSByteConverter : DataConverter<sbyte?>
+    internal class NullableSByteConverter : DataConverter<Nullable<sbyte>>
     {
-        public override string ConvertToString(sbyte? value) => value.HasValue ? value.Value.ToString() : string.Empty;
+        public override string ConvertToString(Nullable<sbyte> value) => value.HasValue ? value.Value.ToString() : string.Empty;
 
-        public override bool TryConvertFromString(string s, out sbyte? value)
+        public override bool TryConvertFromString(string s, out Nullable<sbyte> value)
         {
             if (string.IsNullOrWhiteSpace(s))
             {

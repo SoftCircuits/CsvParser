@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace SoftCircuits.CsvParser
 {
-    internal class NullableDecimalArrayConverter : DataConverter<decimal?[]>
+    internal class NullableDecimalArrayConverter : DataConverter<Nullable<decimal>[]>
     {
-        public override string ConvertToString(decimal?[] array)
+        public override string ConvertToString(Nullable<decimal>[]? array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -16,20 +16,21 @@ namespace SoftCircuits.CsvParser
             return string.Join(";", array.Select(v => v.HasValue ? v.Value.ToString() : string.Empty));
         }
 
-        public override bool TryConvertFromString(string s, out decimal?[] array)
+        public override bool TryConvertFromString(string s, out Nullable<decimal>[]? array)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = new decimal?[0];
-                    return true;
+                    array = Array.Empty<decimal?>();
                 }
-
-                string[] tokens = s.Split(';');
-                array = new decimal?[tokens.Length];
-                for (int i = 0; i < tokens.Length; i++)
-                    array[i] = (tokens[i].Length > 0) ? (decimal?)decimal.Parse(tokens[i]) : null;
+                else
+                {
+                    string[] tokens = s.Split(';');
+                    array = new decimal?[tokens.Length];
+                    for (int i = 0; i < tokens.Length; i++)
+                        array[i] = (tokens[i].Length > 0) ? (decimal?)decimal.Parse(tokens[i]) : null;
+                }
                 return true;
             }
             catch (Exception)

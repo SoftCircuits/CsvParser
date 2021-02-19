@@ -20,7 +20,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="path">The name of the CSV file to read.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvDataReader(string path, CsvSettings settings = null)
+        public CsvDataReader(string path, CsvSettings? settings = null)
             : base(path, settings)
         {
         }
@@ -32,7 +32,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="path">The name of the CSV file to read.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvDataReader(string path, Encoding encoding, CsvSettings settings = null)
+        public CsvDataReader(string path, Encoding encoding, CsvSettings? settings = null)
             : base(path, encoding, settings)
         {
         }
@@ -44,7 +44,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="path">The name of the CSV file to read.</param>
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
         /// <param name="settings">Optional custom settings.</param>
-        public CsvDataReader(string path, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        public CsvDataReader(string path, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
             : base(path, detectEncodingFromByteOrderMarks, settings)
         {
         }
@@ -57,7 +57,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
         /// <param name="settings">Optional custom settings.</param>
-        public CsvDataReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        public CsvDataReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
             : base(path, encoding, detectEncodingFromByteOrderMarks, settings)
         {
         }
@@ -67,7 +67,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="stream">The stream to be read.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvDataReader(Stream stream, CsvSettings settings = null)
+        public CsvDataReader(Stream stream, CsvSettings? settings = null)
             : base(stream, settings)
         {
         }
@@ -79,7 +79,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="stream">The stream to be read.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvDataReader(Stream stream, Encoding encoding, CsvSettings settings = null)
+        public CsvDataReader(Stream stream, Encoding encoding, CsvSettings? settings = null)
             : base(stream, encoding, settings)
         {
         }
@@ -92,7 +92,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
         /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvDataReader(Stream stream, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        public CsvDataReader(Stream stream, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
             : base(stream, detectEncodingFromByteOrderMarks, settings)
         {
         }
@@ -106,7 +106,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
         /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvDataReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        public CsvDataReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
             : base(stream, encoding, detectEncodingFromByteOrderMarks, settings)
         {
         }

@@ -7,7 +7,7 @@ namespace SoftCircuits.CsvParser
 {
     internal class BooleanArrayConverter : DataConverter<bool[]>
     {
-        public override string ConvertToString(bool[] array)
+        public override string ConvertToString(bool[]? array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -15,20 +15,21 @@ namespace SoftCircuits.CsvParser
             return string.Join(";", array);
         }
 
-        public override bool TryConvertFromString(string s, out bool[] array)
+        public override bool TryConvertFromString(string s, out bool[]? array)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = new bool[0];
-                    return true;
+                    array = Array.Empty<bool>();
                 }
-
-                string[] tokens = s.Split(';');
-                array = new bool[tokens.Length];
-                for (int i = 0; i < tokens.Length; i++)
-                    array[i] = bool.Parse(tokens[i]);
+                else
+                {
+                    string[] tokens = s.Split(';');
+                    array = new bool[tokens.Length];
+                    for (int i = 0; i < tokens.Length; i++)
+                        array[i] = bool.Parse(tokens[i]);
+                }
                 return true;
             }
             catch (Exception)

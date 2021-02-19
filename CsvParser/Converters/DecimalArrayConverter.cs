@@ -7,7 +7,7 @@ namespace SoftCircuits.CsvParser
 {
     internal class DecimalArrayConverter : DataConverter<decimal[]>
     {
-        public override string ConvertToString(decimal[] array)
+        public override string ConvertToString(decimal[]? array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -15,20 +15,21 @@ namespace SoftCircuits.CsvParser
             return string.Join(";", array);
         }
 
-        public override bool TryConvertFromString(string s, out decimal[] array)
+        public override bool TryConvertFromString(string s, out decimal[]? array)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = new decimal[0];
-                    return true;
+                    array = Array.Empty<decimal>();
                 }
-
-                string[] tokens = s.Split(';');
-                array = new decimal[tokens.Length];
-                for (int i = 0; i < tokens.Length; i++)
-                    array[i] = decimal.Parse(tokens[i]);
+                else
+                {
+                    string[] tokens = s.Split(';');
+                    array = new decimal[tokens.Length];
+                    for (int i = 0; i < tokens.Length; i++)
+                        array[i] = decimal.Parse(tokens[i]);
+                }
                 return true;
             }
             catch (Exception)

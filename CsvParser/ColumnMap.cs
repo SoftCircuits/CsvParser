@@ -9,10 +9,10 @@ namespace SoftCircuits.CsvParser
     public class ColumnMap
     {
         internal string InternalMemberName { get; private set; }
-        internal string InternalName { get; private set; }
+        internal string? InternalName { get; private set; }
         internal int InternalIndex { get; private set; }
         internal bool? InternalExclude { get; private set; }
-        internal IDataConverter InternalConverter { get; private set; }
+        internal IDataConverter? InternalConverter { get; private set; }
 
         internal ColumnMap(string memberName)
         {

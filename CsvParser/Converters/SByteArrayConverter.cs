@@ -7,7 +7,7 @@ namespace SoftCircuits.CsvParser
 {
     internal class SByteArrayConverter : DataConverter<sbyte[]>
     {
-        public override string ConvertToString(sbyte[] array)
+        public override string ConvertToString(sbyte[]? array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -15,20 +15,21 @@ namespace SoftCircuits.CsvParser
             return string.Join(";", array);
         }
 
-        public override bool TryConvertFromString(string s, out sbyte[] array)
+        public override bool TryConvertFromString(string s, out sbyte[]? array)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = new sbyte[0];
-                    return true;
+                    array = Array.Empty<sbyte>();
                 }
-
-                string[] tokens = s.Split(';');
-                array = new sbyte[tokens.Length];
-                for (int i = 0; i < tokens.Length; i++)
-                    array[i] = sbyte.Parse(tokens[i]);
+                else
+                {
+                    string[] tokens = s.Split(';');
+                    array = new sbyte[tokens.Length];
+                    for (int i = 0; i < tokens.Length; i++)
+                        array[i] = sbyte.Parse(tokens[i]);
+                }
                 return true;
             }
             catch (Exception)

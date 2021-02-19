@@ -24,7 +24,7 @@ namespace SoftCircuits.CsvParser
         /// Initializes a new <see cref="GrowableArray{T}"/> instance.
         /// </summary>
         /// <param name="items">Initial array array data.</param>
-        public GrowableArray(T[] items)
+        public GrowableArray(T[]? items)
         {
             Items = items ?? new T[GrowBy];
             Count = 0;

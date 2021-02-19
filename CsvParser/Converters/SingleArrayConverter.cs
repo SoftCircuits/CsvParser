@@ -7,7 +7,7 @@ namespace SoftCircuits.CsvParser
 {
     internal class SingleArrayConverter : DataConverter<float[]>
     {
-        public override string ConvertToString(float[] array)
+        public override string ConvertToString(float[]? array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -15,20 +15,21 @@ namespace SoftCircuits.CsvParser
             return string.Join(";", array);
         }
 
-        public override bool TryConvertFromString(string s, out float[] array)
+        public override bool TryConvertFromString(string s, out float[]? array)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = new float[0];
-                    return true;
+                    array = Array.Empty<float>();
                 }
-
-                string[] tokens = s.Split(';');
-                array = new float[tokens.Length];
-                for (int i = 0; i < tokens.Length; i++)
-                    array[i] = float.Parse(tokens[i]);
+                else
+                {
+                    string[] tokens = s.Split(';');
+                    array = new float[tokens.Length];
+                    for (int i = 0; i < tokens.Length; i++)
+                        array[i] = float.Parse(tokens[i]);
+                }
                 return true;
             }
             catch (Exception)

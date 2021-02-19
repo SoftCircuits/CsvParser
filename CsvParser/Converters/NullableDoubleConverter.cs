@@ -1,14 +1,14 @@
 // Copyright (c) 2019-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
-
+using System;
 namespace SoftCircuits.CsvParser
 {
-    internal class NullableDoubleConverter : DataConverter<double?>
+    internal class NullableDoubleConverter : DataConverter<Nullable<double>>
     {
-        public override string ConvertToString(double? value) => value.HasValue ? value.Value.ToString() : string.Empty;
+        public override string ConvertToString(Nullable<double> value) => value.HasValue ? value.Value.ToString() : string.Empty;
 
-        public override bool TryConvertFromString(string s, out double? value)
+        public override bool TryConvertFromString(string s, out Nullable<double> value)
         {
             if (string.IsNullOrWhiteSpace(s))
             {

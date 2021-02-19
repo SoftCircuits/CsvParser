@@ -53,7 +53,7 @@ namespace BuildConverters
 
         #region Type Name Lookups
 
-        static Dictionary<TypeVariation, string> TypeNameLookup = new Dictionary<TypeVariation, string>
+        static readonly Dictionary<TypeVariation, string> TypeNameLookup = new Dictionary<TypeVariation, string>
         {
             [TypeVariation.Standard] = "{@}",
             [TypeVariation.Array] = "{@}Array",
@@ -63,12 +63,12 @@ namespace BuildConverters
 
         public static string GetTypeName(TypeInfo type, TypeVariation mode) => TypeNameLookup[mode].Replace("{@}", type.Name);
 
-        static Dictionary<TypeVariation, string> FullTypeNameLookup = new Dictionary<TypeVariation, string>
+        static readonly Dictionary<TypeVariation, string> FullTypeNameLookup = new Dictionary<TypeVariation, string>
         {
             [TypeVariation.Standard] = "{@}",
             [TypeVariation.Array] = "{@}[]",
-            [TypeVariation.Nullable] = "{@}?",
-            [TypeVariation.NullableArray] = "{@}?[]",
+            [TypeVariation.Nullable] = "Nullable<{@}>",
+            [TypeVariation.NullableArray] = "Nullable<{@}>[]",
         };
 
         public static string GetFullTypeName(TypeInfo type, TypeVariation mode) => FullTypeNameLookup[mode].Replace("{@}", type.Name);

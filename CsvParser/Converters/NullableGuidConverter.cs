@@ -5,11 +5,11 @@ using System;
 
 namespace SoftCircuits.CsvParser
 {
-    internal class NullableGuidConverter : DataConverter<Guid?>
+    internal class NullableGuidConverter : DataConverter<Nullable<Guid>>
     {
-        public override string ConvertToString(Guid? value) => value.HasValue ? value.Value.ToString() : string.Empty;
+        public override string ConvertToString(Nullable<Guid> value) => value.HasValue ? value.Value.ToString() : string.Empty;
 
-        public override bool TryConvertFromString(string s, out Guid? value)
+        public override bool TryConvertFromString(string s, out Nullable<Guid> value)
         {
             if (string.IsNullOrWhiteSpace(s))
             {

@@ -7,7 +7,7 @@ namespace SoftCircuits.CsvParser
 {
     internal class UInt64ArrayConverter : DataConverter<ulong[]>
     {
-        public override string ConvertToString(ulong[] array)
+        public override string ConvertToString(ulong[]? array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -15,20 +15,21 @@ namespace SoftCircuits.CsvParser
             return string.Join(";", array);
         }
 
-        public override bool TryConvertFromString(string s, out ulong[] array)
+        public override bool TryConvertFromString(string s, out ulong[]? array)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = new ulong[0];
-                    return true;
+                    array = Array.Empty<ulong>();
                 }
-
-                string[] tokens = s.Split(';');
-                array = new ulong[tokens.Length];
-                for (int i = 0; i < tokens.Length; i++)
-                    array[i] = ulong.Parse(tokens[i]);
+                else
+                {
+                    string[] tokens = s.Split(';');
+                    array = new ulong[tokens.Length];
+                    for (int i = 0; i < tokens.Length; i++)
+                        array[i] = ulong.Parse(tokens[i]);
+                }
                 return true;
             }
             catch (Exception)

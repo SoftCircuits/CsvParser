@@ -52,7 +52,7 @@ namespace BuildConverters
         static StringBuilder TestMembers;
         static StringBuilder TestInitializers;
 
-        static void Main(string[] args)
+        static void Main(string[] _)
         {
             DataConvertersData = new StringBuilder();
             TestMembers = new StringBuilder();

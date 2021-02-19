@@ -6,11 +6,11 @@ using System.Globalization;
 
 namespace SoftCircuits.CsvParser
 {
-    internal class NullableDateTimeConverter : DataConverter<DateTime?>
+    internal class NullableDateTimeConverter : DataConverter<Nullable<DateTime>>
     {
-        public override string ConvertToString(DateTime? value) => value.HasValue ? value.Value.ToString() : string.Empty;
+        public override string ConvertToString(Nullable<DateTime> value) => value.HasValue ? value.Value.ToString() : string.Empty;
 
-        public override bool TryConvertFromString(string s, out DateTime? value)
+        public override bool TryConvertFromString(string s, out Nullable<DateTime> value)
         {
             if (string.IsNullOrWhiteSpace(s))
             {

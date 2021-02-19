@@ -1,14 +1,14 @@
 // Copyright (c) 2019-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
-
+using System;
 namespace SoftCircuits.CsvParser
 {
-    internal class NullableBooleanConverter : DataConverter<bool?>
+    internal class NullableBooleanConverter : DataConverter<Nullable<bool>>
     {
-        public override string ConvertToString(bool? value) => value.HasValue ? value.Value.ToString() : string.Empty;
+        public override string ConvertToString(Nullable<bool> value) => value.HasValue ? value.Value.ToString() : string.Empty;
 
-        public override bool TryConvertFromString(string s, out bool? value)
+        public override bool TryConvertFromString(string s, out Nullable<bool> value)
         {
             if (string.IsNullOrWhiteSpace(s))
             {

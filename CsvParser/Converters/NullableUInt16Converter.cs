@@ -1,14 +1,14 @@
 // Copyright (c) 2019-2021 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
-
+using System;
 namespace SoftCircuits.CsvParser
 {
-    internal class NullableUInt16Converter : DataConverter<ushort?>
+    internal class NullableUInt16Converter : DataConverter<Nullable<ushort>>
     {
-        public override string ConvertToString(ushort? value) => value.HasValue ? value.Value.ToString() : string.Empty;
+        public override string ConvertToString(Nullable<ushort> value) => value.HasValue ? value.Value.ToString() : string.Empty;
 
-        public override bool TryConvertFromString(string s, out ushort? value)
+        public override bool TryConvertFromString(string s, out Nullable<ushort> value)
         {
             if (string.IsNullOrWhiteSpace(s))
             {

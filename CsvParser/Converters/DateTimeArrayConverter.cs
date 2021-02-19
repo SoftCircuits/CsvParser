@@ -8,7 +8,7 @@ namespace SoftCircuits.CsvParser
 {
     internal class DateTimeArrayConverter : DataConverter<DateTime[]>
     {
-        public override string ConvertToString(DateTime[] array)
+        public override string ConvertToString(DateTime[]? array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -16,13 +16,13 @@ namespace SoftCircuits.CsvParser
             return string.Join(";", array);
         }
 
-        public override bool TryConvertFromString(string s, out DateTime[] array)
+        public override bool TryConvertFromString(string s, out DateTime[]? array)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = new DateTime[0];
+                    array = Array.Empty<DateTime>();
                     return true;
                 }
 

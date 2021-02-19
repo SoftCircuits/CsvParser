@@ -11,7 +11,7 @@ namespace SoftCircuits.CsvParser
         /// <summary>
         /// Name override for this property.
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// 0-based column position for this property.
@@ -26,7 +26,7 @@ namespace SoftCircuits.CsvParser
         /// <summary>
         /// Object that converts this property to a string, and back again.
         /// </summary>
-        public Type ConverterType { get; set; }
+        public Type? ConverterType { get; set; }
 
         /// <summary>
         /// Initializes a new instance.

@@ -7,9 +7,9 @@ using System.Linq;
 
 namespace SoftCircuits.CsvParser
 {
-    internal class NullableDateTimeArrayConverter : DataConverter<DateTime?[]>
+    internal class NullableDateTimeArrayConverter : DataConverter<Nullable<DateTime>[]>
     {
-        public override string ConvertToString(DateTime?[] array)
+        public override string ConvertToString(Nullable<DateTime>[]? array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -17,13 +17,13 @@ namespace SoftCircuits.CsvParser
             return string.Join(";", array.Select(v => v.HasValue ? v.Value.ToString() : string.Empty));
         }
 
-        public override bool TryConvertFromString(string s, out DateTime?[] array)
+        public override bool TryConvertFromString(string s, out Nullable<DateTime>[]? array)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = new DateTime?[0];
+                    array = Array.Empty<DateTime?>();
                     return true;
                 }
 

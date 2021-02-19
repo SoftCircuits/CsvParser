@@ -25,7 +25,7 @@ namespace SoftCircuits.CsvParser
         /// <see cref="DataConverter{T}"></see>.</returns>
         public static IDataConverter GetConverter(Type type)
         {
-            return ConverterLookup.TryGetValue(type, out Func<IDataConverter> func) ?
+            return ConverterLookup.TryGetValue(type, out Func<IDataConverter>? func) ?
                 func() :
                 new UnsupportedTypeConverter(type);
         }

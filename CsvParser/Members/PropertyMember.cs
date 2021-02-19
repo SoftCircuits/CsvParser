@@ -15,15 +15,15 @@ namespace SoftCircuits.CsvParser.Members
 
         public PropertyMember(PropertyInfo property)
         {
-            Property = property;
+            Property = property ?? throw new ArgumentNullException(nameof(property));
         }
 
         public Type Type => Property.PropertyType;
         public string Name => Property.Name;
         public bool CanRead => Property.CanRead;
         public bool CanWrite => Property.CanWrite;
-        public ColumnMapAttribute ColumnMapAttribute => Property.GetCustomAttribute<ColumnMapAttribute>();
-        public object GetValue(object item) => Property.GetValue(item);
-        public void SetValue(object item, object value) => Property.SetValue(item, value);
+        public ColumnMapAttribute? ColumnMapAttribute => Property.GetCustomAttribute<ColumnMapAttribute>();
+        public object? GetValue(object? item) => Property.GetValue(item);
+        public void SetValue(object? item, object? value) => Property.SetValue(item, value);
     }
 }

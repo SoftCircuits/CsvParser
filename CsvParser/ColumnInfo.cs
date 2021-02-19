@@ -46,7 +46,7 @@ namespace SoftCircuits.CsvParser
         /// <summary>
         /// Object that converts this property to a string, and back again.
         /// </summary>
-        public IDataConverter Converter { get; set; }
+        public IDataConverter? Converter { get; set; }
 
         /// <summary>
         /// Reflection data for this property.
@@ -63,7 +63,7 @@ namespace SoftCircuits.CsvParser
             if (member == null)
                 throw new ArgumentNullException(nameof(member));
 
-            ColumnMapAttribute attribute = member.ColumnMapAttribute;
+            ColumnMapAttribute? attribute = member.ColumnMapAttribute;
             if (attribute != null)
             {
                 // Initialize data from attribute
@@ -124,13 +124,13 @@ namespace SoftCircuits.CsvParser
             Debug.Assert(Converter != null);
             if (Member.CanWrite)
             {
-                if (!Converter.TryConvertFromString(s, out object value))
+                if (!Converter.TryConvertFromString(s, out object? value))
                 {
                     // String could not be converted to property value. Throw exception
                     // if requested. Otherwise, just assign the default value returned
                     // from TryConvertFromString().
                     if (invalidDataRaisesException)
-                        throw new BadDataFormatException(s, Member.Name, Member.Type.FullName);
+                        throw new BadDataFormatException(s, Member.Name, Member.Type);
                 }
                 Member.SetValue(item, value);
             }

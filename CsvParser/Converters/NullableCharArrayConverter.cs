@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace SoftCircuits.CsvParser
 {
-    internal class NullableCharArrayConverter : DataConverter<char?[]>
+    internal class NullableCharArrayConverter : DataConverter<Nullable<char>[]>
     {
-        public override string ConvertToString(char?[] array)
+        public override string ConvertToString(Nullable<char>[]? array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -16,13 +16,13 @@ namespace SoftCircuits.CsvParser
             return string.Join(";", array.Select(c => c.HasValue ? ((int)c).ToString() : string.Empty));
         }
 
-        public override bool TryConvertFromString(string s, out char?[] array)
+        public override bool TryConvertFromString(string s, out Nullable<char>[]? array)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = new char?[0];
+                    array = Array.Empty<char?>();
                     return true;
                 }
 

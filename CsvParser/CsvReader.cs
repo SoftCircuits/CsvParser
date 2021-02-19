@@ -32,11 +32,12 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="path">The name of the CSV file to read.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(string path, CsvSettings settings = null)
+        public CsvReader(string path, CsvSettings? settings = null)
         {
             Reader = new StreamReader(path);
             Settings = settings ?? new CsvSettings();
             LeaveStreamOpen = false;
+            Line = string.Empty;
         }
 
         /// <summary>
@@ -47,11 +48,12 @@ namespace SoftCircuits.CsvParser
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
         /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(string path, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        public CsvReader(string path, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
         {
             Reader = new StreamReader(path, detectEncodingFromByteOrderMarks);
             Settings = settings ?? new CsvSettings();
             LeaveStreamOpen = false;
+            Line = string.Empty;
         }
 
         /// <summary>
@@ -61,11 +63,12 @@ namespace SoftCircuits.CsvParser
         /// <param name="path">The name of the CSV file to read.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(string path, Encoding encoding, CsvSettings settings = null)
+        public CsvReader(string path, Encoding encoding, CsvSettings? settings = null)
         {
             Reader = new StreamReader(path, encoding);
             Settings = settings ?? new CsvSettings();
             LeaveStreamOpen = false;
+            Line = string.Empty;
         }
 
         /// <summary>
@@ -77,11 +80,12 @@ namespace SoftCircuits.CsvParser
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
         /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        public CsvReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
         {
             Reader = new StreamReader(path, encoding, detectEncodingFromByteOrderMarks);
             Settings = settings ?? new CsvSettings();
             LeaveStreamOpen = false;
+            Line = string.Empty;
         }
 
         /// <summary>
@@ -89,11 +93,12 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="stream">The stream to be read.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(Stream stream, CsvSettings settings = null)
+        public CsvReader(Stream stream, CsvSettings? settings = null)
         {
             Reader = new StreamReader(stream);
             Settings = settings ?? new CsvSettings();
             LeaveStreamOpen = false;
+            Line = string.Empty;
         }
 
         /// <summary>
@@ -104,11 +109,12 @@ namespace SoftCircuits.CsvParser
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
         /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(Stream stream, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        public CsvReader(Stream stream, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
         {
             Reader = new StreamReader(stream, detectEncodingFromByteOrderMarks);
             Settings = settings ?? new CsvSettings();
             LeaveStreamOpen = false;
+            Line = string.Empty;
         }
 
         /// <summary>
@@ -119,11 +125,12 @@ namespace SoftCircuits.CsvParser
         /// <param name="encoding">The character encoding to use.</param>
         /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(Stream stream, Encoding encoding, CsvSettings settings = null)
+        public CsvReader(Stream stream, Encoding encoding, CsvSettings? settings = null)
         {
             Reader = new StreamReader(stream, encoding);
             Settings = settings ?? new CsvSettings();
             LeaveStreamOpen = false;
+            Line = string.Empty;
         }
 
         /// <summary>
@@ -135,11 +142,12 @@ namespace SoftCircuits.CsvParser
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
         /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        public CsvReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
         {
             Reader = new StreamReader(stream, encoding, detectEncodingFromByteOrderMarks);
             Settings = settings ?? new CsvSettings();
             LeaveStreamOpen = false;
+            Line = string.Empty;
         }
 
         /// <summary>
@@ -147,17 +155,12 @@ namespace SoftCircuits.CsvParser
         /// more data could be read because the end of the file was reached.
         /// </summary>
         /// <param name="columns">Array to hold the columns read. Okay if it's <c>null</c>.</param>
-        public bool ReadRow(ref string[] columns)
+        public bool ReadRow(ref string[]? columns)
         {
             GrowableArray<string> growableArray = new GrowableArray<string>(columns);
 
         ReadNextLine:
-            // Read next line from the file
-            Line = Reader.ReadLine();
-            CurrPos = 0;
-
-            // Test for end of file
-            if (Line == null)
+            if (!ReadNextLine())
                 return false;
 
             // Test for empty line
@@ -219,12 +222,9 @@ namespace SoftCircuits.CsvParser
             {
                 while (CurrPos == Line.Length)
                 {
-                    // End of line so attempt to read the next line
-                    Line = Reader.ReadLine();
-                    CurrPos = 0;
-                    // Done if we reached the end of the file
-                    if (Line == null)
+                    if (!ReadNextLine())
                         return builder.ToString();
+
                     // Otherwise, treat as a multi-line field
                     builder.Append(Environment.NewLine);
                 }
@@ -267,7 +267,30 @@ namespace SoftCircuits.CsvParser
             CurrPos = Line.IndexOf(Settings.ColumnDelimiter, CurrPos);
             if (CurrPos == -1)
                 CurrPos = Line.Length;
+#if NET5_0
+            return Line[startPos..CurrPos];
+#else
             return Line.Substring(startPos, CurrPos - startPos);
+#endif
+        }
+
+        /// <summary>
+        /// Reads the next line from the input stream and resets the current line
+        /// position.
+        /// </summary>
+        /// <returns>True if the next line was read, false if the end of the stream
+        /// was reached.</returns>
+        private bool ReadNextLine()
+        {
+            string? line = Reader.ReadLine();
+            CurrPos = 0;
+            if (line == null)
+            {
+                Line = string.Empty;
+                return false;
+            }
+            Line = line;
+            return true;
         }
 
         /// <summary>
@@ -282,7 +305,10 @@ namespace SoftCircuits.CsvParser
         public void Dispose()
         {
             if (!LeaveStreamOpen)
+            {
                 Reader.Dispose();
+                GC.SuppressFinalize(this);
+            }
         }
     }
 }

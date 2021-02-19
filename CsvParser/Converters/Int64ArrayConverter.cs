@@ -7,7 +7,7 @@ namespace SoftCircuits.CsvParser
 {
     internal class Int64ArrayConverter : DataConverter<long[]>
     {
-        public override string ConvertToString(long[] array)
+        public override string ConvertToString(long[]? array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -15,20 +15,21 @@ namespace SoftCircuits.CsvParser
             return string.Join(";", array);
         }
 
-        public override bool TryConvertFromString(string s, out long[] array)
+        public override bool TryConvertFromString(string s, out long[]? array)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = new long[0];
-                    return true;
+                    array = Array.Empty<long>();
                 }
-
-                string[] tokens = s.Split(';');
-                array = new long[tokens.Length];
-                for (int i = 0; i < tokens.Length; i++)
-                    array[i] = long.Parse(tokens[i]);
+                else
+                {
+                    string[] tokens = s.Split(';');
+                    array = new long[tokens.Length];
+                    for (int i = 0; i < tokens.Length; i++)
+                        array[i] = long.Parse(tokens[i]);
+                }
                 return true;
             }
             catch (Exception)

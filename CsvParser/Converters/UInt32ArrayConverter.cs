@@ -7,7 +7,7 @@ namespace SoftCircuits.CsvParser
 {
     internal class UInt32ArrayConverter : DataConverter<uint[]>
     {
-        public override string ConvertToString(uint[] array)
+        public override string ConvertToString(uint[]? array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -15,20 +15,21 @@ namespace SoftCircuits.CsvParser
             return string.Join(";", array);
         }
 
-        public override bool TryConvertFromString(string s, out uint[] array)
+        public override bool TryConvertFromString(string s, out uint[]? array)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = new uint[0];
-                    return true;
+                    array = Array.Empty<uint>();
                 }
-
-                string[] tokens = s.Split(';');
-                array = new uint[tokens.Length];
-                for (int i = 0; i < tokens.Length; i++)
-                    array[i] = uint.Parse(tokens[i]);
+                else
+                {
+                    string[] tokens = s.Split(';');
+                    array = new uint[tokens.Length];
+                    for (int i = 0; i < tokens.Length; i++)
+                        array[i] = uint.Parse(tokens[i]);
+                }
                 return true;
             }
             catch (Exception)

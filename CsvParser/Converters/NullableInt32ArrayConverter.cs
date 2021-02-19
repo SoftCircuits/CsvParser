@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace SoftCircuits.CsvParser
 {
-    internal class NullableInt32ArrayConverter : DataConverter<int?[]>
+    internal class NullableInt32ArrayConverter : DataConverter<Nullable<int>[]>
     {
-        public override string ConvertToString(int?[] array)
+        public override string ConvertToString(Nullable<int>[]? array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -16,20 +16,21 @@ namespace SoftCircuits.CsvParser
             return string.Join(";", array.Select(v => v.HasValue ? v.Value.ToString() : string.Empty));
         }
 
-        public override bool TryConvertFromString(string s, out int?[] array)
+        public override bool TryConvertFromString(string s, out Nullable<int>[]? array)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = new int?[0];
-                    return true;
+                    array = Array.Empty<int?>();
                 }
-
-                string[] tokens = s.Split(';');
-                array = new int?[tokens.Length];
-                for (int i = 0; i < tokens.Length; i++)
-                    array[i] = (tokens[i].Length > 0) ? (int?)int.Parse(tokens[i]) : null;
+                else
+                {
+                    string[] tokens = s.Split(';');
+                    array = new int?[tokens.Length];
+                    for (int i = 0; i < tokens.Length; i++)
+                        array[i] = (tokens[i].Length > 0) ? (int?)int.Parse(tokens[i]) : null;
+                }
                 return true;
             }
             catch (Exception)

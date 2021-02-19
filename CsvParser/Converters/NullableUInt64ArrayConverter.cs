@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace SoftCircuits.CsvParser
 {
-    internal class NullableUInt64ArrayConverter : DataConverter<ulong?[]>
+    internal class NullableUInt64ArrayConverter : DataConverter<Nullable<ulong>[]>
     {
-        public override string ConvertToString(ulong?[] array)
+        public override string ConvertToString(Nullable<ulong>[]? array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -16,20 +16,21 @@ namespace SoftCircuits.CsvParser
             return string.Join(";", array.Select(v => v.HasValue ? v.Value.ToString() : string.Empty));
         }
 
-        public override bool TryConvertFromString(string s, out ulong?[] array)
+        public override bool TryConvertFromString(string s, out Nullable<ulong>[]? array)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = new ulong?[0];
-                    return true;
+                    array = Array.Empty<ulong?>();
                 }
-
-                string[] tokens = s.Split(';');
-                array = new ulong?[tokens.Length];
-                for (int i = 0; i < tokens.Length; i++)
-                    array[i] = (tokens[i].Length > 0) ? (ulong?)ulong.Parse(tokens[i]) : null;
+                else
+                {
+                    string[] tokens = s.Split(';');
+                    array = new ulong?[tokens.Length];
+                    for (int i = 0; i < tokens.Length; i++)
+                        array[i] = (tokens[i].Length > 0) ? (ulong?)ulong.Parse(tokens[i]) : null;
+                }
                 return true;
             }
             catch (Exception)

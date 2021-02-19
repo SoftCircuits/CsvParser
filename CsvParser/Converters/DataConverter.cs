@@ -21,7 +21,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="value">The object to be converted to a string.</param>
         /// <returns>A string representation of <paramref name="value"/>.</returns>
-        string ConvertToString(object value);
+        string ConvertToString(object? value);
 
         /// <summary>
         /// Converts a string back to an object. Returns <c>true</c> if
@@ -34,7 +34,7 @@ namespace SoftCircuits.CsvParser
         /// parsed from the string.</param>
         /// <returns>True if successful, false if the string could not
         /// be converted.</returns>
-        bool TryConvertFromString(string s, out object value);
+        bool TryConvertFromString(string s, out object? value);
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="value">The variable to be converted to a string.</param>
         /// <returns>A string representation of <paramref name="value"/>.</returns>
-        public string ConvertToString(object value) => ConvertToString((T)value);
+        public string ConvertToString(object? value) => ConvertToString((T)value);
 
         /// <summary>
         /// Converts a string back to a value. Returns <c>true</c> if
@@ -70,7 +70,7 @@ namespace SoftCircuits.CsvParser
         /// parsed from the string.</param>
         /// <returns>True if successful, false if the string could not
         /// be converted.</returns>
-        public bool TryConvertFromString(string s, out object value)
+        public bool TryConvertFromString(string s, out object? value)
         {
             if (TryConvertFromString(s, out T temp))
             {
@@ -90,7 +90,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="value">The value to be converted to a string.</param>
         /// <returns>Returns a string representation of
         /// <typeparamref name="T"/></returns>
-        public abstract string ConvertToString(T value);
+        public abstract string ConvertToString(T? value);
 
         /// <summary>
         /// Override this abstract method to implement your own logic to convert
@@ -101,7 +101,7 @@ namespace SoftCircuits.CsvParser
         /// parsed from the string.</param>
         /// <returns>True if successful, false if the string could not
         /// be converted.</returns>
-        public abstract bool TryConvertFromString(string s, out T value);
+        public abstract bool TryConvertFromString(string s, out T? value);
 
         #endregion
 
@@ -126,11 +126,11 @@ namespace SoftCircuits.CsvParser
             Type = type;
         }
 
-        public string ConvertToString(object value) => value.ToString();
+        public string ConvertToString(object? value) => value?.ToString() ?? string.Empty;
 
-        public bool TryConvertFromString(string s, out object value)
+        public bool TryConvertFromString(string s, out object? value)
         {
-            throw new UnsupportedDataTypeException(Type.FullName);
+            throw new UnsupportedDataTypeException(Type);
         }
     }
 }

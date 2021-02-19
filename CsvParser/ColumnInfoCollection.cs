@@ -137,7 +137,7 @@ namespace SoftCircuits.CsvParser
                 return _filteredColumns;
             }
         }
-        private IEnumerable<ColumnInfo> _filteredColumns = null;
+        private IEnumerable<ColumnInfo>? _filteredColumns = null;
 
         /// <summary>
         /// Returns all the properties and fields of a type.

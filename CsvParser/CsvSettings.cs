@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 //
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SoftCircuits.CsvParser
 {
@@ -68,6 +69,10 @@ namespace SoftCircuits.CsvParser
         /// Initializes <see cref="OneQuoteString"/> and <see cref="TwoQuoteString"/>
         /// based on the value of <see cref="QuoteCharacter"/>.
         /// </summary>
+#if NET5_0
+        [MemberNotNull(nameof(OneQuoteString))]
+        [MemberNotNull(nameof(TwoQuoteString))]
+#endif
         private void InitializeQuoteStrings()
         {
             OneQuoteString = new string(QuoteCharacter, 1);
@@ -110,6 +115,7 @@ namespace SoftCircuits.CsvParser
                 '\r',   // New line characters
                 '\n'
             };
+
             InitializeQuoteStrings();
             EmptyLineBehavior = EmptyLineBehavior.NoColumns;
             InvalidDataRaisesException = true;

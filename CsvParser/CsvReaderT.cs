@@ -15,7 +15,7 @@ namespace SoftCircuits.CsvParser
     public class CsvReader<T> : CsvReader where T : class, new()
     {
         private ColumnInfoCollection<T> ColumnsInfo;
-        private string[] Columns;
+        private string[]? Columns;
 
         /// <summary>
         /// Returns the number of columns for the last row successfully read.
@@ -29,10 +29,11 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="path">The name of the CSV file to read.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(string path, CsvSettings settings = null)
+        public CsvReader(string path, CsvSettings? settings = null)
             : base(path, settings)
         {
-            Initialize();
+            ColumnsInfo = new ColumnInfoCollection<T>();
+            Columns = null;
         }
 
         /// <summary>
@@ -42,10 +43,11 @@ namespace SoftCircuits.CsvParser
         /// <param name="path">The name of the CSV file to read.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(string path, Encoding encoding, CsvSettings settings = null)
+        public CsvReader(string path, Encoding encoding, CsvSettings? settings = null)
             : base(path, encoding, settings)
         {
-            Initialize();
+            ColumnsInfo = new ColumnInfoCollection<T>();
+            Columns = null;
         }
 
         /// <summary>
@@ -56,10 +58,11 @@ namespace SoftCircuits.CsvParser
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for
         /// byte order marks at
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(string path, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        public CsvReader(string path, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
             : base(path, detectEncodingFromByteOrderMarks, settings)
         {
-            Initialize();
+            ColumnsInfo = new ColumnInfoCollection<T>();
+            Columns = null;
         }
 
         /// <summary>
@@ -71,10 +74,11 @@ namespace SoftCircuits.CsvParser
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        public CsvReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
             : base(path, encoding, detectEncodingFromByteOrderMarks, settings)
         {
-            Initialize();
+            ColumnsInfo = new ColumnInfoCollection<T>();
+            Columns = null;
         }
 
         /// <summary>
@@ -82,10 +86,11 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="stream">The stream to be read.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(Stream stream, CsvSettings settings = null)
+        public CsvReader(Stream stream, CsvSettings? settings = null)
             : base(stream, settings)
         {
-            Initialize();
+            ColumnsInfo = new ColumnInfoCollection<T>();
+            Columns = null;
         }
 
         /// <summary>
@@ -95,10 +100,11 @@ namespace SoftCircuits.CsvParser
         /// <param name="stream">The stream to be read.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(Stream stream, Encoding encoding, CsvSettings settings = null)
+        public CsvReader(Stream stream, Encoding encoding, CsvSettings? settings = null)
             : base(stream, encoding, settings)
         {
-            Initialize();
+            ColumnsInfo = new ColumnInfoCollection<T>();
+            Columns = null;
         }
 
         /// <summary>
@@ -109,10 +115,11 @@ namespace SoftCircuits.CsvParser
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
         /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(Stream stream, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        public CsvReader(Stream stream, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
             : base(stream, detectEncodingFromByteOrderMarks, settings)
         {
-            Initialize();
+            ColumnsInfo = new ColumnInfoCollection<T>();
+            Columns = null;
         }
 
         /// <summary>
@@ -125,16 +132,8 @@ namespace SoftCircuits.CsvParser
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
         /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings settings = null)
+        public CsvReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
             : base(stream, encoding, detectEncodingFromByteOrderMarks, settings)
-        {
-            Initialize();
-        }
-
-        /// <summary>
-        /// Common initialization.
-        /// </summary>
-        private void Initialize()
         {
             ColumnsInfo = new ColumnInfoCollection<T>();
             Columns = null;
@@ -162,7 +161,7 @@ namespace SoftCircuits.CsvParser
             {
                 // Will exclude all column mapping if headers are empty
                 if (mapColumnsFromHeaders)
-                    ColumnsInfo.ApplyHeaders(Columns, Settings.ColumnHeaderStringComparison);
+                    ColumnsInfo.ApplyHeaders(Columns!, Settings.ColumnHeaderStringComparison);
                 return true;
             }
             return false;
@@ -173,14 +172,14 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="item">Receives the item read.</param>
         /// <returns>True if successful, false if the end of the file was reached.</returns>
-        public bool Read(out T item)
+        public bool Read(out T? item)
         {
             if (ReadRow(ref Columns))
             {
                 item = Activator.CreateInstance<T>();
                 foreach (ColumnInfo column in ColumnsInfo.FilteredColumns)
                 {
-                    if (column.Index < Columns.Length)
+                    if (column.Index < Columns!.Length)
                         column.SetValue(item, Columns[column.Index], Settings.InvalidDataRaisesException);
                 }
                 return true;

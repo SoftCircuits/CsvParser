@@ -8,7 +8,7 @@ namespace SoftCircuits.CsvParser
 {
     internal class StringArrayConverter : DataConverter<string[]>
     {
-        public override string ConvertToString(string[] array)
+        public override string ConvertToString(string[]? array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -28,7 +28,7 @@ namespace SoftCircuits.CsvParser
 
         public override bool TryConvertFromString(string s, out string[] array)
         {
-            s = s ?? string.Empty;
+            s ??= string.Empty;
 
             List<string> list = new List<string>();
             int pos = 0;
@@ -68,7 +68,11 @@ namespace SoftCircuits.CsvParser
                     pos = s.IndexOf(';', pos);
                     if (pos == -1)
                         pos = s.Length;
+#if NET5_0
+                    list.Add(s[start..pos]);
+#else
                     list.Add(s.Substring(start, pos - start));
+#endif
                     // Skip delimiter
                     pos++;
                 }

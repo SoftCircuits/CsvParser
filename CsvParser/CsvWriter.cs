@@ -32,7 +32,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="path">The name of the CSV file to write to.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvWriter(string path, CsvSettings settings = null)
+        public CsvWriter(string path, CsvSettings? settings = null)
         {
             Writer = new StreamWriter(path);
             Settings = settings ?? new CsvSettings();
@@ -46,7 +46,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="path">The name of the CSV file to write to.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvWriter(string path, Encoding encoding, CsvSettings settings = null)
+        public CsvWriter(string path, Encoding encoding, CsvSettings? settings = null)
         {
             Writer = new StreamWriter(path, false, encoding);
             Settings = settings ?? new CsvSettings();
@@ -59,7 +59,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="stream">The stream to write to.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvWriter(Stream stream, CsvSettings settings = null)
+        public CsvWriter(Stream stream, CsvSettings? settings = null)
         {
             Writer = new StreamWriter(stream);
             Settings = settings ?? new CsvSettings();
@@ -73,7 +73,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="stream">The stream to write to.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvWriter(Stream stream, Encoding encoding, CsvSettings settings = null)
+        public CsvWriter(Stream stream, Encoding encoding, CsvSettings? settings = null)
         {
             Writer = new StreamWriter(stream, encoding);
             Settings = settings ?? new CsvSettings();
@@ -119,11 +119,12 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         internal string CsvEncode(string s)
         {
-            Debug.Assert(s != null);
-            if (!Settings.HasSpecialCharacter(s))
-                return s;
-            s = s.Replace(Settings.OneQuoteString, Settings.TwoQuoteString);
-            return string.Format("{0}{1}{0}", Settings.QuoteCharacter, s);
+            if (Settings.HasSpecialCharacter(s))
+            {
+                s = s.Replace(Settings.OneQuoteString, Settings.TwoQuoteString);
+                s = string.Format("{0}{1}{0}", Settings.QuoteCharacter, s);
+            }
+            return s;
         }
 
         /// <summary>
@@ -142,9 +143,14 @@ namespace SoftCircuits.CsvParser
         public void Dispose()
         {
             if (LeaveStreamOpen)
+            {
                 Flush();
+            }
             else
+            {
                 Writer.Dispose();
+                GC.SuppressFinalize(this);
+            }
         }
     }
 }

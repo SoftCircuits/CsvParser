@@ -17,8 +17,8 @@ namespace SoftCircuits.CsvParser
         {
         }
 
-        public BadDataFormatException(string data, string member, string memberType)
-            : base($"Unable to convert the string {((data != null) ? $"\"{data}\"" : "(null)")} to class member '{member}' ({memberType}).")
+        public BadDataFormatException(string data, string member, Type memberType)
+            : base($"Unable to convert the string {((data != null) ? $"\"{data}\"" : "(null)")} to class member '{member}' ({memberType.FullName ?? "(Unknown Type)"}).")
         {
         }
     }

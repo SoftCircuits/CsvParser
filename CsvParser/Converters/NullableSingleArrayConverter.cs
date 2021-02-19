@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace SoftCircuits.CsvParser
 {
-    internal class NullableSingleArrayConverter : DataConverter<float?[]>
+    internal class NullableSingleArrayConverter : DataConverter<Nullable<float>[]>
     {
-        public override string ConvertToString(float?[] array)
+        public override string ConvertToString(Nullable<float>[]? array)
         {
             if (array == null || array.Length == 0)
                 return string.Empty;
@@ -16,20 +16,21 @@ namespace SoftCircuits.CsvParser
             return string.Join(";", array.Select(v => v.HasValue ? v.Value.ToString() : string.Empty));
         }
 
-        public override bool TryConvertFromString(string s, out float?[] array)
+        public override bool TryConvertFromString(string s, out Nullable<float>[]? array)
         {
             try
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = new float?[0];
-                    return true;
+                    array = Array.Empty<float?>();
                 }
-
-                string[] tokens = s.Split(';');
-                array = new float?[tokens.Length];
-                for (int i = 0; i < tokens.Length; i++)
-                    array[i] = (tokens[i].Length > 0) ? (float?)float.Parse(tokens[i]) : null;
+                else
+                {
+                    string[] tokens = s.Split(';');
+                    array = new float?[tokens.Length];
+                    for (int i = 0; i < tokens.Length; i++)
+                        array[i] = (tokens[i].Length > 0) ? (float?)float.Parse(tokens[i]) : null;
+                }
                 return true;
             }
             catch (Exception)

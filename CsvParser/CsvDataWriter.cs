@@ -21,7 +21,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="path">The name of the CSV file to write to.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvDataWriter(string path, CsvSettings settings = null)
+        public CsvDataWriter(string path, CsvSettings? settings = null)
             : base(path, settings)
         {
         }
@@ -33,7 +33,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="path">The name of the CSV file to write to.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvDataWriter(string path, Encoding encoding, CsvSettings settings = null)
+        public CsvDataWriter(string path, Encoding encoding, CsvSettings? settings = null)
             : base(path, encoding, settings)
         {
         }
@@ -44,7 +44,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="stream">The stream to write to.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvDataWriter(Stream stream, CsvSettings settings = null)
+        public CsvDataWriter(Stream stream, CsvSettings? settings = null)
             : base(stream, settings)
         {
         }
@@ -56,7 +56,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="stream">The stream to write to.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
-        public CsvDataWriter(Stream stream, Encoding encoding, CsvSettings settings = null)
+        public CsvDataWriter(Stream stream, Encoding encoding, CsvSettings? settings = null)
             : base(stream, encoding, settings)
         {
         }
