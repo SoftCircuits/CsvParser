@@ -21,9 +21,9 @@ Library now targets either .NET 5.0 or .NET Standard 2.0.</Description>
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csv tsv parser csv-parser tsv-parser comma tab separated values delimited</PackageTags>
-    <PackageReleaseNotes>Now targeting .NET Standard and .NET 5.0; Implemented Nullable for .NET 5.0; Code review and optimizations.</PackageReleaseNotes>
+    <PackageReleaseNotes>Minor nullability enhancements.</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>3.0.0</Version>
+    <Version>3.0.1</Version>
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <PackageIconUrl />
   </PropertyGroup>

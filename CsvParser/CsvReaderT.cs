@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 //
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 
@@ -172,7 +173,11 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="item">Receives the item read.</param>
         /// <returns>True if successful, false if the end of the file was reached.</returns>
+#if NETSTANDARD2_0
         public bool Read(out T? item)
+#else
+        public bool Read([NotNullWhen(true)] out T? item)
+#endif
         {
             if (ReadRow(ref Columns))
             {

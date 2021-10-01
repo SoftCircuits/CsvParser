@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 //
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SoftCircuits.CsvParser
 {
@@ -58,7 +59,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="value">The variable to be converted to a string.</param>
         /// <returns>A string representation of <paramref name="value"/>.</returns>
-        public string ConvertToString(object? value) => ConvertToString((T)value);
+        public string ConvertToString(object? value) => ConvertToString((T?)value);
 
         /// <summary>
         /// Converts a string back to a value. Returns <c>true</c> if
@@ -72,7 +73,7 @@ namespace SoftCircuits.CsvParser
         /// be converted.</returns>
         public bool TryConvertFromString(string s, out object? value)
         {
-            if (TryConvertFromString(s, out T temp))
+            if (TryConvertFromString(s, out T? temp))
             {
                 value = temp;
                 return true;
@@ -101,7 +102,11 @@ namespace SoftCircuits.CsvParser
         /// parsed from the string.</param>
         /// <returns>True if successful, false if the string could not
         /// be converted.</returns>
+//#if NETSTANDARD2_0
         public abstract bool TryConvertFromString(string s, out T? value);
+//#else
+//        public abstract bool TryConvertFromString(string s, [NotNullWhen(true)] out T? value);
+//#endif
 
         #endregion
 
