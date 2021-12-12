@@ -175,7 +175,7 @@ using System.Text;
             if (array == null || array.Length == 0)
                 return string.Empty;
 
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
             for (int i = 0; i < array.Length; i++)
             {
                 if (i > 0)
@@ -192,7 +192,7 @@ using System.Text;
         {
             s ??= string.Empty;
 
-            List<string> list = new List<string>();
+            List<string> list = new();
             int pos = 0;
 
             while (pos < s.Length)
@@ -200,7 +200,7 @@ using System.Text;
                 if (s[pos] == '"')
                 {
                     // Parse quoted value
-                    StringBuilder builder = new StringBuilder();
+                    StringBuilder builder = new();
                     // Skip starting quote
                     pos++;
                     while (pos < s.Length)
@@ -230,7 +230,7 @@ using System.Text;
                     pos = s.IndexOf(';', pos);
                     if (pos == -1)
                         pos = s.Length;
-#if NET5_0
+#if !NETSTANDARD2_0
                     list.Add(s[start..pos]);
 #else
                     list.Add(s.Substring(start, pos - start));

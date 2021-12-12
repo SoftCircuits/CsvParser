@@ -18,7 +18,7 @@ namespace CsvParserTests
             return 1;
         }
 
-        public override bool Equals(object obj) => Equals(obj as DataConvertersTestClass);
+        public override bool Equals(object? obj) => obj is DataConvertersTestClass testClass && Equals(testClass);
 
         /// <summary>
         /// Uses reflection to compares this instance to <paramref name="other"/>.
@@ -46,7 +46,7 @@ namespace CsvParserTests
         /// <param name="a">First object.</param>
         /// <param name="b">Second object.</param>
         /// <returns>True if both items are equal.</returns>
-        private bool ObjectsAreEqual(object a, object b)
+        private bool ObjectsAreEqual(object? a, object? b)
         {
             // Handle null cases
             if (a == null || b == null)

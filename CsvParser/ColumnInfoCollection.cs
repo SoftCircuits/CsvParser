@@ -25,7 +25,7 @@ namespace SoftCircuits.CsvParser
             int index = 0;
             foreach (IMember member in GetMembers(typeof(T)))
             {
-                ColumnInfo column = new ColumnInfo(member);
+                ColumnInfo column = new(member);
 
                 // Set index
                 if (column.Index != ColumnInfo.InvalidIndex)
@@ -143,7 +143,7 @@ namespace SoftCircuits.CsvParser
         /// Returns all the properties and fields of a type.
         /// </summary>
         /// <param name="type">The type for which to return the members.</param>
-        private IEnumerable<IMember> GetMembers(Type type)
+        private static IEnumerable<IMember> GetMembers(Type type)
         {
             foreach (MemberInfo member in type.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
             {

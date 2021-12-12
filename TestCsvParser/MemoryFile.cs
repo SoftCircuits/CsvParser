@@ -16,7 +16,7 @@ namespace CsvParserTests
     /// </summary>
     public class MemoryFile : IDisposable
     {
-        private MemoryStream Stream;
+        private MemoryStream? Stream;
 
         /// <summary>
         /// Initializes a MemoryFile instance.
@@ -39,7 +39,7 @@ namespace CsvParserTests
 
         private MemoryStream GetStream()
         {
-            MemoryStream oldStream = Stream;
+            MemoryStream? oldStream = Stream;
 
             Stream = new MemoryStream();
             if (oldStream != null)
@@ -64,6 +64,7 @@ namespace CsvParserTests
 
         public void Dispose()
         {
+            GC.SuppressFinalize(this);
             if (Stream != null)
             {
                 Stream.Dispose();

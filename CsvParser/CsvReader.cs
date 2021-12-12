@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SoftCircuits.CsvParser
 {
@@ -18,7 +19,9 @@ namespace SoftCircuits.CsvParser
         protected CsvSettings Settings;
 
         private string Line;
-        private int CurrPos;
+        private int LinePosition;
+        private StringBuilder? StringBuilder;
+        private readonly GrowableArray<string> InternalColumns;
 
         /// <summary>
         /// Gets or sets whether the underlying stream is left open after the
@@ -28,16 +31,25 @@ namespace SoftCircuits.CsvParser
         public bool LeaveStreamOpen { get; set; }
 
         /// <summary>
+        /// Gets a value that indicates whether the current file position is at the
+        /// end of the file.
+        /// </summary>
+        public bool EndOfFile => Reader.EndOfStream;
+
+        /// <summary>
+        /// Returns the columns read on the last call to <see cref="ReadRow()"/> or
+        /// <see cref="ReadRowAsync()"/>.
+        /// </summary>
+        public string[] Columns => InternalColumns;
+
+        /// <summary>
         /// Initializes a new <see cref="CsvReader"/> instance for the specified file.
         /// </summary>
         /// <param name="path">The name of the CSV file to read.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(string path, CsvSettings? settings = null)
+            : this(path, Encoding.UTF8, true, settings)
         {
-            Reader = new StreamReader(path);
-            Settings = settings ?? new CsvSettings();
-            LeaveStreamOpen = false;
-            Line = string.Empty;
         }
 
         /// <summary>
@@ -49,11 +61,8 @@ namespace SoftCircuits.CsvParser
         /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(string path, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
+            : this(path, Encoding.UTF8, detectEncodingFromByteOrderMarks, settings)
         {
-            Reader = new StreamReader(path, detectEncodingFromByteOrderMarks);
-            Settings = settings ?? new CsvSettings();
-            LeaveStreamOpen = false;
-            Line = string.Empty;
         }
 
         /// <summary>
@@ -64,11 +73,8 @@ namespace SoftCircuits.CsvParser
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(string path, Encoding encoding, CsvSettings? settings = null)
+            : this(path, encoding, true, settings)
         {
-            Reader = new StreamReader(path, encoding);
-            Settings = settings ?? new CsvSettings();
-            LeaveStreamOpen = false;
-            Line = string.Empty;
         }
 
         /// <summary>
@@ -82,10 +88,13 @@ namespace SoftCircuits.CsvParser
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
         {
-            Reader = new StreamReader(path, encoding, detectEncodingFromByteOrderMarks);
-            Settings = settings ?? new CsvSettings();
-            LeaveStreamOpen = false;
+            Reader = new(path, encoding, detectEncodingFromByteOrderMarks);
+            Settings = settings ?? new();
             Line = string.Empty;
+            LinePosition = 0;
+            StringBuilder = null;
+            InternalColumns = new();
+            LeaveStreamOpen = false;
         }
 
         /// <summary>
@@ -94,11 +103,8 @@ namespace SoftCircuits.CsvParser
         /// <param name="stream">The stream to be read.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(Stream stream, CsvSettings? settings = null)
+            : this(stream, Encoding.UTF8, false, settings)
         {
-            Reader = new StreamReader(stream);
-            Settings = settings ?? new CsvSettings();
-            LeaveStreamOpen = false;
-            Line = string.Empty;
         }
 
         /// <summary>
@@ -110,11 +116,8 @@ namespace SoftCircuits.CsvParser
         /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(Stream stream, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
+            : this(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks, settings)
         {
-            Reader = new StreamReader(stream, detectEncodingFromByteOrderMarks);
-            Settings = settings ?? new CsvSettings();
-            LeaveStreamOpen = false;
-            Line = string.Empty;
         }
 
         /// <summary>
@@ -126,11 +129,8 @@ namespace SoftCircuits.CsvParser
         /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(Stream stream, Encoding encoding, CsvSettings? settings = null)
+            : this(stream, encoding, false, settings)
         {
-            Reader = new StreamReader(stream, encoding);
-            Settings = settings ?? new CsvSettings();
-            LeaveStreamOpen = false;
-            Line = string.Empty;
         }
 
         /// <summary>
@@ -144,10 +144,13 @@ namespace SoftCircuits.CsvParser
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
         {
-            Reader = new StreamReader(stream, encoding, detectEncodingFromByteOrderMarks);
-            Settings = settings ?? new CsvSettings();
-            LeaveStreamOpen = false;
+            Reader = new(stream, encoding, detectEncodingFromByteOrderMarks);
+            Settings = settings ?? new();
             Line = string.Empty;
+            LinePosition = 0;
+            StringBuilder = null;
+            InternalColumns = new();
+            LeaveStreamOpen = false;
         }
 
         /// <summary>
@@ -155,53 +158,185 @@ namespace SoftCircuits.CsvParser
         /// more data could be read because the end of the file was reached.
         /// </summary>
         /// <param name="columns">Array to hold the columns read. Okay if it's <c>null</c>.</param>
+        [Obsolete("This method is deprecated and will be removed from a future version of the library. Please use a version of ReadRow() that takes no arguments.")]
         public bool ReadRow(ref string[]? columns)
         {
-            GrowableArray<string> growableArray = new GrowableArray<string>(columns);
+            columns = ReadRow();
+            return columns != null;
+        }
 
-        ReadNextLine:
-            if (!ReadNextLine())
-                return false;
+        /// <summary>
+        /// Reads a row of columns from the current CSV file. Returns null if at the end of the file.
+        /// </summary>
+        /// <returns>The column values read or null if the at the end of the file.</returns>
+        public string[]? ReadRow()
+        {
+            InternalColumns.Clear();
 
-            // Test for empty line
-            if (Line.Length == 0)
+            // Read line
+            while (true)
             {
-                switch (Settings.EmptyLineBehavior)
+                if (!ReadLine())
+                    return null;
+
+                // Handle empty line
+                if (Line.Length == 0)
                 {
-                    case EmptyLineBehavior.NoColumns:
-                        columns = new string[0];
-                        return true;
-                    case EmptyLineBehavior.Ignore:
-                        goto ReadNextLine;
-                    case EmptyLineBehavior.EndOfFile:
-                        return false;
+                    switch (Settings.EmptyLineBehavior)
+                    {
+                        case EmptyLineBehavior.NoColumns:
+                            return Array.Empty<string>();
+                        case EmptyLineBehavior.Ignore:
+                            continue;
+                        case EmptyLineBehavior.EndOfFile:
+                            return null;
+                        default:
+                            break;
+                    }
                 }
+                break;
             }
 
-            // Parse values in this line
-            string column;
+            // Parse column values
             while (true)
             {
                 // Read next column
-                if (CurrPos < Line.Length && Line[CurrPos] == Settings.QuoteCharacter)
-                    column = ReadQuotedColumn();
+                if (LinePosition < Line.Length && Line[LinePosition] == Settings.QuoteCharacter)
+                {
+                    if (StringBuilder != null)
+                        StringBuilder.Clear();
+                    else
+                        StringBuilder = new();
+
+                    LinePosition++;
+                    while (ReadQuotedColumn(StringBuilder))
+                    {
+                        if (!ReadLine())
+                            break;
+                        StringBuilder.AppendLine();
+                    }
+                    InternalColumns.Append(StringBuilder.ToString());
+                }
                 else
-                    column = ReadUnquotedColumn();
-                // Add column to list
-                growableArray.Append(column);
-                // Break if we reached the end of the line
-                if (Line == null || CurrPos == Line.Length)
-                    break;
-                // Otherwise skip delimiter
-                Debug.Assert(Line[CurrPos] == Settings.ColumnDelimiter);
-                CurrPos++;
+                {
+                    InternalColumns.Append(ReadUnquotedColumn());
+                }
+
+                // Skip delimiter if any more columns
+                if (LinePosition < Line.Length)
+                {
+                    Debug.Assert(Line[LinePosition] == Settings.ColumnDelimiter);
+                    LinePosition++;
+                }
+                else break;
             }
 
             // Set results
-            columns = growableArray;
+            return Columns;
+        }
 
-            // Indicate success
-            return true;
+        /// <summary>
+        /// Asynchronously reads a row of columns from the current CSV file. Returns null if at the end of the file.
+        /// </summary>
+        /// <returns>The column values read or null if the at the end of the file.</returns>
+        public async Task<string[]?> ReadRowAsync()
+        {
+            InternalColumns.Clear();
+
+            // Read line
+            while (true)
+            {
+                if (!await ReadLineAsync())
+                    return null;
+
+                // Handle empty line
+                if (Line.Length == 0)
+                {
+                    switch (Settings.EmptyLineBehavior)
+                    {
+                        case EmptyLineBehavior.NoColumns:
+                            return Array.Empty<string>();
+                        case EmptyLineBehavior.Ignore:
+                            continue;
+                        case EmptyLineBehavior.EndOfFile:
+                            return null;
+                        default:
+                            break;
+                    }
+                }
+                break;
+            }
+
+            // Parse column values
+            while (true)
+            {
+                // Read next column
+                if (LinePosition < Line.Length && Line[LinePosition] == Settings.QuoteCharacter)
+                {
+                    if (StringBuilder != null)
+                        StringBuilder.Clear();
+                    else
+                        StringBuilder = new();
+
+                    LinePosition++;
+                    while (ReadQuotedColumn(StringBuilder))
+                    {
+                        if (!await ReadLineAsync())
+                            break;
+                        StringBuilder.AppendLine();
+                    }
+                    InternalColumns.Append(StringBuilder.ToString());
+                }
+                else
+                {
+                    InternalColumns.Append(ReadUnquotedColumn());
+                }
+
+                // Skip delimiter if any more columns
+                if (LinePosition < Line.Length)
+                {
+                    Debug.Assert(Line[LinePosition] == Settings.ColumnDelimiter);
+                    LinePosition++;
+                }
+                else break;
+            }
+
+            // Set results
+            return Columns;
+        }
+
+        /// <summary>
+        /// Reads the next line from the input stream and resets the current line
+        /// position.
+        /// </summary>
+        /// <returns>True if the next line was read, false if the end of the stream
+        /// was reached.</returns>
+        private bool ReadLine()
+        {
+            string? line = Reader.ReadLine();
+            if (line != null)
+            {
+                Line = line;
+                LinePosition = 0;
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Reads one line asynchronously from the current file.
+        /// </summary>
+        /// <returns>True if a line was read. False if the end of the file was reached.</returns>
+        private async Task<bool> ReadLineAsync()
+        {
+            string? line = await Reader.ReadLineAsync();
+            if (line != null)
+            {
+                Line = line;
+                LinePosition = 0;
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -210,49 +345,39 @@ namespace SoftCircuits.CsvParser
         /// the current position points to the delimiter or the end of the last
         /// line in the file. Note: Line may be set to null on return.
         /// </summary>
-        private string ReadQuotedColumn()
+        private bool ReadQuotedColumn(StringBuilder builder)
         {
-            // Skip opening quote character
-            Debug.Assert(CurrPos < Line.Length && Line[CurrPos] == Settings.QuoteCharacter);
-            CurrPos++;
-
-            // Parse column
-            StringBuilder builder = new StringBuilder();
             while (true)
             {
-                while (CurrPos == Line.Length)
-                {
-                    if (!ReadNextLine())
-                        return builder.ToString();
-
-                    // Otherwise, treat as a multi-line field
-                    builder.Append(Environment.NewLine);
-                }
+                // End of line was reached without ending quote
+                // Indicate we need another line
+                while (LinePosition == Line.Length)
+                    return true;
 
                 // Test for quote character
-                if (Line[CurrPos] == Settings.QuoteCharacter)
+                if (Line[LinePosition] == Settings.QuoteCharacter)
                 {
                     // If two quotes, skip first and treat second as literal
-                    int nextPos = (CurrPos + 1);
+                    int nextPos = (LinePosition + 1);
                     if (nextPos < Line.Length && Line[nextPos] == Settings.QuoteCharacter)
-                        CurrPos++;
+                        LinePosition++;
                     else
                         break;  // Single quote ends quoted sequence
                 }
                 // Add current character to the column
-                builder.Append(Line[CurrPos++]);
+                builder.Append(Line[LinePosition++]);
             }
 
-            if (CurrPos < Line.Length)
-            {
-                // Consume closing quote
-                Debug.Assert(Line[CurrPos] == Settings.QuoteCharacter);
-                CurrPos++;
-                // Append any additional characters appearing before next delimiter
-                builder.Append(ReadUnquotedColumn());
-            }
-            // Return column value
-            return builder.ToString();
+            // Consume closing quote
+            Debug.Assert(LinePosition < Line.Length);
+            Debug.Assert(Line[LinePosition] == Settings.QuoteCharacter);
+            LinePosition++;
+
+            // Append any additional characters appearing before next delimiter
+            builder.Append(ReadUnquotedColumn());
+
+            // Indicate we are finished
+            return false;
         }
 
         /// <summary>
@@ -263,34 +388,15 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         private string ReadUnquotedColumn()
         {
-            int startPos = CurrPos;
-            CurrPos = Line.IndexOf(Settings.ColumnDelimiter, CurrPos);
-            if (CurrPos == -1)
-                CurrPos = Line.Length;
-#if NET5_0
-            return Line[startPos..CurrPos];
+            int startPos = LinePosition;
+            LinePosition = Line.IndexOf(Settings.ColumnDelimiter, LinePosition);
+            if (LinePosition == -1)
+                LinePosition = Line.Length;
+#if !NETSTANDARD2_0
+            return Line[startPos..LinePosition];
 #else
-            return Line.Substring(startPos, CurrPos - startPos);
+            return Line.Substring(startPos, LinePosition - startPos);
 #endif
-        }
-
-        /// <summary>
-        /// Reads the next line from the input stream and resets the current line
-        /// position.
-        /// </summary>
-        /// <returns>True if the next line was read, false if the end of the stream
-        /// was reached.</returns>
-        private bool ReadNextLine()
-        {
-            string? line = Reader.ReadLine();
-            CurrPos = 0;
-            if (line == null)
-            {
-                Line = string.Empty;
-                return false;
-            }
-            Line = line;
-            return true;
         }
 
         /// <summary>
@@ -300,7 +406,8 @@ namespace SoftCircuits.CsvParser
         public void Close() => Reader.Close();
 
         /// <summary>
-        /// Releases all resources used by the CsvReader object.
+        /// Releases resources used by this CsvReader object. Leaves the stream open
+        /// if <see cref="LeaveStreamOpen"/> is true.
         /// </summary>
         public void Dispose()
         {

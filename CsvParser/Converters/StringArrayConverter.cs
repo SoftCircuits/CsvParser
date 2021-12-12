@@ -13,7 +13,7 @@ namespace SoftCircuits.CsvParser
             if (array == null || array.Length == 0)
                 return string.Empty;
 
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
             for (int i = 0; i < array.Length; i++)
             {
                 if (i > 0)
@@ -30,7 +30,7 @@ namespace SoftCircuits.CsvParser
         {
             s ??= string.Empty;
 
-            List<string> list = new List<string>();
+            List<string> list = new();
             int pos = 0;
 
             while (pos < s.Length)
@@ -38,7 +38,7 @@ namespace SoftCircuits.CsvParser
                 if (s[pos] == '"')
                 {
                     // Parse quoted value
-                    StringBuilder builder = new StringBuilder();
+                    StringBuilder builder = new();
                     // Skip starting quote
                     pos++;
                     while (pos < s.Length)
@@ -68,7 +68,7 @@ namespace SoftCircuits.CsvParser
                     pos = s.IndexOf(';', pos);
                     if (pos == -1)
                         pos = s.Length;
-#if NET5_0
+#if !NETSTANDARD2_0
                     list.Add(s[start..pos]);
 #else
                     list.Add(s.Substring(start, pos - start));

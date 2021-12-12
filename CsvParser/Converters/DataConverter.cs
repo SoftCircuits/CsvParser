@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 //
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SoftCircuits.CsvParser
 {
@@ -102,10 +101,10 @@ namespace SoftCircuits.CsvParser
         /// parsed from the string.</param>
         /// <returns>True if successful, false if the string could not
         /// be converted.</returns>
-//#if NETSTANDARD2_0
-        public abstract bool TryConvertFromString(string s, out T? value);
-//#else
+//#if !NETSTANDARD2_0
 //        public abstract bool TryConvertFromString(string s, [NotNullWhen(true)] out T? value);
+//#else
+        public abstract bool TryConvertFromString(string s, out T? value);
 //#endif
 
         #endregion

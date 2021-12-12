@@ -69,7 +69,7 @@ namespace SoftCircuits.CsvParser
         /// Initializes <see cref="OneQuoteString"/> and <see cref="TwoQuoteString"/>
         /// based on the value of <see cref="QuoteCharacter"/>.
         /// </summary>
-#if NET5_0
+#if !NETSTANDARD2_0
         [MemberNotNull(nameof(OneQuoteString))]
         [MemberNotNull(nameof(TwoQuoteString))]
 #endif
@@ -120,6 +120,22 @@ namespace SoftCircuits.CsvParser
             EmptyLineBehavior = EmptyLineBehavior.NoColumns;
             InvalidDataRaisesException = true;
             ColumnHeaderStringComparison = StringComparison.InvariantCultureIgnoreCase;
+        }
+
+        /// <summary>
+        /// Encodes a CSV field if needed by doubling any quote characters and then
+        /// wrapping the field in quotes.
+        /// </summary>
+        /// <param name="s">Field to encode.</param>
+        /// <returns>The encoded string.</returns>
+        public string CsvEncode(string s)
+        {
+            if (HasSpecialCharacter(s))
+            {
+                s = s.Replace(OneQuoteString, TwoQuoteString);
+                s = $"{QuoteCharacter}{s}{QuoteCharacter}";
+            }
+            return s;
         }
     }
 }

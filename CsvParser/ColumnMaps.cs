@@ -15,7 +15,7 @@ namespace SoftCircuits.CsvParser
     /// <typeparam name="T">Specifies the class that is being mapped.</typeparam>
     public abstract class ColumnMaps<T> where T : class, new()
     {
-        private readonly List<ColumnMap> Maps = new List<ColumnMap>();
+        private readonly List<ColumnMap> Maps = new();
 
         /// <summary>
         /// Adds mapping information to a class property or field. Returns a
@@ -38,7 +38,7 @@ namespace SoftCircuits.CsvParser
             if (member == null)
                 throw new InvalidOperationException("Unsupported expression type used to specify class property.");
 
-            ColumnMap propertyMap = new ColumnMap(member.Member.Name);
+            ColumnMap propertyMap = new(member.Member.Name);
             Maps.Add(propertyMap);
             return propertyMap;
         }
@@ -54,7 +54,7 @@ namespace SoftCircuits.CsvParser
             if (memberName == null)
                 throw new ArgumentNullException(nameof(memberName));
 
-            ColumnMap propertyMap = new ColumnMap(memberName);
+            ColumnMap propertyMap = new(memberName);
             Maps.Add(propertyMap);
             return propertyMap;
         }

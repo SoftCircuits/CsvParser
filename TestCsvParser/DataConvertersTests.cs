@@ -16,31 +16,31 @@ namespace CsvParserTests
         [TestMethod]
         public void DataConvertersTest()
         {
-            using (MemoryFile file = new MemoryFile())
-            {
-                using (CsvWriter<DataConvertersTestClass> writer = new CsvWriter<DataConvertersTestClass>(file))
-                {
-                    writer.WriteHeaders();
-                    foreach (var item in DataConvertersTestClass.TestData)
-                        writer.Write(item);
-                }
+            using MemoryFile file = new();
 
-                List<DataConvertersTestClass> results = new List<DataConvertersTestClass>();
-                using (CsvReader<DataConvertersTestClass> reader = new CsvReader<DataConvertersTestClass>(file))
-                {
-                    reader.ReadHeaders(true);
-                    while (reader.Read(out DataConvertersTestClass item))
-                        results.Add(item);
-                }
-                CollectionAssert.AreEqual(DataConvertersTestClass.TestData, results);
+            using (CsvWriter<DataConvertersTestClass> writer = new(file))
+            {
+                writer.WriteHeaders();
+                foreach (var item in DataConvertersTestClass.TestData)
+                    writer.Write(item);
             }
+
+            List<DataConvertersTestClass> results = new();
+            using (CsvReader<DataConvertersTestClass> reader = new(file))
+            {
+                reader.ReadHeaders(true);
+                DataConvertersTestClass? item;
+                while ((item = reader.Read()) != null)
+                    results.Add(item);
+            }
+            CollectionAssert.AreEqual(DataConvertersTestClass.TestData, results);
         }
 
         private class BooleanDataConverter : DataConverter<bool?>
         {
             private readonly Random Random;
 
-            private readonly static HashSet<string> TrueStrings = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            private readonly static HashSet<string> TrueStrings = new(StringComparer.OrdinalIgnoreCase)
             {
                 "True",
                 "Yes",
@@ -50,7 +50,7 @@ namespace CsvParserTests
                 "1",
             };
 
-            private readonly static HashSet<string> FalseStrings = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            private readonly static HashSet<string> FalseStrings = new(StringComparer.OrdinalIgnoreCase)
             {
                 "False",
                 "No",
@@ -74,7 +74,7 @@ namespace CsvParserTests
                     int index = Random.Next(TrueStrings.Count);
                     return value.Value ? TrueStrings.ToArray()[index] : FalseStrings.ToArray()[index];
                 }
-                return null;
+                return string.Empty;
             }
 
             public override bool TryConvertFromString(string s, out bool? value)
@@ -104,7 +104,7 @@ namespace CsvParserTests
         {
             public override string ConvertToString(decimal? value) => value.HasValue ? value.Value.ToString("C") : string.Empty;
 
-            public override bool TryConvertFromString(string s, out decimal? value)
+            public override bool TryConvertFromString(string? s, out decimal? value)
             {
                 s = string.IsNullOrWhiteSpace(s) ? null : s.Trim(' ', '$');
                 if (s == null ||
@@ -126,7 +126,7 @@ namespace CsvParserTests
 
         private class Entry
         {
-            public string String { get; set; }
+            public string? String { get; set; }
             [ColumnMap(ConverterType = typeof(BooleanDataConverter))]
             public bool? Boolean { get; set; }
             [ColumnMap(ConverterType = typeof(CurrencyDataConverter))]
@@ -136,7 +136,7 @@ namespace CsvParserTests
 
             public override int GetHashCode() => HashCode.Combine(String, Boolean, Currency);
 
-            public override bool Equals(object obj) => Equals(obj as Entry);
+            public override bool Equals(object? obj) => obj is Entry entry && Equals(entry);
 
             public bool Equals(Entry other)
             {
@@ -151,7 +151,7 @@ namespace CsvParserTests
 
         }
 
-        private readonly List<Entry> EntryData = new List<Entry>
+        private readonly List<Entry> EntryData = new()
         {
             new Entry { String = "Abc", Boolean = false, Currency = 123.45m },
             new Entry { String = "Def", Boolean = true, Currency = 678.90m },
@@ -167,48 +167,45 @@ namespace CsvParserTests
         [TestMethod]
         public void DataConverterAttributeTest()
         {
-            using (MemoryFile file = new MemoryFile())
-            {
-                using (CsvWriter<Entry> writer = new CsvWriter<Entry>(file))
-                {
-                    writer.WriteHeaders();
-                    foreach (var item in EntryData)
-                        writer.Write(item);
-                }
+            using MemoryFile file = new();
 
-                List<Entry> results = new List<Entry>();
-                using (CsvReader<Entry> reader = new CsvReader<Entry>(file))
-                {
-                    reader.ReadHeaders(true);
-                    while (reader.Read(out Entry item))
-                        results.Add(item);
-                }
-                CollectionAssert.AreEqual(EntryData, results);
+            using (CsvWriter<Entry> writer = new(file))
+            {
+                writer.WriteHeaders();
+                foreach (var item in EntryData)
+                    writer.Write(item);
             }
+
+            List<Entry> results = new();
+            using (CsvReader<Entry> reader = new(file))
+            {
+                reader.ReadHeaders(true);
+                Entry? item;
+                while ((item = reader.Read()) != null)
+                    results.Add(item);
+            }
+            CollectionAssert.AreEqual(EntryData, results);
         }
 
         private class InvalidEntry
         {
-            public string String { get; set; }
+            public string? String { get; set; }
             [ColumnMap(ConverterType = typeof(string))] // Convert type cannot be type string
             public bool? Boolean { get; set; }
         }
 
-        private readonly List<InvalidEntry> InvalidEntryData = new List<InvalidEntry>();
+        private readonly List<InvalidEntry> InvalidEntryData = new();
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void DataConvertAttributeInvalidTypeTest()
         {
-            using (MemoryFile file = new MemoryFile())
-            {
-                using (CsvWriter<InvalidEntry> writer = new CsvWriter<InvalidEntry>(file))
-                {
-                    writer.WriteHeaders();
-                    foreach (var item in InvalidEntryData)
-                        writer.Write(item);
-                }
-            }
+            using MemoryFile file = new();
+            using CsvWriter<InvalidEntry> writer = new(file);
+
+            writer.WriteHeaders();
+            foreach (var item in InvalidEntryData)
+                writer.Write(item);
         }
     }
 }

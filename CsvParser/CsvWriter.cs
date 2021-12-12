@@ -3,9 +3,9 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SoftCircuits.CsvParser
 {
@@ -34,8 +34,8 @@ namespace SoftCircuits.CsvParser
         /// <param name="settings">Optional custom settings.</param>
         public CsvWriter(string path, CsvSettings? settings = null)
         {
-            Writer = new StreamWriter(path);
-            Settings = settings ?? new CsvSettings();
+            Writer = new(path);
+            Settings = settings ?? new();
             LeaveStreamOpen = false;
         }
 
@@ -48,8 +48,8 @@ namespace SoftCircuits.CsvParser
         /// <param name="settings">Optional custom settings.</param>
         public CsvWriter(string path, Encoding encoding, CsvSettings? settings = null)
         {
-            Writer = new StreamWriter(path, false, encoding);
-            Settings = settings ?? new CsvSettings();
+            Writer = new(path, false, encoding);
+            Settings = settings ?? new();
             LeaveStreamOpen = false;
         }
 
@@ -61,8 +61,8 @@ namespace SoftCircuits.CsvParser
         /// <param name="settings">Optional custom settings.</param>
         public CsvWriter(Stream stream, CsvSettings? settings = null)
         {
-            Writer = new StreamWriter(stream);
-            Settings = settings ?? new CsvSettings();
+            Writer = new(stream);
+            Settings = settings ?? new();
             LeaveStreamOpen = false;
         }
 
@@ -75,9 +75,43 @@ namespace SoftCircuits.CsvParser
         /// <param name="settings">Optional custom settings.</param>
         public CsvWriter(Stream stream, Encoding encoding, CsvSettings? settings = null)
         {
-            Writer = new StreamWriter(stream, encoding);
-            Settings = settings ?? new CsvSettings();
+            Writer = new(stream, encoding);
+            Settings = settings ?? new();
             LeaveStreamOpen = false;
+        }
+
+        /// <summary>
+        /// Asynchronously writes a row of columns to the current CSV file.
+        /// </summary>
+        /// <param name="columns">The list of columns to write.</param>
+        public async Task WriteRowAsync(params string[] columns)
+        {
+            await WriteRowAsync(columns as IEnumerable<string>);
+        }
+
+        /// <summary>
+        /// Asynchronously writes a row of columns to the current CSV file.
+        /// </summary>
+        /// <param name="columns">The list of columns to write.</param>
+        public async Task WriteRowAsync(IEnumerable<string?> columns)
+        {
+            // Verify required argument
+            if (columns == null)
+                throw new ArgumentNullException(nameof(columns));
+
+            // Write each column
+            bool firstColumn = true;
+            foreach (string? value in columns)
+            {
+                // Add delimiter if this isn't the first column
+                if (firstColumn)
+                    firstColumn = false;
+                else
+                    await Writer.WriteAsync(Settings.ColumnDelimiter);
+                // Write column value
+                await Writer.WriteAsync(Settings.CsvEncode(value ?? string.Empty));
+            }
+            await Writer.WriteLineAsync();
         }
 
         /// <summary>
@@ -93,7 +127,7 @@ namespace SoftCircuits.CsvParser
         /// Writes a row of columns to the current CSV file.
         /// </summary>
         /// <param name="columns">The list of columns to write.</param>
-        public void WriteRow(IEnumerable<string> columns)
+        public void WriteRow(IEnumerable<string?> columns)
         {
             // Verify required argument
             if (columns == null)
@@ -101,7 +135,7 @@ namespace SoftCircuits.CsvParser
 
             // Write each column
             bool firstColumn = true;
-            foreach (string value in columns)
+            foreach (string? value in columns)
             {
                 // Add delimiter if this isn't the first column
                 if (firstColumn)
@@ -109,22 +143,9 @@ namespace SoftCircuits.CsvParser
                 else
                     Writer.Write(Settings.ColumnDelimiter);
                 // Write column value
-                Writer.Write(CsvEncode(value ?? string.Empty));
+                Writer.Write(Settings.CsvEncode(value ?? string.Empty));
             }
             Writer.WriteLine();
-        }
-
-        /// <summary>
-        /// Encodes the given string as needed to be valid within the CSV file.
-        /// </summary>
-        internal string CsvEncode(string s)
-        {
-            if (Settings.HasSpecialCharacter(s))
-            {
-                s = s.Replace(Settings.OneQuoteString, Settings.TwoQuoteString);
-                s = string.Format("{0}{1}{0}", Settings.QuoteCharacter, s);
-            }
-            return s;
         }
 
         /// <summary>
@@ -138,7 +159,8 @@ namespace SoftCircuits.CsvParser
         public void Close() => Writer.Close();
 
         /// <summary>
-        /// Releases all resources used by the <see cref="CsvWriter"/> object.
+        /// Releases resources used by the <see cref="CsvWriter"/> object. Leaves the stream
+        /// open if <see cref="LeaveStreamOpen"/> is true.
         /// </summary>
         public void Dispose()
         {

@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SoftCircuits.CsvParser
 {
@@ -15,8 +16,7 @@ namespace SoftCircuits.CsvParser
     /// <typeparam name="T">The type being read.</typeparam>
     public class CsvReader<T> : CsvReader where T : class, new()
     {
-        private ColumnInfoCollection<T> ColumnsInfo;
-        private string[]? Columns;
+        private readonly ColumnInfoCollection<T> ColumnsInfo;
 
         /// <summary>
         /// Returns the number of columns for the last row successfully read.
@@ -31,10 +31,8 @@ namespace SoftCircuits.CsvParser
         /// <param name="path">The name of the CSV file to read.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(string path, CsvSettings? settings = null)
-            : base(path, settings)
+            : this(path, Encoding.UTF8, true, settings)
         {
-            ColumnsInfo = new ColumnInfoCollection<T>();
-            Columns = null;
         }
 
         /// <summary>
@@ -45,10 +43,8 @@ namespace SoftCircuits.CsvParser
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(string path, Encoding encoding, CsvSettings? settings = null)
-            : base(path, encoding, settings)
+            : this(path, encoding, true, settings)
         {
-            ColumnsInfo = new ColumnInfoCollection<T>();
-            Columns = null;
         }
 
         /// <summary>
@@ -60,10 +56,8 @@ namespace SoftCircuits.CsvParser
         /// byte order marks at
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(string path, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
-            : base(path, detectEncodingFromByteOrderMarks, settings)
+            : this(path, Encoding.UTF8, detectEncodingFromByteOrderMarks, settings)
         {
-            ColumnsInfo = new ColumnInfoCollection<T>();
-            Columns = null;
         }
 
         /// <summary>
@@ -78,8 +72,7 @@ namespace SoftCircuits.CsvParser
         public CsvReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
             : base(path, encoding, detectEncodingFromByteOrderMarks, settings)
         {
-            ColumnsInfo = new ColumnInfoCollection<T>();
-            Columns = null;
+            ColumnsInfo = new();
         }
 
         /// <summary>
@@ -88,10 +81,8 @@ namespace SoftCircuits.CsvParser
         /// <param name="stream">The stream to be read.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(Stream stream, CsvSettings? settings = null)
-            : base(stream, settings)
+            : this(stream, Encoding.UTF8, true, settings)
         {
-            ColumnsInfo = new ColumnInfoCollection<T>();
-            Columns = null;
         }
 
         /// <summary>
@@ -102,10 +93,8 @@ namespace SoftCircuits.CsvParser
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(Stream stream, Encoding encoding, CsvSettings? settings = null)
-            : base(stream, encoding, settings)
+            : this(stream, encoding, true, settings)
         {
-            ColumnsInfo = new ColumnInfoCollection<T>();
-            Columns = null;
         }
 
         /// <summary>
@@ -117,10 +106,8 @@ namespace SoftCircuits.CsvParser
         /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(Stream stream, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
-            : base(stream, detectEncodingFromByteOrderMarks, settings)
+            : this(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks, settings)
         {
-            ColumnsInfo = new ColumnInfoCollection<T>();
-            Columns = null;
         }
 
         /// <summary>
@@ -136,8 +123,7 @@ namespace SoftCircuits.CsvParser
         public CsvReader(Stream stream, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
             : base(stream, encoding, detectEncodingFromByteOrderMarks, settings)
         {
-            ColumnsInfo = new ColumnInfoCollection<T>();
-            Columns = null;
+            ColumnsInfo = new();
         }
 
         /// <summary>
@@ -158,11 +144,32 @@ namespace SoftCircuits.CsvParser
         /// <returns>True if successful, false if the end of the file was reached.</returns>
         public bool ReadHeaders(bool mapColumnsFromHeaders)
         {
-            if (ReadRow(ref Columns))
+            string[]? columns = ReadRow();
+            if (columns != null)
             {
                 // Will exclude all column mapping if headers are empty
                 if (mapColumnsFromHeaders)
-                    ColumnsInfo.ApplyHeaders(Columns!, Settings.ColumnHeaderStringComparison);
+                    ColumnsInfo.ApplyHeaders(columns, Settings.ColumnHeaderStringComparison);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Asynchronously reads a row of columns from the input stream. If <paramref name="mapColumnsFromHeaders"/>
+        /// is <c>true</c>, the column headers are used to map columns to class members.
+        /// </summary>
+        /// <param name="mapColumnsFromHeaders">Specifies whether the column headers
+        /// should be used to map columns to class members.</param>
+        /// <returns>True if successful, false if the end of the file was reached.</returns>
+        public async Task<bool> ReadHeadersAsync(bool mapColumnsFromHeaders)
+        {
+            string[]? columns = await ReadRowAsync();
+            if (columns != null)
+            {
+                // Will exclude all column mapping if headers are empty
+                if (mapColumnsFromHeaders)
+                    ColumnsInfo.ApplyHeaders(columns, Settings.ColumnHeaderStringComparison);
                 return true;
             }
             return false;
@@ -173,24 +180,65 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="item">Receives the item read.</param>
         /// <returns>True if successful, false if the end of the file was reached.</returns>
-#if NETSTANDARD2_0
-        public bool Read(out T? item)
-#else
+        [Obsolete("This method is deprecated and will be removed from a future version of this library. Please use a version of Read() that takes no arguments.")]
+#if !NETSTANDARD2_0
         public bool Read([NotNullWhen(true)] out T? item)
+#else
+        public bool Read(out T? item)
 #endif
         {
-            if (ReadRow(ref Columns))
+            item = Read();
+            return item != null;
+        }
+
+        /// <summary>
+        /// Reads an item from the input stream.
+        /// </summary>
+        /// <param name="item">Receives the item read.</param>
+        /// <returns>True if successful, false if the end of the file was reached.</returns>
+#if !NETSTANDARD2_0
+        public T? Read()
+#else
+        public T Read()
+#endif
+        {
+            string[]? columns = ReadRow();
+            if (columns != null)
             {
-                item = Activator.CreateInstance<T>();
+                T item = Activator.CreateInstance<T>();
                 foreach (ColumnInfo column in ColumnsInfo.FilteredColumns)
                 {
-                    if (column.Index < Columns!.Length)
-                        column.SetValue(item, Columns[column.Index], Settings.InvalidDataRaisesException);
+                    if (column.Index < columns!.Length)
+                        column.SetValue(item, columns[column.Index], Settings.InvalidDataRaisesException);
                 }
-                return true;
+                return item;
             }
-            item = null;
-            return false;
+            return null;
+        }
+
+        /// <summary>
+        /// Asynchronously reads an item from the input stream.
+        /// </summary>
+        /// <param name="item">Receives the item read.</param>
+        /// <returns>True if successful, false if the end of the file was reached.</returns>
+#if !NETSTANDARD2_0
+        public async Task<T?> ReadAsync()
+#else
+        public async Task<T> ReadAsync()
+#endif
+        {
+            string[]? columns = await ReadRowAsync();
+            if (columns != null)
+            {
+                T item = Activator.CreateInstance<T>();
+                foreach (ColumnInfo column in ColumnsInfo.FilteredColumns)
+                {
+                    if (column.Index < columns!.Length)
+                        column.SetValue(item, columns[column.Index], Settings.InvalidDataRaisesException);
+                }
+                return item;
+            }
+            return null;
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SoftCircuits.CsvParser
 {
@@ -16,8 +17,7 @@ namespace SoftCircuits.CsvParser
     /// <typeparam name="T">The type being written.</typeparam>
     public class CsvWriter<T> : CsvWriter where T : class, new()
     {
-        private ColumnInfoCollection<T> ColumnsInfo;
-        private string[]? Columns;
+        private readonly ColumnInfoCollection<T> ColumnsInfo;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CsvWriter{T}"></see> class for the
@@ -28,8 +28,7 @@ namespace SoftCircuits.CsvParser
         public CsvWriter(string path, CsvSettings? settings = null)
             : base(path, settings)
         {
-            ColumnsInfo = new ColumnInfoCollection<T>();
-            Columns = null;
+            ColumnsInfo = new();
         }
 
         /// <summary>
@@ -42,8 +41,7 @@ namespace SoftCircuits.CsvParser
         public CsvWriter(string path, Encoding encoding, CsvSettings? settings = null)
             : base(path, encoding, settings)
         {
-            ColumnsInfo = new ColumnInfoCollection<T>();
-            Columns = null;
+            ColumnsInfo = new();
         }
 
         /// <summary>
@@ -55,8 +53,7 @@ namespace SoftCircuits.CsvParser
         public CsvWriter(Stream stream, CsvSettings? settings = null)
             : base(stream, settings)
         {
-            ColumnsInfo = new ColumnInfoCollection<T>();
-            Columns = null;
+            ColumnsInfo = new();
         }
 
         /// <summary>
@@ -69,8 +66,7 @@ namespace SoftCircuits.CsvParser
         public CsvWriter(Stream stream, Encoding encoding, CsvSettings? settings = null)
             : base(stream, encoding, settings)
         {
-            ColumnsInfo = new ColumnInfoCollection<T>();
-            Columns = null;
+            ColumnsInfo = new();
         }
 
         /// <summary>
@@ -87,18 +83,15 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         public void WriteHeaders()
         {
-            // Get column data
-            IEnumerable<ColumnInfo> filteredColumns = ColumnsInfo.FilteredColumns;
+            WriteRow(ColumnsInfo.FilteredColumns.Select(fc => fc.Name));
+        }
 
-            // Ensure column array is the correct size
-            if (Columns == null || Columns.Length != filteredColumns.Count())
-                Columns = new string[filteredColumns.Count()];
-
-            int index = 0;
-            foreach (var column in filteredColumns)
-                Columns[index++] = column.Name;
-
-            WriteRow(Columns);
+        /// <summary>
+        /// Asynchronously writes column headers to the output stream.
+        /// </summary>
+        public async Task WriteHeadersAsync()
+        {
+            await WriteRowAsync(ColumnsInfo.FilteredColumns.Select(fc => fc.Name));
         }
 
         /// <summary>
@@ -110,18 +103,19 @@ namespace SoftCircuits.CsvParser
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
 
-            // Get column data
-            var filteredColumns = ColumnsInfo.FilteredColumns;
+            WriteRow(ColumnsInfo.FilteredColumns.Select(fc => fc.GetValue(item)));
+        }
 
-            // Ensure column array is the correct size
-            if (Columns == null || Columns.Length != filteredColumns.Count())
-                Columns = new string[filteredColumns.Count()];
+        /// <summary>
+        /// Asyncrhonously writes the specified item to the output stream.
+        /// </summary>
+        /// <param name="item">The item to write.</param>
+        public async Task WriteAsync(T item)
+        {
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
 
-            int index = 0;
-            foreach (var column in filteredColumns)
-                Columns[index++] = column.GetValue(item);
-
-            WriteRow(Columns);
+            await WriteRowAsync(ColumnsInfo.FilteredColumns.Select(fc => fc.GetValue(item)));
         }
 
         /// <summary>
@@ -135,6 +129,19 @@ namespace SoftCircuits.CsvParser
 
             foreach (T item in items)
                 Write(item);
+        }
+
+        /// <summary>
+        /// Asynchronously writes the specified items to the output stream.
+        /// </summary>
+        /// <param name="items">The items to write.</param>
+        public async Task WriteAsync(IEnumerable<T> items)
+        {
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            foreach (T item in items)
+                await WriteAsync(item);
         }
     }
 }

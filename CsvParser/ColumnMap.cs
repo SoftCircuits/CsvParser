@@ -74,7 +74,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
 
             builder.Append(InternalMemberName ?? "(null)");
             builder.AppendFormat(", Index: {0}",

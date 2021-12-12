@@ -40,6 +40,10 @@ namespace BuildConverters
         /// </summary>
         public string FullTypeCName => GetFullTypeCName(Type, Variation);
 
+        public bool IsNullable => Variation == TypeVariation.Array ||
+            Variation == TypeVariation.NullableArray ||
+            TypeName == "String";
+
         /// <summary>
         /// 
         /// </summary>
@@ -53,7 +57,7 @@ namespace BuildConverters
 
         #region Type Name Lookups
 
-        static readonly Dictionary<TypeVariation, string> TypeNameLookup = new Dictionary<TypeVariation, string>
+        static readonly Dictionary<TypeVariation, string> TypeNameLookup = new()
         {
             [TypeVariation.Standard] = "{@}",
             [TypeVariation.Array] = "{@}Array",
@@ -63,7 +67,7 @@ namespace BuildConverters
 
         public static string GetTypeName(TypeInfo type, TypeVariation mode) => TypeNameLookup[mode].Replace("{@}", type.Name);
 
-        static readonly Dictionary<TypeVariation, string> FullTypeNameLookup = new Dictionary<TypeVariation, string>
+        static readonly Dictionary<TypeVariation, string> FullTypeNameLookup = new()
         {
             [TypeVariation.Standard] = "{@}",
             [TypeVariation.Array] = "{@}[]",

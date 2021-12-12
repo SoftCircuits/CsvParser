@@ -4,6 +4,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftCircuits.CsvParser;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CsvParserTests
 {
@@ -12,9 +13,9 @@ namespace CsvParserTests
     class CsvDataA
     {
         public int One { get; set; }
-        public string Two { get; set; }
+        public string? Two { get; set; }
         public int Three { get; set; }
-        public string Four { get; set; }
+        public string? Four { get; set; }
         public int Five { get; set; }
     }
 
@@ -22,10 +23,10 @@ namespace CsvParserTests
     {
         public int One { get; set; }
         [ColumnMap(Exclude = true)]
-        public string Two { get; set; }
+        public string? Two { get; set; }
         [ColumnMap(Exclude = true)]
         public int Three { get; set; }
-        public string Four { get; set; }
+        public string? Four { get; set; }
         public int Five { get; set; }
     }
 
@@ -34,13 +35,13 @@ namespace CsvParserTests
         [ColumnMap(Index = 4)]
         public int Id { get; set; }
         [ColumnMap(Index = 3, Exclude = true)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
         [ColumnMap(Index = 2)]
-        public string Address1 { get; set; }
+        public string? Address1 { get; set; }
         [ColumnMap(Index = 1)]
-        public string Address2 { get; set; }
+        public string? Address2 { get; set; }
         [ColumnMap(Index = 0)]
-        public string Email { get; set; }
+        public string? Email { get; set; }
     }
 
     #endregion
@@ -106,7 +107,7 @@ namespace CsvParserTests
         /// Tests correct column ordering using column attributes, mapping and header mapping.
         /// </summary>
         [TestMethod]
-        public void TestCsvDataColumns()
+        public async Task TestCsvDataColumns()
         {
             string input, output, results;
 
@@ -116,6 +117,8 @@ namespace CsvParserTests
             output = input;
             results = RunTest<CsvDataA, CsvDataMapNone<CsvDataA>>(input, false);
             Assert.AreEqual(output, results);
+            results = await RunTestAsync<CsvDataA, CsvDataMapNone<CsvDataA>>(input, false);
+            Assert.AreEqual(output, results);
 
             // Misspelled column
             input = @"One,TwoX,Three,Four,Five
@@ -123,6 +126,8 @@ namespace CsvParserTests
             output = @"One,Two,Three,Four,Five
 1,,3,4,5";
             results = RunTest<CsvDataA, CsvDataMapNone<CsvDataA>>(input, true);
+            Assert.AreEqual(output, results);
+            results = await RunTestAsync<CsvDataA, CsvDataMapNone<CsvDataA>>(input, true);
             Assert.AreEqual(output, results);
 
             // Reverse columns via mapping headers
@@ -132,6 +137,8 @@ namespace CsvParserTests
 1,2,3,4,5";
             results = RunTest<CsvDataA, CsvDataMapNone<CsvDataA>>(input, true);
             Assert.AreEqual(output, results);
+            results = await RunTestAsync<CsvDataA, CsvDataMapNone<CsvDataA>>(input, true);
+            Assert.AreEqual(output, results);
 
             // Reverse columns via column mapping
             input = @"Five,Four,Three,Two,One
@@ -139,12 +146,16 @@ namespace CsvParserTests
             output = input;
             results = RunTest<CsvDataA, CsvDataAMapReverse>(input, false);
             Assert.AreEqual(output, results);
+            results = await RunTestAsync<CsvDataA, CsvDataAMapReverse>(input, false);
+            Assert.AreEqual(output, results);
 
             // Include excluded column via column mapping
             input = @"One,Two,Three,Four,Five
 1,2,3,4,5";
             output = input;
             results = RunTest<CsvDataB, CsvDataBMapInclude>(input, false);
+            Assert.AreEqual(output, results);
+            results = await RunTestAsync<CsvDataB, CsvDataBMapInclude>(input, false);
             Assert.AreEqual(output, results);
 
             // Include excluded column and reverse columns via column mapping
@@ -154,6 +165,8 @@ namespace CsvParserTests
 5,4,3,2,1";
             results = RunTest<CsvDataB, CsvDataBMapIncludeAndReverse>(input, false);
             Assert.AreEqual(output, results);
+            results = await RunTestAsync<CsvDataB, CsvDataBMapIncludeAndReverse>(input, false);
+            Assert.AreEqual(output, results);
 
             // No additional mapping
             input = @"Email,Address2,Address1,Name,Id
@@ -161,6 +174,8 @@ name@company.com,,1241 Willow Lane,Bob Smith,12345";
             output = @"Email,Address2,Address1,Id
 name@company.com,,1241 Willow Lane,12345";
             results = RunTest<CsvDataC, CsvDataMapNone<CsvDataC>>(input, false);
+            Assert.AreEqual(output, results);
+            results = await RunTestAsync<CsvDataC, CsvDataMapNone<CsvDataC>>(input, false);
             Assert.AreEqual(output, results);
 
             // Header mapping
@@ -170,6 +185,8 @@ name@company.com,,1241 Willow Lane,12345";
 name@company.com,,1241 Willow Lane,Bob Smith,12345";
             results = RunTest<CsvDataC, CsvDataCMapInclude>(input, true);
             Assert.AreEqual(output, results);
+            results = await RunTestAsync<CsvDataC, CsvDataCMapInclude>(input, true);
+            Assert.AreEqual(output, results);
 
             // Misspelled column
             input = @"Id,NameX,Address1,Address2,Email
@@ -178,34 +195,64 @@ name@company.com,,1241 Willow Lane,Bob Smith,12345";
 name@company.com,,1241 Willow Lane,,12345";
             results = RunTest<CsvDataC, CsvDataCMapInclude>(input, true);
             Assert.AreEqual(output, results);
+            results = await RunTestAsync<CsvDataC, CsvDataCMapInclude>(input, true);
+            Assert.AreEqual(output, results);
         }
 
-        private string RunTest<DATA_TYPE, MAPPING_TYPE>(string fileContents, bool mapColumnsFromHeaders)
+        private static string RunTest<DATA_TYPE, MAPPING_TYPE>(string fileContents, bool mapColumnsFromHeaders)
             where DATA_TYPE : class, new()
             where MAPPING_TYPE : ColumnMaps<DATA_TYPE>, new()
         {
-            using (MemoryFile file = new MemoryFile(fileContents))
+            using MemoryFile file = new(fileContents);
+
+            List<DATA_TYPE> items = new();
+
+            using (CsvReader<DATA_TYPE> reader = new(file))
             {
-                List<DATA_TYPE> items = new List<DATA_TYPE>();
-
-                using (CsvReader<DATA_TYPE> reader = new CsvReader<DATA_TYPE>(file))
-                {
-                    reader.MapColumns<MAPPING_TYPE>();
-                    Assert.IsTrue(reader.ReadHeaders(mapColumnsFromHeaders));
-                    while (reader.Read(out DATA_TYPE item))
-                        items.Add(item);
-                }
-
-                file.Reset();
-                using (CsvWriter<DATA_TYPE> writer = new CsvWriter<DATA_TYPE>(file))
-                {
-                    writer.MapColumns<MAPPING_TYPE>();
-                    writer.WriteHeaders();
-                    writer.Write(items);
-                }
-
-                return file.ToString().Trim();
+                reader.MapColumns<MAPPING_TYPE>();
+                Assert.IsTrue(reader.ReadHeaders(mapColumnsFromHeaders));
+                DATA_TYPE? item;
+                while ((item = reader.Read()) != null)
+                    items.Add(item);
             }
+
+            file.Reset();
+            using (CsvWriter<DATA_TYPE> writer = new(file))
+            {
+                writer.MapColumns<MAPPING_TYPE>();
+                writer.WriteHeaders();
+                writer.Write(items);
+            }
+
+            return file.ToString().Trim();
+        }
+
+        private static async Task<string> RunTestAsync<DATA_TYPE, MAPPING_TYPE>(string fileContents, bool mapColumnsFromHeaders)
+            where DATA_TYPE : class, new()
+            where MAPPING_TYPE : ColumnMaps<DATA_TYPE>, new()
+        {
+            using MemoryFile file = new(fileContents);
+
+            List<DATA_TYPE> items = new();
+
+            using (CsvReader<DATA_TYPE> reader = new(file))
+            {
+                reader.MapColumns<MAPPING_TYPE>();
+                Assert.IsTrue(await reader.ReadHeadersAsync(mapColumnsFromHeaders));
+                DATA_TYPE? item;
+                while ((item = await reader.ReadAsync()) != null)
+                    items.Add(item);
+            }
+
+            file.Reset();
+            using (CsvWriter<DATA_TYPE> writer = new(file))
+            {
+                writer.MapColumns<MAPPING_TYPE>();
+                await writer.WriteHeadersAsync();
+                await writer.WriteAsync(items);
+            }
+
+            return file.ToString().Trim();
         }
     }
 }

@@ -15,15 +15,15 @@ namespace CsvParserTests
         class Customer
         {
             // Public properties
-            public string Name { get; set; }
-            public string Street { get; set; }
-            public string City { get; set; }
-            public string Region { get; set; }
-            public string Zip { get; set; }
+            public string? Name { get; set; }
+            public string? Street { get; set; }
+            public string? City { get; set; }
+            public string? Region { get; set; }
+            public string? Zip { get; set; }
 
             // Private fields
-            private int Age;
-            private double Score;
+            private readonly int Age;
+            private readonly double Score;
 
             public bool IsRegistered { get; set; }
 
@@ -53,15 +53,15 @@ namespace CsvParserTests
         class CustomerAttributes
         {
             [ColumnMap(Name = "emaN", Index = 7)]
-            public string Name { get; set; }
+            public string? Name { get; set; }
             [ColumnMap(Name="teertS", Index = 6)]
-            public string Street { get; set; }
+            public string? Street { get; set; }
             [ColumnMap(Name = "ytiC", Index = 5)]
-            public string City { get; set; }
+            public string? City { get; set; }
             [ColumnMap(Name = "noigeR", Index = 4, Exclude = false)]
-            public string Region { get; set; }
+            public string? Region { get; set; }
             [ColumnMap(Name = "piZ", Index = 3)]
-            public string Zip { get; set; }
+            public string? Zip { get; set; }
             [ColumnMap(Name = "egA", Index = 2)]
             public int Age { get; set; }
             [ColumnMap(Name = "erocS", Index = 1)]
@@ -88,7 +88,7 @@ namespace CsvParserTests
         }
 
         // Test data
-        Customer[] Customers = new Customer[]
+        readonly Customer[] Customers = new Customer[]
         {
             new Customer("Rafael Pitts", "Ap #883-4246 Nunc Avenue", "Maiduguri", "BO", "52319", 19, 123.45, true),
             new Customer("Joel Schmidt", "6768 Dictum Street", "Berlin", "Berlin", "86692", 52, 5.9, true),
@@ -126,37 +126,37 @@ namespace CsvParserTests
         [TestMethod]
         public void TestHeaderMapping()
         {
-            using (MemoryFile file = new MemoryFile())
+            using MemoryFile file = new();
+
+            List<Customer> results = new();
+
+            using (CsvWriter<Customer> writer = new(file))
             {
-                List<Customer> results = new List<Customer>();
+                writer.WriteHeaders();
+                writer.Write(Customers);
+            }
 
-                using (CsvWriter<Customer> writer = new CsvWriter<Customer>(file))
-                {
-                    writer.WriteHeaders();
-                    writer.Write(Customers);
-                }
+            using (CsvReader<Customer> reader = new(file))
+            {
+                reader.ReadHeaders(true);
+                Customer? customer;
+                while ((customer = reader.Read()) != null)
+                    results.Add(customer);
+            }
 
-                using (CsvReader<Customer> reader = new CsvReader<Customer>(file))
+            Assert.AreEqual(Customers.Length, results.Count);
+            if (Customers.Length == results.Count)
+            {
+                for (int i = 0; i < Customers.Length; i++)
                 {
-                    reader.ReadHeaders(true);
-                    while (reader.Read(out Customer customer))
-                        results.Add(customer);
-                }
-
-                Assert.AreEqual(Customers.Length, results.Count);
-                if (Customers.Length == results.Count)
-                {
-                    for (int i = 0; i < Customers.Length; i++)
-                    {
-                        Assert.AreEqual(Customers[i].Name, results[i].Name);
-                        Assert.AreEqual(Customers[i].Street, results[i].Street);
-                        Assert.AreEqual(Customers[i].City, results[i].City);
-                        Assert.AreEqual(Customers[i].Region, results[i].Region);
-                        Assert.AreEqual(Customers[i].Zip, results[i].Zip);
-                        Assert.AreEqual(Customers[i].GetAge(), results[i].GetAge());
-                        Assert.AreEqual(Customers[i].GetScore(), results[i].GetScore());
-                        Assert.AreEqual(Customers[i].IsRegistered, results[i].IsRegistered);
-                    }
+                    Assert.AreEqual(Customers[i].Name, results[i].Name);
+                    Assert.AreEqual(Customers[i].Street, results[i].Street);
+                    Assert.AreEqual(Customers[i].City, results[i].City);
+                    Assert.AreEqual(Customers[i].Region, results[i].Region);
+                    Assert.AreEqual(Customers[i].Zip, results[i].Zip);
+                    Assert.AreEqual(Customers[i].GetAge(), results[i].GetAge());
+                    Assert.AreEqual(Customers[i].GetScore(), results[i].GetScore());
+                    Assert.AreEqual(Customers[i].IsRegistered, results[i].IsRegistered);
                 }
             }
         }
@@ -164,38 +164,38 @@ namespace CsvParserTests
         [TestMethod]
         public void TestAttributeMapping()
         {
-            using (MemoryFile file = new MemoryFile())
+            using MemoryFile file = new();
+
+            List<CustomerAttributes> customers = new(Customers.Select(p => new CustomerAttributes(p)));
+            List<CustomerAttributes> result = new();
+
+            using (CsvWriter<CustomerAttributes> writer = new(file))
             {
-                List<CustomerAttributes> customers = new List<CustomerAttributes>(Customers.Select(p => new CustomerAttributes(p)));
-                List<CustomerAttributes> result = new List<CustomerAttributes>();
+                writer.WriteHeaders();
+                writer.Write(customers);
+            }
 
-                using (CsvWriter<CustomerAttributes> writer = new CsvWriter<CustomerAttributes>(file))
-                {
-                    writer.WriteHeaders();
-                    writer.Write(customers);
-                }
+            using (CsvReader<CustomerAttributes> reader = new(file))
+            {
+                reader.ReadHeaders(false);
+                CustomerAttributes? customer;
+                while ((customer = reader.Read()) != null)
+                    result.Add(customer);
+            }
 
-                using (CsvReader<CustomerAttributes> reader = new CsvReader<CustomerAttributes>(file))
+            Assert.AreEqual(customers.Count, result.Count);
+            if (customers.Count == result.Count)
+            {
+                for (int i = 0; i < Customers.Length; i++)
                 {
-                    reader.ReadHeaders(false);
-                    while (reader.Read(out CustomerAttributes customer))
-                        result.Add(customer);
-                }
-
-                Assert.AreEqual(customers.Count, result.Count);
-                if (customers.Count == result.Count)
-                {
-                    for (int i = 0; i < Customers.Length; i++)
-                    {
-                        Assert.AreEqual(customers[i].Name, result[i].Name);
-                        Assert.AreEqual(customers[i].Street, result[i].Street);
-                        Assert.AreEqual(customers[i].City, result[i].City);
-                        Assert.AreEqual(customers[i].Region, result[i].Region);
-                        Assert.AreEqual(customers[i].Zip, result[i].Zip);
-                        Assert.AreEqual(customers[i].Age, result[i].Age);
-                        Assert.AreEqual(customers[i].Score, result[i].Score);
-                        Assert.AreEqual(customers[i].IsRegistered, result[i].IsRegistered);
-                    }
+                    Assert.AreEqual(customers[i].Name, result[i].Name);
+                    Assert.AreEqual(customers[i].Street, result[i].Street);
+                    Assert.AreEqual(customers[i].City, result[i].City);
+                    Assert.AreEqual(customers[i].Region, result[i].Region);
+                    Assert.AreEqual(customers[i].Zip, result[i].Zip);
+                    Assert.AreEqual(customers[i].Age, result[i].Age);
+                    Assert.AreEqual(customers[i].Score, result[i].Score);
+                    Assert.AreEqual(customers[i].IsRegistered, result[i].IsRegistered);
                 }
             }
         }
@@ -237,41 +237,41 @@ namespace CsvParserTests
         [TestMethod]
         public void TestMapColumnMapping()
         {
-            using (MemoryFile file = new MemoryFile())
+            using MemoryFile file = new();
+
+            List<Customer> results = new();
+
+            using (CsvWriter<Customer> writer = new(file))
             {
-                List<Customer> results = new List<Customer>();
+                writer.MapColumns<CustomerMap>();
+                writer.WriteHeaders();
+                writer.Write(Customers);
+            }
 
-                using (CsvWriter<Customer> writer = new CsvWriter<Customer>(file))
+            using (CsvReader<Customer> reader = new(file))
+            {
+                reader.MapColumns<CustomerMap>();
+
+                reader.ReadHeaders(true);
+                Customer? customer;
+                while ((customer = reader.Read()) != null)
+                    results.Add(customer);
+            }
+
+            Assert.AreEqual(Customers.Length, results.Count);
+            if (Customers.Length == results.Count)
+            {
+                for (int i = 0; i < Customers.Length; i++)
                 {
-                    writer.MapColumns<CustomerMap>();
-                    writer.WriteHeaders();
-                    writer.Write(Customers);
-                }
-
-                using (CsvReader<Customer> reader = new CsvReader<Customer>(file))
-                {
-                    reader.MapColumns<CustomerMap>();
-
-                    reader.ReadHeaders(true);
-                    while (reader.Read(out Customer customer))
-                        results.Add(customer);
-                }
-
-                Assert.AreEqual(Customers.Length, results.Count);
-                if (Customers.Length == results.Count)
-                {
-                    for (int i = 0; i < Customers.Length; i++)
-                    {
-                        Assert.AreEqual(Customers[i].Name, results[i].Name);
-                        Assert.AreEqual(Customers[i].Street, results[i].Street);
-                        Assert.AreEqual(Customers[i].City, results[i].City);
-                        Assert.AreEqual(Customers[i].Region, results[i].Region);
-                        Assert.AreEqual(Customers[i].IsRegistered, results[i].IsRegistered);
-                        // Excluded properties
-                        Assert.AreEqual(null, results[i].Zip);
-                        Assert.AreEqual(0, results[i].GetAge());
-                        Assert.AreEqual(0.0, results[i].GetScore());
-                    }
+                    Assert.AreEqual(Customers[i].Name, results[i].Name);
+                    Assert.AreEqual(Customers[i].Street, results[i].Street);
+                    Assert.AreEqual(Customers[i].City, results[i].City);
+                    Assert.AreEqual(Customers[i].Region, results[i].Region);
+                    Assert.AreEqual(Customers[i].IsRegistered, results[i].IsRegistered);
+                    // Excluded properties
+                    Assert.AreEqual(null, results[i].Zip);
+                    Assert.AreEqual(0, results[i].GetAge());
+                    Assert.AreEqual(0.0, results[i].GetScore());
                 }
             }
         }

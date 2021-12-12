@@ -32,7 +32,7 @@ namespace BuildConverters
         private static readonly string DefaultType = "Default";
 
         private string TemplateText;
-        private List<TemplateSection> Sections;
+        private readonly List<TemplateSection> Sections;
 
         public CodeTemplate()
         {
@@ -89,7 +89,7 @@ namespace BuildConverters
             if (end < 0)
                 throw new Exception($"End tag '{EndTemplateTag}' not found.");
 
-            TemplateText = text.Substring(start, end - start);
+            TemplateText = text[start..end];
 
             // Parse sections
             ParseSections(text);
@@ -111,16 +111,16 @@ namespace BuildConverters
                 pos += StartSectionTag.Length;
                 int pos2 = text.IndexOf('}', pos);
 
-                string arguments = text.Substring(pos, pos2 - pos);
+                string arguments = text[pos..pos2];
                 arguments = arguments.Trim(' ', '\t', '(', ')');
-                TemplateSection section = new TemplateSection(arguments.Split(new[] { ',' }));
+                TemplateSection section = new(arguments.Split(new[] { ',' }));
                 Sections.Add(section);
 
                 pos = pos2 + 1;
                 pos2 = text.IndexOf(EndSectionTag, pos);
                 if (pos2 < 0)
                     throw new Exception($"'{StartSectionTag}' without matching '{EndSectionTag}'.");
-                section.Text = text.Substring(pos, pos2 - pos);
+                section.Text = text[pos..pos2];
 
                 pos = pos2 + EndSectionTag.Length;
                 pos = text.IndexOf(StartSectionTag, pos);

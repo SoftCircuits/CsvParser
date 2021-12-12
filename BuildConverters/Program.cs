@@ -63,7 +63,7 @@ namespace BuildConverters
             string testDataTemplate = File.ReadAllText(Path.Combine(TemplatePath, "DataConvertersTestClass.template"));
 
             // Load converter code template
-            CodeTemplate codeTemplate = new CodeTemplate();
+            CodeTemplate codeTemplate = new();
             codeTemplate.LoadTemplate(Path.Combine(TemplatePath, "Converter.template"));
 
             // Get all type variations
@@ -78,7 +78,7 @@ namespace BuildConverters
                 // Write DataConvert row
                 DataConvertersData.AppendLine($"            [typeof({type.FullTypeCName})] = () => new {type.ClassName}(),");
                 // Write test data member
-                TestMembers.AppendLine($"        public {type.FullTypeCName} {type.TypeName}Member {{ get; set; }}");
+                TestMembers.AppendLine($"        public {type.FullTypeCName}{(type.IsNullable ? "?" : string.Empty)} {type.TypeName}Member {{ get; set; }}");
             }
 
             // Create DataConverters.cs

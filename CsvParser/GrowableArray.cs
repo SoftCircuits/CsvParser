@@ -23,10 +23,28 @@ namespace SoftCircuits.CsvParser
         /// <summary>
         /// Initializes a new <see cref="GrowableArray{T}"/> instance.
         /// </summary>
-        /// <param name="items">Initial array array data.</param>
-        public GrowableArray(T[]? items)
+        public GrowableArray()
         {
-            Items = items ?? new T[GrowBy];
+            Items = new T[GrowBy];
+            Count = 0;
+        }
+
+        /// <summary>
+        /// Initializes a new <see cref="GrowableArray{T}"/> instance.
+        /// </summary>
+        /// <param name="items">Initial array array data.</param>
+        public GrowableArray(T[] items)
+        {
+            Items = items ?? throw new ArgumentNullException(nameof(items));
+            Count = 0;
+        }
+
+        /// <summary>
+        /// Resets the number of items in this array without changing the
+        /// current array's capacity.
+        /// </summary>
+        public void Clear()
+        {
             Count = 0;
         }
 
@@ -36,10 +54,23 @@ namespace SoftCircuits.CsvParser
         /// <param name="item">Item to add.</param>
         public void Append(T item)
         {
+            Debug.Assert(Items.Length >= Count);
             if (Items.Length <= Count)
                 Array.Resize(ref Items, Count + GrowBy);
+
             Debug.Assert(Items.Length > Count);
             Items[Count++] = item;
+        }
+
+        /// <summary>
+        /// Reduces the capacity to match the number of items it contains.
+        /// </summary>
+        public void Compact()
+        {
+            Debug.Assert(Items.Length >= Count);
+
+            if (Items.Length > Count)
+                Array.Resize(ref Items, Count);
         }
 
         /// <summary>
@@ -48,10 +79,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="array">The <see cref="GrowableArray{T}"/> to convert.</param>
         public static implicit operator T[](GrowableArray<T> array)
         {
-            Debug.Assert(array.Items.Length >= array.Count);
-            if (array.Items.Length > array.Count)
-                Array.Resize(ref array.Items, array.Count);
-            Debug.Assert(array.Items.Length == array.Count);
+            array.Compact();
             return array.Items;
         }
     }
