@@ -16,17 +16,17 @@ These classes provide the simplest way to read and write CSV files. The example 
 
 ```cs
 // Write some data to disk
-using (CsvWriter writer = new CsvWriter(path))
-{
-    // Header row
-    writer.WriteRow("Name", "Email", "Phone", "Birthday");
-    // Data rows
-    writer.WriteRow("Bill Smith", "bsmith@domain.com", "555-1234", "10/29/1982 12:00:00 AM");
-    writer.WriteRow("Susan Carpenter", "scarpenter@domain.com", "555-2345", "2/17/1995 12:00:00 AM");
-    writer.WriteRow("Jim Windsor", "jwindsor@domain.com", "555-3456", "4/23/1989 12:00:00 AM");
-    writer.WriteRow("Jill Morrison", "jmorrison@domain.com", "555-4567", "5/2/1979 12:00:00 AM");
-    writer.WriteRow("Gary Wright", "gwright@domain.com", "555-5678", "2/18/1984 12:00:00 AM");
-}
+using CsvWriter writer = new(path);
+
+// Write header
+writer.WriteRow("Name", "Email", "Phone", "Birthday");
+
+// Write data
+writer.WriteRow("Bill Smith", "bsmith@domain.com", "555-1234", "10/29/1982 12:00:00 AM");
+writer.WriteRow("Susan Carpenter", "scarpenter@domain.com", "555-2345", "2/17/1995 12:00:00 AM");
+writer.WriteRow("Jim Windsor", "jwindsor@domain.com", "555-3456", "4/23/1989 12:00:00 AM");
+writer.WriteRow("Jill Morrison", "jmorrison@domain.com", "555-4567", "5/2/1979 12:00:00 AM");
+writer.WriteRow("Gary Wright", "gwright@domain.com", "555-5678", "2/18/1984 12:00:00 AM");
 ```
 
 Note that the `CsvWriter.WriteRow()` method accepts any number of string parameters. It is also overloaded to handle a `string[]` or `IEnumerable<string>` argument.
@@ -35,15 +35,13 @@ The next example reads all rows from a CSV file.
 
 ```cs
 // Read the data from disk
-string[] columns = null;
-using (CsvReader reader = new CsvReader(path))
-{
-    while (reader.ReadRow(ref columns))
-        Console.WriteLine(string.Join(", ", columns));
-}
+string[]? columns;
+using CsvReader reader = new(path);
+while ((columns = reader.ReadRow()) != null)
+    Console.WriteLine(string.Join(", ", columns));
 ```
 
-The `CsvReader.ReadRow()` method returns `false` when the end of the file has been reached and no more rows can be read. The `columns` parameter is passed by reference so it can be resized, if needed.
+The `CsvReader.ReadRow()` method returns an array of strings that hold the values read from the current row. This method returns `null` when the end of the file has been reached.
 
 ## CsvWriter &lt;T&gt; and CsvReader&lt;T&gt; Classes
 
@@ -60,7 +58,7 @@ class Person
 }
 
 // Define some sample data
-List<Person> People = new List<Person>
+List<Person> People = new()
 {
     new Person { Name = "Bill Smith", Email = "bsmith@domain.com", Phone = "555-1234", Birthday = new DateTime(1982, 10, 29) },
     new Person { Name = "Susan Carpenter", Email = "scarpenter@domain.com", Phone = "555-2345", Birthday = new DateTime(1995, 2, 17) },
@@ -72,7 +70,7 @@ List<Person> People = new List<Person>
 // Write the data to disk
 // Note: Since all records are already in memory, you could replace the
 // foreach loop with: writer.Write(People)
-using (CsvWriter<Person> writer = new CsvWriter<Person>(path))
+using (CsvWriter<Person> writer = new(path))
 {
     writer.WriteHeaders();
 
@@ -81,13 +79,14 @@ using (CsvWriter<Person> writer = new CsvWriter<Person>(path))
 }
 
 // Read the data from disk
-List<Person> people = new List<Person>();
-using (CsvReader<Person> reader = new CsvReader<Person>(path))
+List<Person> people = new();
+using (CsvReader<Person> reader = new(path))
 {
     // Read header and use to determine column order
     reader.ReadHeaders(true);
     // Read data
-    while (reader.Read(out Person person))
+    Person? person;
+    while ((person = reader.Read()) != null)
         people.Add(person);
 }
 ```
@@ -165,7 +164,7 @@ class DateTimeConverter : DataConverter<DateTime>
     }
 }
 
-using (CsvWriter<Person> writer = new CsvWriter<Person>(path))
+using (CsvWriter<Person> writer = new(path))
 {
     writer.WriteHeaders();
 
@@ -174,13 +173,14 @@ using (CsvWriter<Person> writer = new CsvWriter<Person>(path))
 }
 
 // Read the data from disk
-List<Person> people = new List<Person>();
-using (CsvReader<Person> reader = new CsvReader<Person>(path))
+List<Person> people = new();
+using (CsvReader<Person> reader = new(path))
 {
     // Read header and use to determine column order
     reader.ReadHeaders(false);
     // Read data
-    while (reader.Read(out Person person))
+    Person? person;
+    while ((person = reader.Read()) != null)
         people.Add(person);
 }
 ```
@@ -214,7 +214,7 @@ class PersonMaps : ColumnMaps<Person>
 }
 
 // Write data to disk
-using (CsvWriter<Person> writer = new CsvWriter<Person>(path))
+using (CsvWriter<Person> writer = new(path))
 {
     // Register our custom mapping
     writer.MapColumns<PersonMaps>();
@@ -225,8 +225,8 @@ using (CsvWriter<Person> writer = new CsvWriter<Person>(path))
 }
 
 // Read data from disk
-List<Person> people = new List<Person>();
-using (CsvReader<Person> reader = new CsvReader<Person>(path))
+List<Person> people = new();
+using (CsvReader<Person> reader = new(path))
 {
     // Register our custom mapping
     reader.MapColumns<PersonMaps>();
@@ -234,10 +234,10 @@ using (CsvReader<Person> reader = new CsvReader<Person>(path))
     // Read header
     reader.ReadHeaders(false);
     // Read data
-    while (reader.Read(out Person person))
+    Person? person;
+    while ((person = reader.Read()) != null)
         people.Add(person);
-}
-```
+}```
 
 This example does exactly the same thing as the previous example but without modifying the `Person` class.
 
@@ -247,19 +247,18 @@ You can customize the way the library behaves by passing your own instance of th
 
 ```cs
 // Set custom settings
-CsvSettings settings = new CsvSettings
+CsvSettings settings = new()
 {
     ColumnDelimiter = '\t',
     QuoteCharacter = '\''
 };
 
 // Apply custom settings to CsvReader
-using (CsvReader reader = new CsvReader(path, settings))
-{
-    string[] columns = null;
-    while (reader.ReadRow(ref columns))
-        Console.WriteLine(string.Join(", ", columns));
-}
+using CsvReader reader = new(path, settings);
+
+string[]? columns;
+while ((columns = reader.ReadRow()) != null)
+    Console.WriteLine(string.Join(", ", columns));
 ```
 
 ## Additional Information
