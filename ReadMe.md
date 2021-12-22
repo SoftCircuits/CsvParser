@@ -237,7 +237,8 @@ using (CsvReader<Person> reader = new(path))
     Person? person;
     while ((person = reader.Read()) != null)
         people.Add(person);
-}```
+}
+```
 
 This example does exactly the same thing as the previous example but without modifying the `Person` class.
 
