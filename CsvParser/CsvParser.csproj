@@ -19,9 +19,9 @@ The CsvSettings class can be used to customize the library's behavior. For examp
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csv tsv parser csv-parser tsv-parser comma tab separated values delimited</PackageTags>
-    <PackageReleaseNotes>Added async versions of read/write methods; Added .NET 6.0 target; Other minor enhancements; WARNING: Several methods now deprecated. This was done for consistency with the new async versions of those methods, which don't allow ref parameters.</PackageReleaseNotes>
+    <PackageReleaseNotes>Removed obsolete attribute from older-style read methods (after marking them as obsolete when adding new async versions) We will continue to support both forms; Miscellaneous tweaks.</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>3.5.0</Version>
+    <Version>3.5.1</Version>
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <PackageIconUrl />
     <PackageReadmeFile>ReadMe.md</PackageReadmeFile>

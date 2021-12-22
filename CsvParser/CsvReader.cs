@@ -158,7 +158,6 @@ namespace SoftCircuits.CsvParser
         /// more data could be read because the end of the file was reached.
         /// </summary>
         /// <param name="columns">Array to hold the columns read. Okay if it's <c>null</c>.</param>
-        [Obsolete("This method is deprecated and will be removed from a future version of the library. Please use a version of ReadRow() that takes no arguments.")]
         public bool ReadRow(ref string[]? columns)
         {
             columns = ReadRow();

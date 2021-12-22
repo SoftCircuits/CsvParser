@@ -180,7 +180,6 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="item">Receives the item read.</param>
         /// <returns>True if successful, false if the end of the file was reached.</returns>
-        [Obsolete("This method is deprecated and will be removed from a future version of this library. Please use a version of Read() that takes no arguments.")]
 #if !NETSTANDARD2_0
         public bool Read([NotNullWhen(true)] out T? item)
 #else
