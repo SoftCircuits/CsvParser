@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,30 +17,31 @@ namespace CsvParserTests
     {
         private readonly List<List<string?>> CsvTestData = new()
         {
-            new List<string?> { },
-            new List<string?> { "Abc", "Def", "Ghi" },
-            new List<string?> { "Abc,Def,Ghi" },
-            new List<string?> { "Abc\"Def\"Ghi" },
-            new List<string?> { "Abc'Def'Ghi" },
-            new List<string?> { "The quick, brown", "fox\r\n\r\n\r\njumps over", "the \"lazy\" dog." },
-            new List<string?> { ",,,,", "\t\t\t\t", "\r\n\r\n\r\n\r\n" },
-            new List<string?> { "a\tb", "\t\r\n\t", "\t\t\t" },
-            new List<string?> { "123", "456", "789" },
-            new List<string?> { "\t\r\n", "\r\nx", "\b\a\v" },
-            new List<string?> { "    ,    ", "    ,    ", "    ,    " },
-            new List<string?> { " \"abc\" ", " \"\" ", "  \" \" " },
-            new List<string?> { "abc" },
-            new List<string?> { "abc", "def" },
-            new List<string?> { "abc", "def", "ghi" },
-            new List<string?> { "abc", "def", "ghi", "jkl" },
-            new List<string?> { "abc", "def", "ghi", "jkl", "mno" },
-            new List<string?> { "abc", "def", "ghi", "jkl", "mno", "pqr" },
-            new List<string?> { "abc", "def", "ghi", "jkl", "mno", "pqr", "stu" },
-            new List<string?> { "abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx" },
-            new List<string?> { "abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx", "xz" },
-            new List<string?> { "alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf" },
-            new List<string?> { "", "", "" },
-            new List<string?> { null, null, null },
+            new() { },
+            new() { "Abc", "Def", "Ghi" },
+            new() { "Abc,Def,Ghi" },
+            new() { "Abc\"Def\"Ghi" },
+            new() { "Abc'Def'Ghi" },
+            new() { "The quick, brown", "fox\r\n\r\n\r\njumps over", "the \"lazy\" dog." },
+            new() { ",,,,", "\t\t\t\t", "\r\n\r\n\r\n\r\n" },
+            new() { "a\tb", "\t\r\n\t", "\t\t\t" },
+            new() { "123", "456", "789" },
+            new() { "\t\r\n", "\r\nx", "\b\a\v" },
+            new() { "    ,    ", "    ,    ", "    ,    " },
+            new() { " \"abc\" ", " \"\" ", "  \" \" " },
+            new() { "abc" },
+            new() { "abc", "def" },
+            new() { "abc", "def", "ghi" },
+            new() { "abc", "def", "ghi", "jkl" },
+            new() { "abc", "def", "ghi", "jkl", "mno" },
+            new() { "abc", "def", "ghi", "jkl", "mno", "pqr" },
+            new() { "abc", "def", "ghi", "jkl", "mno", "pqr", "stu" },
+            new() { "abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx" },
+            new() { "abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx", "xz" },
+            new() { "alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf" },
+            new() { "a", "b", "" },
+            new() { "", "", "" },
+            new() { null, null, null },
         };
 
         private class ListComparer : Comparer<List<string>>
@@ -113,19 +114,19 @@ namespace CsvParserTests
                 foreach (var data in CsvTestData)
                 {
                     if (data != null)
-                        writer.WriteRow(data);
+                        writer.Write(data);
                 }
             }
 
             using (CsvReader reader = new(file, settings))
             {
-                string[]? columns;
-                while ((columns = reader.ReadRow()) != null)
+                while (reader.Read())
                 {
-                    actual.Add(columns.ToList());
+                    actual.Add(reader.Columns.ToList());
                 }
-                CollectionAssert.AreEqual(CsvTestData, actual, new ListComparer());
             }
+
+            CollectionAssert.AreEqual(CsvTestData, actual, new ListComparer());
         }
 
         private async Task RunTestAsync(CsvSettings? settings)
@@ -139,19 +140,20 @@ namespace CsvParserTests
                 foreach (var data in CsvTestData)
                 {
                     if (data != null)
-                        await writer.WriteRowAsync(data);
+                        await writer.WriteAsync(data);
                 }
             }
 
             using (CsvReader reader = new(file, settings))
             {
-                string[]? columns;
-                while ((columns = await reader.ReadRowAsync()) != null)
+                while (await reader.ReadAsync())
                 {
-                    actual.Add(columns.ToList());
+                    Debug.Assert(reader.Columns != null);
+                    actual.Add(reader.Columns.ToList());
                 }
-                CollectionAssert.AreEqual(CsvTestData, actual, new ListComparer());
             }
+
+            CollectionAssert.AreEqual(CsvTestData, actual, new ListComparer());
         }
 
         private readonly List<string> EmptyLineTestData = new()
@@ -219,9 +221,8 @@ namespace CsvParserTests
 
                 using (CsvReader reader = new(file, settings))
                 {
-                    string[]? columns = null;
-                    while ((columns = reader.ReadRow()) != null)
-                        actual.Add(columns.ToList());
+                    while (reader.Read())
+                        actual.Add(reader.Columns.ToList());
                 }
 
                 int resultIndex = (int)emptyLineBehavior;

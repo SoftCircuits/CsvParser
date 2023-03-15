@@ -8,40 +8,39 @@ Install-Package SoftCircuits.CsvParser
 
 ## Overview
 
-CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files. (Since you can customize the delimiter, it can be used to work with files with any delimiter). CsvParser includes basic classes to read and write CSV data, and also higher-level classes that automatically map class properties to CSV columns. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines. CsvParser is very efficient and is designed to handle large data files without loading everything into memory. This library runs up to four times faster than the popular CsvHelper library.
+CsvParser is a .NET library that makes it easy to work with comma-separated-value (CSV) files. (And can be customized to work with other delimiters). CsvParser includes basic classes to read and write CSV data, and also higher-level classes that automatically map class properties to CSV columns. The library correctly handles column values that contain embedded commas, quotes or other special characters. It even supports column values that span multiple lines. CsvParser is very fast and is designed to handle large data files efficiently. The object mapping classes run up to four times faster than the popular CsvHelper library.
 
 ## CsvWriter and CsvReader Classes
 
-These classes provide the simplest way to read and write CSV files. The example below writes several rows of data to a CSV file.
+These classes provide the simplest way to read and write CSV files. The example below writes several records of data to a CSV file.
 
 ```cs
 // Write some data to disk
 using CsvWriter writer = new(path);
 
 // Write header
-writer.WriteRow("Name", "Email", "Phone", "Birthday");
+writer.Write("Name", "Email", "Phone", "Birthday");
 
 // Write data
-writer.WriteRow("Bill Smith", "bsmith@domain.com", "555-1234", "10/29/1982 12:00:00 AM");
-writer.WriteRow("Susan Carpenter", "scarpenter@domain.com", "555-2345", "2/17/1995 12:00:00 AM");
-writer.WriteRow("Jim Windsor", "jwindsor@domain.com", "555-3456", "4/23/1989 12:00:00 AM");
-writer.WriteRow("Jill Morrison", "jmorrison@domain.com", "555-4567", "5/2/1979 12:00:00 AM");
-writer.WriteRow("Gary Wright", "gwright@domain.com", "555-5678", "2/18/1984 12:00:00 AM");
+writer.Write("Bill Smith", "bsmith@domain.com", "555-1234", "10/29/1982 12:00:00 AM");
+writer.Write("Susan Carpenter", "scarpenter@domain.com", "555-2345", "2/17/1995 12:00:00 AM");
+writer.Write("Jim Windsor", "jwindsor@domain.com", "555-3456", "4/23/1989 12:00:00 AM");
+writer.Write("Jill Morrison", "jmorrison@domain.com", "555-4567", "5/2/1979 12:00:00 AM");
+writer.Write("Gary Wright", "gwright@domain.com", "555-5678", "2/18/1984 12:00:00 AM");
 ```
 
-Note that the `CsvWriter.WriteRow()` method accepts any number of string parameters. It is also overloaded to handle a `string[]` or `IEnumerable<string>` argument.
+Note that the `CsvWriter.Write()` method accepts any number of string parameters. It is also overloaded to handle `string[]` and `IEnumerable<string>` arguments. (Note: The legacy `WriteRow()` and `WriteRowAsync()` methods can be used to accomplish the same task but `Write()` and `WriteAsync()` are preferred.)
 
-The next example reads all rows from a CSV file.
+The next example reads all records from a CSV file.
 
 ```cs
 // Read the data from disk
-string[]? columns;
 using CsvReader reader = new(path);
-while ((columns = reader.ReadRow()) != null)
-    Console.WriteLine(string.Join(", ", columns));
+while (reader.Read())
+    Console.WriteLine(string.Join(", ", reader.Columns));
 ```
 
-The `CsvReader.ReadRow()` method returns an array of strings that hold the values read from the current row. This method returns `null` when the end of the file has been reached.
+When the `CsvReader.Read()` method returns true, the `Columns` property holds the values that were read. This method returns false when the end of the file has been reached. (Note: The legacy `ReadRow()` and `ReadRowAsync()` methods can be used to accomplish the same task but `Read()` and `ReadAsync()` are preferred and have slightly better performance.)
 
 ## CsvWriter &lt;T&gt; and CsvReader&lt;T&gt; Classes
 
@@ -257,9 +256,8 @@ CsvSettings settings = new()
 // Apply custom settings to CsvReader
 using CsvReader reader = new(path, settings);
 
-string[]? columns;
-while ((columns = reader.ReadRow()) != null)
-    Console.WriteLine(string.Join(", ", columns));
+while (reader.Read())
+    Console.WriteLine(string.Join(", ", reader.Columns));
 ```
 
 ## Additional Information

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -83,7 +83,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         public void WriteHeaders()
         {
-            WriteRow(ColumnsInfo.FilteredColumns.Select(fc => fc.Name));
+            Write(ColumnsInfo.FilteredColumns.Select(fc => fc.Name));
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         public async Task WriteHeadersAsync()
         {
-            await WriteRowAsync(ColumnsInfo.FilteredColumns.Select(fc => fc.Name));
+            await WriteAsync(ColumnsInfo.FilteredColumns.Select(fc => fc.Name));
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace SoftCircuits.CsvParser
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
 
-            WriteRow(ColumnsInfo.FilteredColumns.Select(fc => fc.GetValue(item)));
+            Write(ColumnsInfo.FilteredColumns.Select(fc => fc.GetValue(item)));
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace SoftCircuits.CsvParser
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
 
-            await WriteRowAsync(ColumnsInfo.FilteredColumns.Select(fc => fc.GetValue(item)));
+            await WriteAsync(ColumnsInfo.FilteredColumns.Select(fc => fc.GetValue(item)));
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -24,9 +24,9 @@ namespace BuildConverters
         private const string DataConverterInitializersTag = "{@DataConverterInitializers}";
 
         // Target paths
-        private const string TemplatePath = @"D:\Users\jwood\source\repos\CsvParser\BuildConverters\Templates";
-        private const string OutputPath = @"D:\Users\jwood\source\repos\CsvParser\CsvParser\Converters";
-        private const string TestPath = @"D:\Users\jwood\source\repos\CsvParser\TestCsvParser";
+        private const string TemplatePath = @"C:\Users\Jonathan\source\repos\SoftCircuits\CsvParser\BuildConverters\Templates";
+        private const string OutputPath = @"C:\Users\Jonathan\source\repos\SoftCircuits\CsvParser\CsvParser\Converters";
+        private const string TestPath = @"C:\Users\Jonathan\source\repos\SoftCircuits\CsvParser\TestCsvParser";
 
         static readonly TypeInfo[] TypeData = new TypeInfo[]
         {

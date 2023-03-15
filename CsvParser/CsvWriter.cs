@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -81,19 +81,47 @@ namespace SoftCircuits.CsvParser
         }
 
         /// <summary>
-        /// Asynchronously writes a row of columns to the current CSV file.
+        /// Writes a row of columns to the current CSV file.
         /// </summary>
         /// <param name="columns">The list of columns to write.</param>
-        public async Task WriteRowAsync(params string[] columns)
+        public void Write(params string[] columns) => Write(columns as IEnumerable<string>);
+
+        /// <summary>
+        /// Writes a row of columns to the current CSV file.
+        /// </summary>
+        /// <param name="columns">The list of columns to write.</param>
+        public void Write(IEnumerable<string?> columns)
         {
-            await WriteRowAsync(columns as IEnumerable<string>);
+            // Verify required argument
+            if (columns == null)
+                throw new ArgumentNullException(nameof(columns));
+
+            // Write each column
+            bool firstColumn = true;
+            foreach (string? value in columns)
+            {
+                // Add delimiter if this isn't the first column
+                if (firstColumn)
+                    firstColumn = false;
+                else
+                    Writer.Write(Settings.ColumnDelimiter);
+                // Write column value
+                Writer.Write(Settings.CsvEncode(value ?? string.Empty));
+            }
+            Writer.WriteLine();
         }
 
         /// <summary>
         /// Asynchronously writes a row of columns to the current CSV file.
         /// </summary>
         /// <param name="columns">The list of columns to write.</param>
-        public async Task WriteRowAsync(IEnumerable<string?> columns)
+        public async Task WriteAsync(params string[] columns) => await WriteAsync(columns);
+
+        /// <summary>
+        /// Asynchronously writes a row of columns to the current CSV file.
+        /// </summary>
+        /// <param name="columns">The list of columns to write.</param>
+        public async Task WriteAsync(IEnumerable<string?> columns)
         {
             // Verify required argument
             if (columns == null)
@@ -114,39 +142,34 @@ namespace SoftCircuits.CsvParser
             await Writer.WriteLineAsync();
         }
 
-        /// <summary>
-        /// Writes a row of columns to the current CSV file.
-        /// </summary>
-        /// <param name="columns">The list of columns to write.</param>
-        public void WriteRow(params string[] columns)
-        {
-            WriteRow(columns as IEnumerable<string>);
-        }
+        #region Legacy
 
         /// <summary>
         /// Writes a row of columns to the current CSV file.
         /// </summary>
         /// <param name="columns">The list of columns to write.</param>
-        public void WriteRow(IEnumerable<string?> columns)
-        {
-            // Verify required argument
-            if (columns == null)
-                throw new ArgumentNullException(nameof(columns));
+        public void WriteRow(IEnumerable<string?> columns) => Write(columns);
 
-            // Write each column
-            bool firstColumn = true;
-            foreach (string? value in columns)
-            {
-                // Add delimiter if this isn't the first column
-                if (firstColumn)
-                    firstColumn = false;
-                else
-                    Writer.Write(Settings.ColumnDelimiter);
-                // Write column value
-                Writer.Write(Settings.CsvEncode(value ?? string.Empty));
-            }
-            Writer.WriteLine();
-        }
+        /// <summary>
+        /// Writes a row of columns to the current CSV file.
+        /// </summary>
+        /// <param name="columns">The list of columns to write.</param>
+        public void WriteRow(params string[] columns) => Write(columns as IEnumerable<string>);
+
+        /// <summary>
+        /// Asynchronously writes a row of columns to the current CSV file.
+        /// </summary>
+        /// <param name="columns">The list of columns to write.</param>
+        public async Task WriteRowAsync(IEnumerable<string?> columns) => await WriteAsync(columns);
+
+        /// <summary>
+        /// Asynchronously writes a row of columns to the current CSV file.
+        /// </summary>
+        /// <param name="columns">The list of columns to write.</param>
+        public async Task WriteRowAsync(params string[] columns) => await WriteAsync(columns);
+
+
+        #endregion
 
         /// <summary>
         /// Clears all buffers and causes any unbuffered data to be written to the underlying stream.

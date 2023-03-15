@@ -1,6 +1,7 @@
-﻿// Copyright (c) 2019-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
+using CsvParser.Helpers;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
@@ -104,6 +105,12 @@ namespace SoftCircuits.CsvParser
         public StringComparison ColumnHeaderStringComparison { get; set; }
 
         /// <summary>
+        /// Gets or sets the size of the internal buffer. Used when reading CSV files.
+        /// Default value is 4K.
+        /// </summary>
+        public int BufferSize { get; set; }
+
+        /// <summary>
         /// Initializes a new <c>CsvSettings</c> instance.
         /// </summary>
         public CsvSettings()
@@ -120,6 +127,7 @@ namespace SoftCircuits.CsvParser
             EmptyLineBehavior = EmptyLineBehavior.NoColumns;
             InvalidDataRaisesException = true;
             ColumnHeaderStringComparison = StringComparison.InvariantCultureIgnoreCase;
+            BufferSize = CharBuffer.DefaultBufferSize;
         }
 
         /// <summary>

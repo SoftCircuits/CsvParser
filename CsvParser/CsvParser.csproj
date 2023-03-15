@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net5.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net7.0;net6.0;net5.0;netstandard2.0</TargetFrameworks>
     <Nullable>annotations</Nullable>
     <Nullable Condition="'$(TargetFramework)' != 'netstandard2.0'">enable</Nullable>
     <LangVersion>9.0</LangVersion>
@@ -10,18 +10,18 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Jonathan Wood</Authors>
     <Company>SoftCircuits</Company>
-    <Description>CsvParser is a .NET library that makes it easy to work with comma-separated-values (CSV) files (and files with other delimiters). Includes basic classes to read and write CSV data, and also higher-level classes that automatically map class properties to CSV columns. The library correctly handles column values that contain embedded commas, quotes, other special characters, or even column values that span multiple lines. CsvParser is very efficient. The library runs up to four times faster than the popular CsvHelper library.
+    <Description>CsvParser is a .NET library that makes it easy to work with comma-separated-value (CSV) files (as well as files with other delimiters). Includes basic classes to easily read and write CSV data, and also higher-level classes that automatically map class properties to CSV columns. The library correctly handles column values that contain embedded commas, quotes, other special characters, and even column values that span multiple lines. CsvParser is very efficient. The object mapping classes runs up to four times faster than the popular CsvHelper library.
 
-The CsvSettings class can be used to customize the library's behavior. For example, you can change the column delimiter to another character (like to the tab character, for example), change the quote character, customize how blank lines are handled, etc.</Description>
-    <Copyright>Copyright © 2019-2021 SoftCircuits</Copyright>
+The CsvSettings class can be used to customize the library's behavior, including setting the column delimiter to another character (like to a tab, for example), change the quote character, customize how blank lines are handled, etc.</Description>
+    <Copyright>Copyright © 2019-2023 SoftCircuits</Copyright>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/SoftCircuits/CsvParser</PackageProjectUrl>
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>csv tsv parser csv-parser tsv-parser comma tab separated values delimited</PackageTags>
-    <PackageReleaseNotes>Removed obsolete attribute from older-style read methods (after marking them as obsolete when adding new async versions) We will continue to support both forms; Miscellaneous tweaks.</PackageReleaseNotes>
+    <PackageTags>csv; tsv; parser; csv parser; tsv parser; csv reader; csv writer; comma; tab; delimited</PackageTags>
+    <PackageReleaseNotes>The low-level parser has been meticulously rewritten to be as fast as possible. The new version runs more than twice as fast. Added new CsvReader.Read() and CsvReader.ReadAsync() methods, which simplify loop syntax. Also added CsvWriter.Write() and CsvWriter.WriteAsync(). Added direct support for .NET 7.0. Miscellaneous code and documentation improvements.</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>3.5.1</Version>
+    <Version>4.0.0</Version>
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <PackageIconUrl />
     <PackageReadmeFile>ReadMe.md</PackageReadmeFile>

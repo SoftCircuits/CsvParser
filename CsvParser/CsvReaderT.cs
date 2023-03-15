@@ -1,7 +1,8 @@
-﻿// Copyright (c) 2019-2021 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
@@ -144,12 +145,11 @@ namespace SoftCircuits.CsvParser
         /// <returns>True if successful, false if the end of the file was reached.</returns>
         public bool ReadHeaders(bool mapColumnsFromHeaders)
         {
-            string[]? columns = ReadRow();
-            if (columns != null)
+            if (base.Read())
             {
                 // Will exclude all column mapping if headers are empty
                 if (mapColumnsFromHeaders)
-                    ColumnsInfo.ApplyHeaders(columns, Settings.ColumnHeaderStringComparison);
+                    ColumnsInfo.ApplyHeaders(Columns, Settings.ColumnHeaderStringComparison);
                 return true;
             }
             return false;
@@ -164,12 +164,12 @@ namespace SoftCircuits.CsvParser
         /// <returns>True if successful, false if the end of the file was reached.</returns>
         public async Task<bool> ReadHeadersAsync(bool mapColumnsFromHeaders)
         {
-            string[]? columns = await ReadRowAsync();
-            if (columns != null)
+            if (await base.ReadAsync())
             {
+                Debug.Assert(Columns != null);
                 // Will exclude all column mapping if headers are empty
                 if (mapColumnsFromHeaders)
-                    ColumnsInfo.ApplyHeaders(columns, Settings.ColumnHeaderStringComparison);
+                    ColumnsInfo.ApplyHeaders(Columns, Settings.ColumnHeaderStringComparison);
                 return true;
             }
             return false;
@@ -196,19 +196,18 @@ namespace SoftCircuits.CsvParser
         /// <param name="item">Receives the item read.</param>
         /// <returns>True if successful, false if the end of the file was reached.</returns>
 #if !NETSTANDARD2_0
-        public T? Read()
+        new public T? Read()
 #else
-        public T Read()
+        new public T Read()
 #endif
         {
-            string[]? columns = ReadRow();
-            if (columns != null)
+            if (base.Read())
             {
                 T item = Activator.CreateInstance<T>();
                 foreach (ColumnInfo column in ColumnsInfo.FilteredColumns)
                 {
-                    if (column.Index < columns!.Length)
-                        column.SetValue(item, columns[column.Index], Settings.InvalidDataRaisesException);
+                    if (column.Index < Columns.Length)
+                        column.SetValue(item, Columns[column.Index], Settings.InvalidDataRaisesException);
                 }
                 return item;
             }
@@ -221,19 +220,19 @@ namespace SoftCircuits.CsvParser
         /// <param name="item">Receives the item read.</param>
         /// <returns>True if successful, false if the end of the file was reached.</returns>
 #if !NETSTANDARD2_0
-        public async Task<T?> ReadAsync()
+        new public async Task<T?> ReadAsync()
 #else
-        public async Task<T> ReadAsync()
+        new public async Task<T> ReadAsync()
 #endif
         {
-            string[]? columns = await ReadRowAsync();
-            if (columns != null)
+            if (await base.ReadAsync())
             {
+                Debug.Assert(Columns != null);
                 T item = Activator.CreateInstance<T>();
                 foreach (ColumnInfo column in ColumnsInfo.FilteredColumns)
                 {
-                    if (column.Index < columns!.Length)
-                        column.SetValue(item, columns[column.Index], Settings.InvalidDataRaisesException);
+                    if (column.Index < Columns.Length)
+                        column.SetValue(item, Columns[column.Index], Settings.InvalidDataRaisesException);
                 }
                 return item;
             }
