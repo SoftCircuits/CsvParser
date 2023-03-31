@@ -3,6 +3,7 @@
 //
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace CsvParser.Helpers
@@ -12,9 +13,13 @@ namespace CsvParser.Helpers
         internal const int DefaultBufferSize = 4096;
         internal const int MinBufferSize = 128;
 
+        // Interal character buffer
         private readonly char[] Buffer;
 
+        // Gets the current length of the data in this buffer.
         public int Length { get; private set; }
+
+        // Get or sets the current position within this buffer.
         public int Position { get; set; }
 
         public CharBuffer(int bufferSize = DefaultBufferSize)
@@ -25,11 +30,12 @@ namespace CsvParser.Helpers
         }
 
         /// <summary>
-        /// Loads another block of data from the specified <see cref="StreamReader"/>.
+        /// Loads another block of data from <paramref name="reader"/>.
         /// </summary>
         /// <param name="line">If the specified line references a <see cref="CharBuffer"/>'s buffer, data from that buffer
-        /// will be copied to the <see cref="LineBuffer"/>'s internnal buffer. This prevents overwriting the data when the
-        /// <see cref="CharBuffer"/> buffer is overwritten.</param>
+        /// will be copied to the <see cref="LineBuffer"/>'s internal buffer. This prevents overwriting data referenced in
+        /// this <see cref="CharBuffer"/>.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Read(StreamReader reader, LineBuffer line)
         {
             line.InternalizeBuffer();
@@ -37,8 +43,9 @@ namespace CsvParser.Helpers
         }
 
         /// <summary>
-        /// Loads another block of data from the specified <see cref="StreamReader"/>.
+        /// Loads another block of data from <paramref name="reader"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Read(StreamReader reader)
         {
 #if NETSTANDARD2_0
@@ -51,11 +58,12 @@ namespace CsvParser.Helpers
         }
 
         /// <summary>
-        /// Asynchronously loads another block of data from the specified <see cref="StreamReader"/>.
+        /// Asynchronously loads another block of data from <paramref name="reader"/>.
         /// </summary>
         /// <param name="line">If the specified line references a <see cref="CharBuffer"/>'s buffer, data from that buffer
-        /// will be copied to the <see cref="LineBuffer"/>'s internnal buffer. This prevents overwriting the data when the
-        /// <see cref="CharBuffer"/> buffer is overwritten.</param>
+        /// will be copied to the <see cref="LineBuffer"/>'s internnal buffer. This prevents overwriting data referenced in
+        /// this <see cref="CharBuffer"/>.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public async Task<bool> ReadAsync(StreamReader reader, LineBuffer line)
         {
             line.InternalizeBuffer();
@@ -63,8 +71,9 @@ namespace CsvParser.Helpers
         }
 
         /// <summary>
-        /// Asynchronously loads another block of data from the specified <see cref="StreamReader"/>.
+        /// Asynchronously loads another block of data from <paramref name="reader"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public async Task<bool> ReadAsync(StreamReader reader)
         {
             Length = await reader.ReadAsync(Buffer, 0, Buffer.Length);
@@ -75,6 +84,7 @@ namespace CsvParser.Helpers
         /// <summary>
         /// Returns the index of the next newline character.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int IndexOfNewLine(int startIndex = 0)
         {
 
@@ -99,8 +109,13 @@ namespace CsvParser.Helpers
 
         }
 
-        public char this[int index] => Buffer[index];
+        public char this[int index]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Buffer [index];
+        }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator char[](CharBuffer buffer) => buffer.Buffer;
 
         //public override string ToString()

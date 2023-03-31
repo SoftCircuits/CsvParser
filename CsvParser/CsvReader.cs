@@ -541,11 +541,7 @@ namespace SoftCircuits.CsvParser
             if (end == -1)
                 end = Line.Length;
             Line.Position = end;
-#if NETSTANDARD2_0
-            return new(Line, start, end - start);
-#else
-            return Line[start..end];
-#endif
+            return Line.Substring(start, end - start);
         }
 
         /// <summary>

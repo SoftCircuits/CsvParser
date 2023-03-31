@@ -3,7 +3,6 @@
 //
 using CsvParser.Helpers;
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SoftCircuits.CsvParser
 {
@@ -42,11 +41,7 @@ namespace SoftCircuits.CsvParser
         public char QuoteCharacter
         {
             get => SpecialCharacters[QuoteCharacterIndex];
-            set
-            {
-                SpecialCharacters[QuoteCharacterIndex] = value;
-                InitializeQuoteStrings();
-            }
+            set => SpecialCharacters[QuoteCharacterIndex] = value;
         }
 
         /// <summary>
@@ -55,30 +50,6 @@ namespace SoftCircuits.CsvParser
         /// <param name="s"></param>
         /// <returns></returns>
         internal bool HasSpecialCharacter(string s) => s.IndexOfAny(SpecialCharacters) >= 0;
-
-        /// <summary>
-        /// Gets a string with the current quote character. Used for formatting columns.
-        /// </summary>
-        internal string OneQuoteString { get; private set; }
-
-        /// <summary>
-        /// Gets a string with two quote characters. Used for formatting columns.
-        /// </summary>
-        internal string TwoQuoteString { get; private set; }
-
-        /// <summary>
-        /// Initializes <see cref="OneQuoteString"/> and <see cref="TwoQuoteString"/>
-        /// based on the value of <see cref="QuoteCharacter"/>.
-        /// </summary>
-#if !NETSTANDARD2_0
-        [MemberNotNull(nameof(OneQuoteString))]
-        [MemberNotNull(nameof(TwoQuoteString))]
-#endif
-        private void InitializeQuoteStrings()
-        {
-            OneQuoteString = new string(QuoteCharacter, 1);
-            TwoQuoteString = new string(QuoteCharacter, 2);
-        }
 
         #endregion
 
@@ -105,8 +76,7 @@ namespace SoftCircuits.CsvParser
         public StringComparison ColumnHeaderStringComparison { get; set; }
 
         /// <summary>
-        /// Gets or sets the size of the internal buffer. Used when reading CSV files.
-        /// Default value is 4K.
+        /// Gets or sets the size of the internal read buffer used by <see cref="CsvReader"/>. Default value is 4096.
         /// </summary>
         public int BufferSize { get; set; }
 
@@ -123,27 +93,10 @@ namespace SoftCircuits.CsvParser
                 '\n'
             };
 
-            InitializeQuoteStrings();
             EmptyLineBehavior = EmptyLineBehavior.NoColumns;
             InvalidDataRaisesException = true;
             ColumnHeaderStringComparison = StringComparison.InvariantCultureIgnoreCase;
             BufferSize = CharBuffer.DefaultBufferSize;
-        }
-
-        /// <summary>
-        /// Encodes a CSV field if needed by doubling any quote characters and then
-        /// wrapping the field in quotes.
-        /// </summary>
-        /// <param name="s">Field to encode.</param>
-        /// <returns>The encoded string.</returns>
-        public string CsvEncode(string s)
-        {
-            if (HasSpecialCharacter(s))
-            {
-                s = s.Replace(OneQuoteString, TwoQuoteString);
-                s = $"{QuoteCharacter}{s}{QuoteCharacter}";
-            }
-            return s;
         }
     }
 }

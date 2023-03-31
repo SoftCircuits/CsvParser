@@ -50,6 +50,9 @@ namespace RandomDataTests
             Fields = new();
         }
 
+        /// <summary>
+        /// Rebuild random generators for each field.
+        /// </summary>
         public void ResetFields(int maxFields)
         {
             int fields = Random.Shared.Next(1, maxFields);

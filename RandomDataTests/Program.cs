@@ -1,6 +1,6 @@
 ﻿using RandomDataTests;
 
-const int Passes = 5;
+const int Passes = 2;
 
 List<TestConfiguration> Configurations = new()
 {

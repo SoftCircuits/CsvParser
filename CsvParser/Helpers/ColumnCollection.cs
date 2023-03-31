@@ -2,9 +2,9 @@
 // Licensed under the MIT license.
 //
 using System;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace CsvParser.Helpers
 {
@@ -44,6 +44,7 @@ namespace CsvParser.Helpers
         /// Resets the number of items in this array without changing the
         /// current array's capacity.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             Length = 0;

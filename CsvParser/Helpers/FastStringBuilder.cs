@@ -3,6 +3,7 @@
 //
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace CsvParser.Helpers
@@ -40,6 +41,7 @@ namespace CsvParser.Helpers
             Buffer[Length++] = c;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(string s) => Append(s, 0, s.Length);
 
         public void Append(string s, int startIndex, int length)
@@ -55,6 +57,7 @@ namespace CsvParser.Helpers
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(LineBuffer line) => Append(line, 0, line.Length);
 
         public void Append(LineBuffer line, int startIndex, int length)

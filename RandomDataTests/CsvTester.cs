@@ -19,16 +19,18 @@ namespace RandomDataTests
             // Get working file name
             string path = Path.GetTempFileName();
 
+            int configNumber = 0;
+            int configCount = configs.Count();
             foreach (TestConfiguration config in configs)
             {
-                OnReportStatus($"Configuration (Passes={config.Passes:#,0},Records={config.RecordsPerPass:#,0},MaxFields={config.MaxFields},Async={config.RunAsync})", ConsoleColor.Magenta);
+                OnReportStatus($"Configuration {++configNumber}/{configCount} (Passes={config.Passes:#,0},Records={config.RecordsPerPass:#,0},MaxFields={config.MaxFields},Async={config.RunAsync})", ConsoleColor.Magenta);
 
                 for (int pass = 0; pass < config.Passes; pass++)
                 {
                     try
                     {
                         RandomGenerators.ResetFields(config.MaxFields);
-                        OnReportStatus($"Pass {pass + 1} (Fields={RandomGenerators.Count})", ConsoleColor.Cyan);
+                        OnReportStatus($"Pass {pass + 1}/{config.Passes} (Fields={RandomGenerators.Count})", ConsoleColor.Cyan);
                         OnReportStatus($"[{RandomGenerators}]", ConsoleColor.Cyan);
 
                         //
@@ -121,6 +123,18 @@ namespace RandomDataTests
         protected void OnReportStatus(string status = "", ConsoleColor color = ConsoleColor.White, bool isError = false)
         {
             StatusUpdate?.Invoke(this, new(status, color, isError));
+        }
+
+        public static void CreateRandomFile(string path, int records, int maxFields)
+        {
+            RandomGeneratorCollection randomGenerators = new();
+            randomGenerators.ResetFields(maxFields);
+
+            using CsvWriter writer = new(path);
+            for (int i = 0; i < records; i++)
+            {
+                writer.Write(randomGenerators.GetRandomValues());
+            }
         }
     }
 }

@@ -19,9 +19,9 @@ The CsvSettings class can be used to customize the library's behavior, including
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csv; tsv; parser; csv parser; tsv parser; csv reader; csv writer; comma; tab; delimited</PackageTags>
-    <PackageReleaseNotes>The low-level parser has been meticulously rewritten to be as fast as possible. The new version runs more than twice as fast. Added new CsvReader.Read() and CsvReader.ReadAsync() methods, which simplify loop syntax. Also added CsvWriter.Write() and CsvWriter.WriteAsync(). Added direct support for .NET 7.0. Miscellaneous code and documentation improvements.</PackageReleaseNotes>
+    <PackageReleaseNotes>Performance optimizations to CsvWriter. Additional optimizations to CsvReader.</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>4.0.0</Version>
+    <Version>4.1.0</Version>
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <PackageIconUrl />
     <PackageReadmeFile>ReadMe.md</PackageReadmeFile>

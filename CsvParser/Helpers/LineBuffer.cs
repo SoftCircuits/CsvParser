@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace CsvParser.Helpers
 {
@@ -76,6 +77,7 @@ namespace CsvParser.Helpers
         /// <summary>
         /// Appends an array to the line.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(char[] array) => Append(array, 0, array.Length);
 
         /// <summary>
@@ -102,6 +104,7 @@ namespace CsvParser.Helpers
         /// <summary>
         /// Configures this <see cref="LineBuffer"/> to reference an external buffer.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetExternalBuffer(char[] array) => SetExternalBuffer(array, 0, array.Length);
 
         /// <summary>
@@ -119,28 +122,17 @@ namespace CsvParser.Helpers
         /// <summary>
         /// Gets the character at the specified index.
         /// </summary>
-        public char this[int index] => Buffer[IndexOffset + index];
-
-#if !NETSTANDARD2_0
-
-        /// <summary>
-        /// Gets the character at the specified index.
-        /// </summary>
-        public char this[Index index] => Buffer[IndexOffset + index.GetOffset(Length)];
-
-        /// <summary>
-        /// Gets the specified range as a string.
-        /// </summary>
-        public string this[Range range]
+        public char this[int index]
         {
-            get
-            {
-                (int offset, int length) = range.GetOffsetAndLength(Length);
-                return new string(Buffer, IndexOffset + offset, length);
-            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Buffer[IndexOffset + index];
         }
 
-#endif
+        /// <summary>
+        /// Returns a string from the specified segment of this line.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string Substring(int startIndex, int length) => new(Buffer, IndexOffset + startIndex, length);
 
         /// <summary>
         /// Returns the index of the specified character or -1 if the character was not found.
@@ -158,6 +150,7 @@ namespace CsvParser.Helpers
         /// <summary>
         /// Copies all or part of the buffer to the specified array.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(int sourceIndex, char[] targetArray, int targetIndex, int length) =>
             Array.Copy(Buffer, IndexOffset + sourceIndex, targetArray, targetIndex, length);
 
@@ -183,8 +176,6 @@ namespace CsvParser.Helpers
                 Append(oldBuffer, oldOffset, oldLength);
             }
         }
-
-        public static implicit operator char[](LineBuffer line) => line.Buffer;
 
         //public override string ToString()
         //{

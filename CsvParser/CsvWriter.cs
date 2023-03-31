@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
+using CsvParser.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -96,19 +97,44 @@ namespace SoftCircuits.CsvParser
             if (columns == null)
                 throw new ArgumentNullException(nameof(columns));
 
-            // Write each column
-            bool firstColumn = true;
-            foreach (string? value in columns)
+            var enumerator = columns.GetEnumerator();
+            if (enumerator.MoveNext())
             {
-                // Add delimiter if this isn't the first column
-                if (firstColumn)
-                    firstColumn = false;
-                else
+                WriteEncoded(enumerator.Current);
+                while (enumerator.MoveNext())
+                {
                     Writer.Write(Settings.ColumnDelimiter);
-                // Write column value
-                Writer.Write(Settings.CsvEncode(value ?? string.Empty));
+                    WriteEncoded(enumerator.Current);
+                }
             }
             Writer.WriteLine();
+        }
+
+        /// <summary>
+        /// Writes a CSV-encoded field.
+        /// </summary>
+        private void WriteEncoded(string? s)
+        {
+            if (s == null)
+                return;
+
+            if (Settings.HasSpecialCharacter(s))
+            {
+                char quote = Settings.QuoteCharacter;
+                Writer.Write(quote);
+                for (int i = 0; i < s.Length; i++)
+                {
+                    char c = s[i];
+                    Writer.Write(c);
+                    if (c == quote)
+                        Writer.Write(c);
+                }
+                Writer.Write(quote);
+            }
+            else
+            {
+                Writer.Write(s);
+            }
         }
 
         /// <summary>
@@ -127,19 +153,44 @@ namespace SoftCircuits.CsvParser
             if (columns == null)
                 throw new ArgumentNullException(nameof(columns));
 
-            // Write each column
-            bool firstColumn = true;
-            foreach (string? value in columns)
+            var enumerator = columns.GetEnumerator();
+            if (enumerator.MoveNext())
             {
-                // Add delimiter if this isn't the first column
-                if (firstColumn)
-                    firstColumn = false;
-                else
+                WriteEncoded(enumerator.Current);
+                while (enumerator.MoveNext())
+                {
                     await Writer.WriteAsync(Settings.ColumnDelimiter);
-                // Write column value
-                await Writer.WriteAsync(Settings.CsvEncode(value ?? string.Empty));
+                    await WriteEncodedAsync(enumerator.Current);
+                }
             }
             await Writer.WriteLineAsync();
+        }
+
+        /// <summary>
+        /// Asynchronously writes a CSV-encoded field.
+        /// </summary>
+        private async Task WriteEncodedAsync(string? s)
+        {
+            if (s == null)
+                return;
+
+            if (Settings.HasSpecialCharacter(s))
+            {
+                char quote = Settings.QuoteCharacter;
+                await Writer.WriteAsync(quote);
+                for (int i = 0; i < s.Length; i++)
+                {
+                    char c = s[i];
+                    await Writer.WriteAsync(c);
+                    if (c == quote)
+                        await Writer.WriteAsync(c);
+                }
+                await Writer.WriteAsync(quote);
+            }
+            else
+            {
+                await Writer.WriteAsync(s);
+            }
         }
 
         #region Legacy
