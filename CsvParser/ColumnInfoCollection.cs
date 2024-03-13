@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using SoftCircuits.CsvParser.Members;
@@ -127,12 +127,9 @@ namespace SoftCircuits.CsvParser
         {
             get
             {
-                if (_filteredColumns == null)
-                {
-                    _filteredColumns = this
-                        .Where(ci => ci.Exclude == false)
-                        .OrderBy(ci => ci.Index);
-                }
+                _filteredColumns ??= this
+                    .Where(ci => ci.Exclude == false)
+                    .OrderBy(ci => ci.Index);
                 Debug.Assert(_filteredColumns != null);
                 return _filteredColumns;
             }

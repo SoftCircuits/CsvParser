@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -50,12 +50,12 @@ namespace CsvParserTests
         }
 
         // Test data
-        private readonly Customer[] Customers = new Customer[]
-        {
+        private readonly Customer[] Customers =
+        [
             new Customer("Rafael Pitts", "Ap #883-4246 Nunc Avenue", "Maiduguri", "BO", "52319", 19, 123.45, true),
             new Customer("Joel Schmidt", "6768 Dictum Street", "Berlin", "Berlin", "86692", 52, 5.9, true),
             new Customer("Alden Horn", "521 Consequat, Street", "Whithorn", "Wigtownshire", "46603", 42, 1.0, false),
-        };
+        ];
 
         // Create a custom data converter for DateTime values
         // Stores a date-only value (no time) in a compact format
@@ -130,13 +130,12 @@ namespace CsvParserTests
             }
 
             CsvSettings settings = new() { InvalidDataRaisesException = false };
-            using (CsvReader<Customer> reader = new(file, settings))
-            {
-                reader.ReadHeaders(true);
-                Customer? person;
-                while ((person = reader.Read()) != null)
-                    Debug.WriteLine(person);
-            }
+            using CsvReader<Customer> reader = new(file, settings);
+
+            reader.ReadHeaders(true);
+            Customer? person;
+            while ((person = reader.Read()) != null)
+                Debug.WriteLine(person);
         }
 
         [TestMethod]
@@ -152,14 +151,13 @@ namespace CsvParserTests
                 writer.Write(Customers);
             }
 
-            using (CsvReader<Customer> reader = new(file))
-            {
-                reader.MapColumns<CustomerMaps>();
-                reader.ReadHeaders(true);
-                Customer? person;
-                while ((person = reader.Read()) != null)
-                    Debug.WriteLine(person);
-            }
+            CsvReader<Customer> reader = new(file);
+
+            reader.MapColumns<CustomerMaps>();
+            reader.ReadHeaders(true);
+            Customer? person;
+            while ((person = reader.Read()) != null)
+                Debug.WriteLine(person);
         }
 
         [TestMethod]
@@ -174,13 +172,12 @@ namespace CsvParserTests
                 writer.Write(Customers);
             }
 
-            using (CsvReader<Customer> reader = new(file))
-            {
-                reader.ReadHeaders(true);
-                Customer? person;
-                while ((person = reader.Read()) != null)
-                    Debug.WriteLine(person);
-            }
+            using CsvReader<Customer> reader = new(file);
+
+            reader.ReadHeaders(true);
+            Customer? person;
+            while ((person = reader.Read()) != null)
+                Debug.WriteLine(person);
         }
     }
 }

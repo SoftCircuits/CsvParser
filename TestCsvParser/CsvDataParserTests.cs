@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -88,8 +88,8 @@ namespace CsvParserTests
         }
 
         // Test data
-        readonly Customer[] Customers = new Customer[]
-        {
+        readonly Customer[] Customers =
+        [
             new Customer("Rafael Pitts", "Ap #883-4246 Nunc Avenue", "Maiduguri", "BO", "52319", 19, 123.45, true),
             new Customer("Joel Schmidt", "6768 Dictum Street", "Berlin", "Berlin", "86692", 52, 5.9, true),
             new Customer("Alden Horn", "521 Consequat, Street", "Whithorn", "Wigtownshire", "46603", 42, 1.0, false),
@@ -121,14 +121,14 @@ namespace CsvParserTests
             new Customer("Plato Mckee", "622-7508 Faucibus Ave", "Ludvika", "W", "R2M 0L2", 43, 82.22, true),
             new Customer("Yardley Mcneil", "856-5558 Ligula Street", "Hamilton", "ON", "69-674", 49, 33.4, true),
             new Customer("Zahir Drake", "Ap #166-9906 Nulla Av.", "Horsham", "Victoria", "29-317", 25, 27.6, false),
-        };
+        ];
 
         [TestMethod]
         public void TestHeaderMapping()
         {
             using MemoryFile file = new();
 
-            List<Customer> results = new();
+            List<Customer> results = [];
 
             using (CsvWriter<Customer> writer = new(file))
             {
@@ -167,7 +167,7 @@ namespace CsvParserTests
             using MemoryFile file = new();
 
             List<CustomerAttributes> customers = new(Customers.Select(p => new CustomerAttributes(p)));
-            List<CustomerAttributes> result = new();
+            List<CustomerAttributes> result = [];
 
             using (CsvWriter<CustomerAttributes> writer = new(file))
             {
@@ -239,7 +239,7 @@ namespace CsvParserTests
         {
             using MemoryFile file = new();
 
-            List<Customer> results = new();
+            List<Customer> results = [];
 
             using (CsvWriter<Customer> writer = new(file))
             {

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using CsvParser.Helpers;
@@ -85,7 +85,7 @@ namespace SoftCircuits.CsvParser
         /// Writes a row of columns to the current CSV file.
         /// </summary>
         /// <param name="columns">The list of columns to write.</param>
-        public void Write(params string[] columns) => Write(columns as IEnumerable<string>);
+        public void Write(params string?[] columns) => Write(columns as IEnumerable<string?>);
 
         /// <summary>
         /// Writes a row of columns to the current CSV file.
@@ -141,7 +141,7 @@ namespace SoftCircuits.CsvParser
         /// Asynchronously writes a row of columns to the current CSV file.
         /// </summary>
         /// <param name="columns">The list of columns to write.</param>
-        public async Task WriteAsync(params string[] columns) => await WriteAsync(columns);
+        public async Task WriteAsync(params string?[] columns) => await WriteAsync(columns as IEnumerable<string?>);
 
         /// <summary>
         /// Asynchronously writes a row of columns to the current CSV file.
@@ -199,26 +199,29 @@ namespace SoftCircuits.CsvParser
         /// Writes a row of columns to the current CSV file.
         /// </summary>
         /// <param name="columns">The list of columns to write.</param>
+        [Obsolete("This method is deprecated and will be removed in a future version. Please use Write() instead.")]
         public void WriteRow(IEnumerable<string?> columns) => Write(columns);
 
         /// <summary>
         /// Writes a row of columns to the current CSV file.
         /// </summary>
         /// <param name="columns">The list of columns to write.</param>
-        public void WriteRow(params string[] columns) => Write(columns as IEnumerable<string>);
+        [Obsolete("This method is deprecated and will be removed in a future version. Please use Write() instead.")]
+        public void WriteRow(params string?[] columns) => Write(columns as IEnumerable<string>);
 
         /// <summary>
         /// Asynchronously writes a row of columns to the current CSV file.
         /// </summary>
         /// <param name="columns">The list of columns to write.</param>
+        [Obsolete("This method is deprecated and will be removed in a future version. Please use WriteAsync() instead.")]
         public async Task WriteRowAsync(IEnumerable<string?> columns) => await WriteAsync(columns);
 
         /// <summary>
         /// Asynchronously writes a row of columns to the current CSV file.
         /// </summary>
         /// <param name="columns">The list of columns to write.</param>
-        public async Task WriteRowAsync(params string[] columns) => await WriteAsync(columns);
-
+        [Obsolete("This method is deprecated and will be removed in a future version. Please use WriteAsync() instead.")]
+        public async Task WriteRowAsync(params string?[] columns) => await WriteAsync(columns);
 
         #endregion
 

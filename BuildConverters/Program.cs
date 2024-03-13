@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -24,29 +24,29 @@ namespace BuildConverters
         private const string DataConverterInitializersTag = "{@DataConverterInitializers}";
 
         // Target paths
-        private const string TemplatePath = @"C:\Users\Jonathan\source\repos\SoftCircuits\CsvParser\BuildConverters\Templates";
-        private const string OutputPath = @"C:\Users\Jonathan\source\repos\SoftCircuits\CsvParser\CsvParser\Converters";
-        private const string TestPath = @"C:\Users\Jonathan\source\repos\SoftCircuits\CsvParser\TestCsvParser";
+        private const string TemplatePath = @"D:\Users\jwood\source\repos\CsvParser\BuildConverters\Templates";
+        private const string OutputPath = @"D:\Users\jwood\source\repos\CsvParser\CsvParser\Converters";
+        private const string TestPath = @"D:\Users\jwood\source\repos\CsvParser\TestCsvParser";
 
-        static readonly TypeInfo[] TypeData = new TypeInfo[]
-        {
-            new TypeInfo(typeof(string)),
-            new TypeInfo(typeof(char)),
-            new TypeInfo(typeof(bool)),
-            new TypeInfo(typeof(byte)),
-            new TypeInfo(typeof(sbyte)),
-            new TypeInfo(typeof(short)),
-            new TypeInfo(typeof(ushort)),
-            new TypeInfo(typeof(int)),
-            new TypeInfo(typeof(uint)),
-            new TypeInfo(typeof(long)),
-            new TypeInfo(typeof(ulong)),
-            new TypeInfo(typeof(float)),
-            new TypeInfo(typeof(double)),
-            new TypeInfo(typeof(decimal)),
-            new TypeInfo(typeof(Guid)),
-            new TypeInfo(typeof(DateTime)),
-        };
+        static readonly TypeInfo[] TypeData =
+        [
+            new(typeof(string)),
+            new(typeof(char)),
+            new(typeof(bool)),
+            new(typeof(byte)),
+            new(typeof(sbyte)),
+            new(typeof(short)),
+            new(typeof(ushort)),
+            new(typeof(int)),
+            new(typeof(uint)),
+            new(typeof(long)),
+            new(typeof(ulong)),
+            new(typeof(float)),
+            new(typeof(double)),
+            new(typeof(decimal)),
+            new(typeof(Guid)),
+            new(typeof(DateTime)),
+        ];
 
         static StringBuilder DataConvertersData;
         static StringBuilder TestMembers;

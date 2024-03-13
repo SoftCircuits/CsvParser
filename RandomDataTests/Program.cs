@@ -2,8 +2,8 @@
 
 const int Passes = 2;
 
-List<TestConfiguration> Configurations = new()
-{
+List<TestConfiguration> Configurations =
+[
     new(Passes, 1_000, 30),
     new(Passes, 500_000, 30),
     new(Passes, 1_000_000, 30),
@@ -15,7 +15,7 @@ List<TestConfiguration> Configurations = new()
 
     //new(Passes, 100_000, 100),
 
-};
+];
 
 int Errors = 0;
 CsvTester Tester = new();

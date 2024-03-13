@@ -1,4 +1,4 @@
-// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
+// Copyright (c) 2019-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -11,7 +11,7 @@ namespace SoftCircuits.CsvParser
 {
     internal static class DataConverters
     {
-        private static readonly Dictionary<Type, Func<IDataConverter>> ConverterLookup = new Dictionary<Type, Func<IDataConverter>>
+        private static readonly Dictionary<Type, Func<IDataConverter>> ConverterLookup = new()
         {
             [typeof(string)] = () => new StringConverter(),
             [typeof(string[])] = () => new StringArrayConverter(),

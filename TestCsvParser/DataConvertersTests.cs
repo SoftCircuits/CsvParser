@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,7 +25,7 @@ namespace CsvParserTests
                     writer.Write(item);
             }
 
-            List<DataConvertersTestClass> results = new();
+            List<DataConvertersTestClass> results = [];
             using (CsvReader<DataConvertersTestClass> reader = new(file))
             {
                 reader.ReadHeaders(true);
@@ -151,8 +151,8 @@ namespace CsvParserTests
 
         }
 
-        private readonly List<Entry> EntryData = new()
-        {
+        private readonly List<Entry> EntryData =
+        [
             new Entry { String = "Abc", Boolean = false, Currency = 123.45m },
             new Entry { String = "Def", Boolean = true, Currency = 678.90m },
             new Entry { String = "Ghi", Boolean = true, Currency = 34.18m },
@@ -162,7 +162,7 @@ namespace CsvParserTests
             new Entry { String = "Stu", Boolean = false, Currency = 14.27m },
             new Entry { String = "Vwx", Boolean = true, Currency = 386.21m },
             new Entry { String = "Yz", Boolean = true, Currency = 543.21m },
-        };
+        ];
 
         [TestMethod]
         public void DataConverterAttributeTest()
@@ -176,7 +176,7 @@ namespace CsvParserTests
                     writer.Write(item);
             }
 
-            List<Entry> results = new();
+            List<Entry> results = [];
             using (CsvReader<Entry> reader = new(file))
             {
                 reader.ReadHeaders(true);
@@ -194,7 +194,7 @@ namespace CsvParserTests
             public bool? Boolean { get; set; }
         }
 
-        private readonly List<InvalidEntry> InvalidEntryData = new();
+        private readonly List<InvalidEntry> InvalidEntryData = [];
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]

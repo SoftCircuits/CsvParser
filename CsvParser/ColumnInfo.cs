@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using SoftCircuits.CsvParser.Members;
@@ -75,7 +75,7 @@ namespace SoftCircuits.CsvParser
                 {
                     // Verify converter type
                     if (!typeof(IDataConverter).IsAssignableFrom(attribute.ConverterType))
-                        throw new ArgumentOutOfRangeException(nameof(attribute.ConverterType), "Converter type must derive from IDataConverter");
+                        throw new ArgumentOutOfRangeException(nameof(member), "Converter type must derive from IDataConverter");
                     Converter = Activator.CreateInstance(attribute.ConverterType) as IDataConverter;
                     Debug.Assert(Converter != null);
                 }
@@ -90,8 +90,7 @@ namespace SoftCircuits.CsvParser
                 Converter = null;
             }
             // Get standard converter if custom converter not supplied
-            if (Converter == null)
-                Converter = DataConverters.GetConverter(member.Type);
+            Converter ??= DataConverters.GetConverter(member.Type);
             Member = member;
         }
 

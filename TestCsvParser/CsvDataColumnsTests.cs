@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -205,7 +205,7 @@ name@company.com,,1241 Willow Lane,,12345";
         {
             using MemoryFile file = new(fileContents);
 
-            List<DATA_TYPE> items = new();
+            List<DATA_TYPE> items = [];
 
             using (CsvReader<DATA_TYPE> reader = new(file))
             {
@@ -233,7 +233,7 @@ name@company.com,,1241 Willow Lane,,12345";
         {
             using MemoryFile file = new(fileContents);
 
-            List<DATA_TYPE> items = new();
+            List<DATA_TYPE> items = [];
 
             using (CsvReader<DATA_TYPE> reader = new(file))
             {

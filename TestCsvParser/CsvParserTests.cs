@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -15,8 +15,8 @@ namespace CsvParserTests
     [TestClass]
     public class CsvParserTests
     {
-        private readonly List<List<string?>> CsvTestData = new()
-        {
+        private readonly List<List<string?>> CsvTestData =
+        [
             new() { },
             new() { "Abc", "Def", "Ghi" },
             new() { "Abc,Def,Ghi" },
@@ -42,7 +42,7 @@ namespace CsvParserTests
             new() { "a", "b", "" },
             new() { "", "", "" },
             new() { null, null, null },
-        };
+        ];
 
         private class ListComparer : Comparer<List<string>>
         {
@@ -81,8 +81,8 @@ namespace CsvParserTests
             RunTest(null);
 
             // Different delimiters and quote characters
-            char[] columnDelimiters = { ',', ';', '\t' };
-            char[] quoteCharacters = { '"', '\'' };
+            char[] columnDelimiters = [ ',', ';', '\t' ];
+            char[] quoteCharacters = [ '"', '\'' ];
 
             foreach (char columnDelimiter in columnDelimiters)
             {
@@ -107,7 +107,7 @@ namespace CsvParserTests
         {
             using MemoryFile file = new();
 
-            List<List<string>> actual = new();
+            List<List<string>> actual = [];
 
             using (CsvWriter writer = new(file, settings))
             {
@@ -133,7 +133,7 @@ namespace CsvParserTests
         {
             using MemoryFile file = new();
 
-            List<List<string>> actual = new();
+            List<List<string>> actual = [];
 
             using (CsvWriter writer = new(file, settings))
             {
@@ -156,50 +156,46 @@ namespace CsvParserTests
             CollectionAssert.AreEqual(CsvTestData, actual, new ListComparer());
         }
 
-        private readonly List<string> EmptyLineTestData = new()
-        {
+        private readonly List<string> EmptyLineTestData =
+        [
             "abc,def,ghi",
             "abc,def,ghi",
             "",
             "abc,def,ghi",
             "abc,def,ghi",
-        };
+        ];
 
-        private readonly List<List<string>>[] EmptyLineTestResults = new List<List<string>>[]
-        {
+        private readonly List<List<string>>[] EmptyLineTestResults =
+        [
             // EmptyLineBehavior.NoColumns
-            new List<List<string>>
-            {
-                new List<string> { "abc", "def", "ghi" },
-                new List<string> { "abc", "def", "ghi" },
-                new List<string> { },
-                new List<string> { "abc", "def", "ghi" },
-                new List<string> { "abc", "def", "ghi" },
-            },
+            [
+                [ "abc", "def", "ghi" ],
+                [ "abc", "def", "ghi" ],
+                [ ],
+                [ "abc", "def", "ghi" ],
+                [ "abc", "def", "ghi" ],
+            ],
             // EmptyLineBehavior.EmptyColumn
-            new List<List<string>>
-            {
-                new List<string> { "abc", "def", "ghi" },
-                new List<string> { "abc", "def", "ghi" },
-                new List<string> { "" },
-                new List<string> { "abc", "def", "ghi" },
-                new List<string> { "abc", "def", "ghi" },
-            },
+            [
+                [ "abc", "def", "ghi" ],
+                [ "abc", "def", "ghi" ],
+                [ "" ],
+                [ "abc", "def", "ghi" ],
+                [ "abc", "def", "ghi" ],
+            ],
             // EmptyLineBehavior.Ignore
-            new List<List<string>>
-            {
-                new List<string> { "abc", "def", "ghi" },
-                new List<string> { "abc", "def", "ghi" },
-                new List<string> { "abc", "def", "ghi" },
-                new List<string> { "abc", "def", "ghi" },
-            },
+            [
+                [ "abc", "def", "ghi" ],
+                [ "abc", "def", "ghi" ],
+                [ "abc", "def", "ghi" ],
+                [ "abc", "def", "ghi" ],
+            ],
             // EmptyLineBehavior.EndOfFile
-            new List<List<string>>
-            {
-                new List<string> { "abc", "def", "ghi" },
-                new List<string> { "abc", "def", "ghi" },
-            }
-        };
+            [
+                [ "abc", "def", "ghi" ],
+                [ "abc", "def", "ghi" ],
+            ]
+        ];
 
         [TestMethod]
         public void TestEmptyLineBehavior()
@@ -210,7 +206,7 @@ namespace CsvParserTests
             foreach (EmptyLineBehavior emptyLineBehavior in Enum.GetValues(typeof(EmptyLineBehavior)))
             {
                 settings.EmptyLineBehavior = emptyLineBehavior;
-                List<List<string>> actual = new();
+                List<List<string>> actual = [];
 
                 using (MemoryStream stream = new())
                 using (StreamWriter writer = new(file))

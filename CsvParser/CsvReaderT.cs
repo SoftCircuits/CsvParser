@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -194,7 +194,7 @@ namespace SoftCircuits.CsvParser
         /// Reads an item from the input stream.
         /// </summary>
         /// <param name="item">Receives the item read.</param>
-        /// <returns>True if successful, false if the end of the file was reached.</returns>
+        /// <returns>The item read or null if the end of the file was reached.</returns>
 #if !NETSTANDARD2_0
         new public T? Read()
 #else
@@ -218,7 +218,7 @@ namespace SoftCircuits.CsvParser
         /// Asynchronously reads an item from the input stream.
         /// </summary>
         /// <param name="item">Receives the item read.</param>
-        /// <returns>True if successful, false if the end of the file was reached.</returns>
+        /// <returns>The item read or null if the end of the file was reached.</returns>
 #if !NETSTANDARD2_0
         new public async Task<T?> ReadAsync()
 #else

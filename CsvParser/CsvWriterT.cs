@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -100,9 +100,11 @@ namespace SoftCircuits.CsvParser
         /// <param name="item">The item to write.</param>
         public void Write(T item)
         {
-            if (item == null)
-                throw new ArgumentNullException(nameof(item));
-
+#if NETSTANDARD2_0
+            if (item == null) throw new ArgumentNullException(nameof(item));
+#else
+            ArgumentNullException.ThrowIfNull(nameof(item));
+#endif
             Write(ColumnsInfo.FilteredColumns.Select(fc => fc.GetValue(item)));
         }
 
@@ -112,9 +114,11 @@ namespace SoftCircuits.CsvParser
         /// <param name="item">The item to write.</param>
         public async Task WriteAsync(T item)
         {
-            if (item == null)
-                throw new ArgumentNullException(nameof(item));
-
+#if NETSTANDARD2_0
+            if (item == null) throw new ArgumentNullException(nameof(item));
+#else
+            ArgumentNullException.ThrowIfNull(nameof(item));
+#endif
             await WriteAsync(ColumnsInfo.FilteredColumns.Select(fc => fc.GetValue(item)));
         }
 
@@ -124,9 +128,11 @@ namespace SoftCircuits.CsvParser
         /// <param name="items">The items to write.</param>
         public void Write(IEnumerable<T> items)
         {
-            if (items == null)
-                throw new ArgumentNullException(nameof(items));
-
+#if NETSTANDARD2_0
+            if (items == null) throw new ArgumentNullException(nameof(items));
+#else
+            ArgumentNullException.ThrowIfNull(nameof(items));
+#endif
             foreach (T item in items)
                 Write(item);
         }
@@ -137,9 +143,11 @@ namespace SoftCircuits.CsvParser
         /// <param name="items">The items to write.</param>
         public async Task WriteAsync(IEnumerable<T> items)
         {
-            if (items == null)
-                throw new ArgumentNullException(nameof(items));
-
+#if NETSTANDARD2_0
+            if (items == null) throw new ArgumentNullException(nameof(items));
+#else
+            ArgumentNullException.ThrowIfNull(nameof(items));
+#endif
             foreach (T item in items)
                 await WriteAsync(item);
         }

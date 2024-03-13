@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2019-2023 Jonathan Wood (www.softcircuits.com)
+﻿// Copyright (c) 2019-2024 Jonathan Wood (www.softcircuits.com)
 // Licensed under the MIT license.
 //
 using System;
@@ -9,7 +9,7 @@ using System.Text;
 namespace CsvParser.Helpers
 {
     /// <summary>
-    /// Simplified string builder class. Provides slightly better performance that <see cref="StringBuilder"/>.
+    /// Simplified string builder class. Provides slightly better performance than <see cref="StringBuilder"/>.
     /// </summary>
     internal class FastStringBuilder
     {
