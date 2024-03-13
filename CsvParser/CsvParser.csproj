@@ -10,6 +10,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Jonathan Wood</Authors>
     <Company>SoftCircuits</Company>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Description>CsvParser is a .NET library that makes it easy to work with comma-separated-value (CSV) files (as well as files with other delimiters). Includes basic classes to easily read and write CSV data, and also higher-level classes that automatically map class properties to CSV columns. The library correctly handles column values that contain embedded commas, quotes, other special characters, and even column values that span multiple lines. CsvParser is very efficient. The object mapping classes runs up to four times faster than the popular CsvHelper library.
 
 The CsvSettings class can be used to customize the library's behavior, including setting the column delimiter to another character (like to a tab, for example), change the quote character, customize how blank lines are handled, etc.</Description>
@@ -19,9 +20,9 @@ The CsvSettings class can be used to customize the library's behavior, including
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csv; tsv; parser; csv parser; tsv parser; csv reader; csv writer; comma; tab; delimited</PackageTags>
-    <PackageReleaseNotes>Added direct support for .NET 8; Changes to some method signatures with respect to nullable reference types; Removed deprecated CsvDataReader and CsvDataWriter classes; Removed support for deprecated .NET 5.0; Marked several legacy methods as deprecated.</PackageReleaseNotes>
+    <PackageReleaseNotes>Unmarked two methods as obsolete as the recommended functionality does not exactly match; Now including missing XML documentation.</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>4.5.0</Version>
+    <Version>4.5.1</Version>
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <PackageIconUrl />
     <PackageReadmeFile>ReadMe.md</PackageReadmeFile>

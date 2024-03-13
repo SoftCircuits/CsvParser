@@ -271,7 +271,11 @@ namespace SoftCircuits.CsvParser
         /// end of the file was reached.
         /// </summary>
         /// <param name="columns">Array to hold the columns read. Okay if it's <c>null</c>.</param>
-        [Obsolete("This method is deprecated and will be removed in a future version. Please use Read() instead and then get the values read using the Columns property.")]
+        /// <remarks>
+        /// This method is deprecated in favor of using <see cref="Read()"/> and then using the <see cref="Columns"/>
+        /// property to read the values read. However, this method has not been marked as obsolete because the
+        /// recommended method does not exactly match this method's functionality.
+        /// </remarks>
 #if !NETSTANDARD2_0
         public bool ReadRow([NotNullWhen(true)] ref string[]? columns)
 #else
@@ -287,7 +291,11 @@ namespace SoftCircuits.CsvParser
         /// Reads a record from the current file. Returns null if at the end of the file.
         /// </summary>
         /// <returns>The column values read or null if the at the end of the file.</returns>
-        [Obsolete("This method is deprecated and will be removed in a future version. Please use Read() instead.")]
+        /// <remarks>
+        /// This method is deprecated in favor of using <see cref="Read()"/> and then using the <see cref="Columns"/>
+        /// property to read the values read. However, this method has not been marked as obsolete because the
+        /// recommended method does not exactly match this method's functionality.
+        /// </remarks>
         public string[]? ReadRow() => Read() ? Columns : null;
 
         /// <summary>
