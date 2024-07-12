@@ -42,7 +42,7 @@ while (reader.Read())
 
 When the `CsvReader.Read()` method returns true, the `Columns` property holds the values that were read. This method returns false when the end of the file has been reached. (Note: The legacy `ReadRow()` and `ReadRowAsync()` methods can be used to accomplish the same task but `Read()` and `ReadAsync()` are preferred and have slightly better performance.)
 
-## CsvWriter &lt;T&gt; and CsvReader&lt;T&gt; Classes
+## CsvWriter&lt;T&gt; and CsvReader&lt;T&gt; Classes
 
 These are higher level classes that will automatically map data between class properties and CSV columns. The following example defines a class, declares a collection with several instances of that class, then uses `CsvWriter<T>` to write the data to a CSV file, and `CsvReader<T>` to read it back again.
 
