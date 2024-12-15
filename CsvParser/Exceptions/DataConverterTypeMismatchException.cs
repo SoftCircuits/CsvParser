@@ -13,10 +13,16 @@ namespace SoftCircuits.CsvParser
     /// </summary>
     public class DataConverterTypeMismatchException : Exception
     {
+        /// <summary>
+        /// Creates a <see cref="DataConverterTypeMismatchException"/> instance.
+        /// </summary>
         public DataConverterTypeMismatchException()
         {
         }
 
+        /// <summary>
+        /// Creates a <see cref="DataConverterTypeMismatchException"/> instance.
+        /// </summary>
         public DataConverterTypeMismatchException(string propertyName, Type propertyType, Type converterType)
             : base($"A custom data converter for type '{converterType.FullName}' was assigned to the property '{propertyName}', which is of type '{propertyType.FullName}'.")
         {

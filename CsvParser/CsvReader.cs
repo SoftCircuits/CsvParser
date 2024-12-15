@@ -22,6 +22,9 @@ namespace SoftCircuits.CsvParser
         private readonly FastStringBuilder QuotedStringBuilder;
         private readonly ColumnCollection InternalColumns;
 
+        /// <summary>
+        /// Current reader settings.
+        /// </summary>
         protected CsvSettings Settings;
 
         /// <summary>
@@ -128,7 +131,6 @@ namespace SoftCircuits.CsvParser
         /// </summary>
         /// <param name="stream">The stream to be read.</param>
         /// <param name="encoding">The character encoding to use.</param>
-        /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(Stream stream, Encoding encoding, CsvSettings? settings = null)
             : this(stream, encoding, false, settings)

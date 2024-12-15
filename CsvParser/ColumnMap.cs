@@ -6,6 +6,9 @@ using System.Text;
 
 namespace SoftCircuits.CsvParser
 {
+    /// <summary>
+    /// Allows for customization of CSV column properties.
+    /// </summary>
     public class ColumnMap
     {
         internal string InternalMemberName { get; private set; }

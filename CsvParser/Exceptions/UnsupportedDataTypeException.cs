@@ -12,10 +12,16 @@ namespace SoftCircuits.CsvParser
     /// </summary>
     public class UnsupportedDataTypeException : Exception
     {
+        /// <summary>
+        /// Creates a <see cref="UnsupportedDataTypeException"/> instance.
+        /// </summary>
         public UnsupportedDataTypeException()
         {
         }
 
+        /// <summary>
+        /// Creates a <see cref="UnsupportedDataTypeException"/> instance.
+        /// </summary>
         public UnsupportedDataTypeException(Type type)
             : base($"The type '{type.FullName ?? "(Unknown Type)"}' has no built-in conversion support, and no custom data converter has been specified for the class property.")
         {

@@ -37,7 +37,7 @@ namespace BuildConverters
         public CodeTemplate()
         {
             TemplateText = string.Empty;
-            Sections = new List<TemplateSection>();
+            Sections = [];
         }
 
         public string BuildTemplate(CompleteType type)
@@ -113,7 +113,7 @@ namespace BuildConverters
 
                 string arguments = text[pos..pos2];
                 arguments = arguments.Trim(' ', '\t', '(', ')');
-                TemplateSection section = new(arguments.Split(new[] { ',' }));
+                TemplateSection section = new(arguments.Split(','));
                 Sections.Add(section);
 
                 pos = pos2 + 1;

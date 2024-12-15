@@ -9,14 +9,9 @@ namespace SoftCircuits.CsvParser.Members
     /// <summary>
     /// Wrapper for FieldInfo (no getter or setter).
     /// </summary>
-    internal class FieldMember : IMember
+    internal class FieldMember(FieldInfo field) : IMember
     {
-        private readonly FieldInfo Field;
-
-        public FieldMember(FieldInfo field)
-        {
-            Field = field ?? throw new ArgumentNullException(nameof(field));
-        }
+        private readonly FieldInfo Field = field ?? throw new ArgumentNullException(nameof(field));
 
         public Type Type => Field.FieldType;
         public string Name => Field.Name;

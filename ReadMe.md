@@ -68,7 +68,7 @@ List<Person> People = new()
 
 // Write the data to disk
 // Note: Since all records are already in memory, you could replace the
-// foreach loop with: writer.Write(People)
+// foreach loop with writer.Write(People).
 using (CsvWriter<Person> writer = new(path))
 {
     writer.WriteHeaders();

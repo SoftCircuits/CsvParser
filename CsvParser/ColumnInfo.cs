@@ -60,8 +60,12 @@ namespace SoftCircuits.CsvParser
         /// with.</param>
         public ColumnInfo(IMember member)
         {
+#if NETSTANDARD2_0
             if (member == null)
                 throw new ArgumentNullException(nameof(member));
+#else
+            ArgumentNullException.ThrowIfNull(member);
+#endif
 
             ColumnMapAttribute? attribute = member.ColumnMapAttribute;
             if (attribute != null)
@@ -98,7 +102,7 @@ namespace SoftCircuits.CsvParser
         /// Returns the value of this property on <paramref name="item"/> as a string.
         /// </summary>
         /// <param name="item">The object whose property value will be returned.</param>
-        /// <returns>A string representation of <see cref="item"/>.</returns>
+        /// <returns>A string representation of <paramref name="item"/>.</returns>
         public string GetValue(object item)
         {
             Debug.Assert(Member != null);

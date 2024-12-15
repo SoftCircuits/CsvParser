@@ -53,8 +53,8 @@ namespace SoftCircuits.CsvParser
         /// specified file name, with the specified byte order mark detection option.
         /// </summary>
         /// <param name="path">The name of the CSV file to read.</param>
-        /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for
-        /// byte order marks at
+        /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
+        /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(string path, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
             : this(path, Encoding.UTF8, detectEncodingFromByteOrderMarks, settings)
@@ -69,6 +69,7 @@ namespace SoftCircuits.CsvParser
         /// <param name="path">The name of the CSV file to read.</param>
         /// <param name="encoding">The character encoding to use.</param>
         /// <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at
+        /// the beginning of the file.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvReader(string path, Encoding encoding, bool detectEncodingFromByteOrderMarks, CsvSettings? settings = null)
             : base(path, encoding, detectEncodingFromByteOrderMarks, settings)
@@ -193,7 +194,6 @@ namespace SoftCircuits.CsvParser
         /// <summary>
         /// Reads an item from the input stream.
         /// </summary>
-        /// <param name="item">Receives the item read.</param>
         /// <returns>The item read or null if the end of the file was reached.</returns>
 #if !NETSTANDARD2_0
         new public T? Read()
@@ -217,7 +217,6 @@ namespace SoftCircuits.CsvParser
         /// <summary>
         /// Asynchronously reads an item from the input stream.
         /// </summary>
-        /// <param name="item">Receives the item read.</param>
         /// <returns>The item read or null if the end of the file was reached.</returns>
 #if !NETSTANDARD2_0
         new public async Task<T?> ReadAsync()

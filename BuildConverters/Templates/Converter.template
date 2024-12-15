@@ -89,7 +89,7 @@ DEFAULT - ARRAY
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = Array.Empty<{@BaseTypeCName}>();
+                    array = [];
                 }
                 else
                 {
@@ -129,7 +129,7 @@ using System.Linq;
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = Array.Empty<{@BaseTypeCName}?>();
+                    array = [];
                 }
                 else
                 {
@@ -172,6 +172,8 @@ using System.Text;
 
 {@Section(String,Array,ToString)}public override string ConvertToString({@FullTypeCName}? array)
         {
+            char[] SpecialCharacters = [';', '"', '\r', '\n'];
+
             if (array == null || array.Length == 0)
                 return string.Empty;
 
@@ -180,7 +182,7 @@ using System.Text;
             {
                 if (i > 0)
                     builder.Append(';');
-                if (array[i].IndexOfAny(new[] { ';', '"', '\r', '\n' }) >= 0)
+                if (array[i].IndexOfAny(SpecialCharacters) >= 0)
                     builder.Append($"\"{array[i].Replace("\"", "\"\"")}\"");
                 else
                     builder.Append(array[i]);
@@ -192,7 +194,7 @@ using System.Text;
         {
             s ??= string.Empty;
 
-            List<string> list = new();
+            List<string> list = [];
             int pos = 0;
 
             while (pos < s.Length)
@@ -264,7 +266,7 @@ CHAR - ARRAY
 
 {@Section(Char,Array,FromString)}public override bool TryConvertFromString(string s, out char[]? array)
         {
-            array = string.IsNullOrEmpty(s) ? Array.Empty<char>() : s.ToCharArray();
+            array = string.IsNullOrEmpty(s) ? [] : s.ToCharArray();
             return true;
         }{@EndSection}
 
@@ -290,7 +292,7 @@ using System.Linq;
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = Array.Empty<{@BaseTypeCName}?>();
+                    array = [];
                     return true;
                 }
 
@@ -382,7 +384,7 @@ using System.Globalization;
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = Array.Empty<{@BaseTypeCName}>();
+                    array = [];
                     return true;
                 }
 
@@ -422,7 +424,7 @@ using System.Linq;
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = Array.Empty<{@BaseTypeCName}?>();
+                    array = [];
                     return true;
                 }
 

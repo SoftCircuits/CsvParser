@@ -5,6 +5,9 @@ using System;
 
 namespace SoftCircuits.CsvParser
 {
+    /// <summary>
+    /// Allows for customization of CSV column properties.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
     public class ColumnMapAttribute : Attribute
     {

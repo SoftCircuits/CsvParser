@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace BuildConverters
 {
-    public class CompleteType
+    public class CompleteType(TypeInfo type, TypeVariation variation)
     {
-        public TypeInfo Type { get; }
-        public TypeVariation Variation { get; }
+        public TypeInfo Type { get; } = type;
+        public TypeVariation Variation { get; } = variation;
 
         /// <summary>
         /// Type name (e.g. "NullableBooleanArray").
@@ -48,12 +48,6 @@ namespace BuildConverters
         /// 
         /// </summary>
         public string SampleData => Type.GetSampleData(Variation);
-
-        public CompleteType(TypeInfo type, TypeVariation variation)
-        {
-            Type = type;
-            Variation = variation;
-        }
 
         #region Type Name Lookups
 

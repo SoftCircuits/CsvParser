@@ -9,14 +9,9 @@ namespace SoftCircuits.CsvParser.Members
     /// <summary>
     /// Wrapper for PropertyInfo (member with getter and/or setter)
     /// </summary>
-    internal class PropertyMember : IMember
+    internal class PropertyMember(PropertyInfo property) : IMember
     {
-        private readonly PropertyInfo Property;
-
-        public PropertyMember(PropertyInfo property)
-        {
-            Property = property ?? throw new ArgumentNullException(nameof(property));
-        }
+        private readonly PropertyInfo Property = property ?? throw new ArgumentNullException(nameof(property));
 
         public Type Type => Property.PropertyType;
         public string Name => Property.Name;

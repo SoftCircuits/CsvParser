@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net7.0;net6.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net9.0;net8.0;net7.0;net6.0;netstandard2.0</TargetFrameworks>
     <Nullable>annotations</Nullable>
     <Nullable Condition="'$(TargetFramework)' != 'netstandard2.0'">enable</Nullable>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>latest</LangVersion>
     <PackageId>SoftCircuits.CsvParser</PackageId>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -20,9 +20,9 @@ The CsvSettings class can be used to customize the library's behavior, including
     <RepositoryUrl>https://github.com/SoftCircuits/CsvParser</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>csv; tsv; parser; csv parser; tsv parser; csv reader; csv writer; comma; tab; delimited</PackageTags>
-    <PackageReleaseNotes>Unmarked two methods as obsolete as the recommended functionality does not exactly match; Now including missing XML documentation.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added direct support for .NET 9; Code clean up and modernization.</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <Version>4.5.1</Version>
+    <Version>4.6.0</Version>
     <PackageIcon>Logo_64x64.png</PackageIcon>
     <PackageIconUrl />
     <PackageReadmeFile>ReadMe.md</PackageReadmeFile>

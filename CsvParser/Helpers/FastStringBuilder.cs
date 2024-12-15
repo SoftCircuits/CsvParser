@@ -20,7 +20,7 @@ namespace CsvParser.Helpers
 
         public FastStringBuilder()
         {
-            Buffer = Array.Empty<char>();
+            Buffer = [];
             Length = 0;
         }
 

@@ -17,6 +17,10 @@ namespace SoftCircuits.CsvParser
     {
         // Private members
         private readonly StreamWriter Writer;
+
+        /// <summary>
+        /// Current writer settings.
+        /// </summary>
         protected CsvSettings Settings;
 
         /// <summary>
@@ -31,7 +35,6 @@ namespace SoftCircuits.CsvParser
         /// using the default character encoding.
         /// </summary>
         /// <param name="path">The name of the CSV file to write to.</param>
-        /// <param name="encoding">The character encoding to use.</param>
         /// <param name="settings">Optional custom settings.</param>
         public CsvWriter(string path, CsvSettings? settings = null)
         {
@@ -94,8 +97,12 @@ namespace SoftCircuits.CsvParser
         public void Write(IEnumerable<string?> columns)
         {
             // Verify required argument
+#if NETSTANDARD2_0
             if (columns == null)
                 throw new ArgumentNullException(nameof(columns));
+#else
+            ArgumentNullException.ThrowIfNull(columns);
+#endif
 
             var enumerator = columns.GetEnumerator();
             if (enumerator.MoveNext())
@@ -150,8 +157,12 @@ namespace SoftCircuits.CsvParser
         public async Task WriteAsync(IEnumerable<string?> columns)
         {
             // Verify required argument
+#if NETSTANDARD2_0
             if (columns == null)
                 throw new ArgumentNullException(nameof(columns));
+#else
+            ArgumentNullException.ThrowIfNull(columns);
+#endif
 
             var enumerator = columns.GetEnumerator();
             if (enumerator.MoveNext())

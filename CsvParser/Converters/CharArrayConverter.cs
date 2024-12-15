@@ -11,7 +11,7 @@ namespace SoftCircuits.CsvParser
 
         public override bool TryConvertFromString(string s, out char[]? array)
         {
-            array = string.IsNullOrEmpty(s) ? Array.Empty<char>() : s.ToCharArray();
+            array = string.IsNullOrEmpty(s) ? [] : s.ToCharArray();
             return true;
         }
     }

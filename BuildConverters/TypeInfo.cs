@@ -6,20 +6,14 @@ using System.Collections.Generic;
 
 namespace BuildConverters
 {
-    public class TypeInfo
+    public class TypeInfo(Type type)
     {
-        private readonly Random Random;
+        private readonly Random Random = new();
 
-        public Type Type { get; private set; }
+        public Type Type { get; private set; } = type;
         public string Name => Type.Name;
         public string CName => CSharpNameLookup[Type];
         public bool IsValueType => Type.IsValueType;
-
-        public TypeInfo(Type type)
-        {
-            Type = type;
-            Random = new Random();
-        }
 
         /// <summary>
         /// Generates sample data for the specified mode.
@@ -62,7 +56,7 @@ namespace BuildConverters
         /// <summary>
         /// Lookup to find C# names for each type.
         /// </summary>
-        private readonly Dictionary<Type, string> CSharpNameLookup = new Dictionary<Type, string>
+        private readonly Dictionary<Type, string> CSharpNameLookup = new()
         {
             [typeof(string)] = "string",
             [typeof(char)] = "char",
@@ -86,7 +80,7 @@ namespace BuildConverters
 
         #region Sample generators
 
-        private Dictionary<Type, Func<TypeInfo, string>> SampleDataLookup = new Dictionary<Type, Func<TypeInfo, string>>
+        private readonly Dictionary<Type, Func<TypeInfo, string>> SampleDataLookup = new()
         {
             [typeof(string)] = x => x.GetSampleString(),
             [typeof(char)] = x => x.GetSampleChar(),
@@ -102,7 +96,7 @@ namespace BuildConverters
             [typeof(float)] = x => x.GetSampleFloat(),
             [typeof(double)] = x => x.GetSampleDouble(),
             [typeof(decimal)] = x => x.GetSampleDecimal(),
-            [typeof(Guid)] = x => x.GetSampleGuid(),
+            [typeof(Guid)] = x => GetSampleGuid(),
             [typeof(DateTime)] = x => x.GetSampleDateTime(),
         };
 
@@ -185,7 +179,7 @@ namespace BuildConverters
 
         private string GetSampleDecimal() => $"{(decimal)Random.NextDouble()}m";
 
-        private string GetSampleGuid() => "Guid.NewGuid()";
+        private static string GetSampleGuid() => "Guid.NewGuid()";
 
         private string GetSampleDateTime() => $"DateTime.Now.AddSeconds({Random.Next(-350000000, 350000000)})";
 

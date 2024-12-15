@@ -17,31 +17,31 @@ namespace CsvParserTests
     {
         private readonly List<List<string?>> CsvTestData =
         [
-            new() { },
-            new() { "Abc", "Def", "Ghi" },
-            new() { "Abc,Def,Ghi" },
-            new() { "Abc\"Def\"Ghi" },
-            new() { "Abc'Def'Ghi" },
-            new() { "The quick, brown", "fox\r\n\r\n\r\njumps over", "the \"lazy\" dog." },
-            new() { ",,,,", "\t\t\t\t", "\r\n\r\n\r\n\r\n" },
-            new() { "a\tb", "\t\r\n\t", "\t\t\t" },
-            new() { "123", "456", "789" },
-            new() { "\t\r\n", "\r\nx", "\b\a\v" },
-            new() { "    ,    ", "    ,    ", "    ,    " },
-            new() { " \"abc\" ", " \"\" ", "  \" \" " },
-            new() { "abc" },
-            new() { "abc", "def" },
-            new() { "abc", "def", "ghi" },
-            new() { "abc", "def", "ghi", "jkl" },
-            new() { "abc", "def", "ghi", "jkl", "mno" },
-            new() { "abc", "def", "ghi", "jkl", "mno", "pqr" },
-            new() { "abc", "def", "ghi", "jkl", "mno", "pqr", "stu" },
-            new() { "abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx" },
-            new() { "abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx", "xz" },
-            new() { "alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf" },
-            new() { "a", "b", "" },
-            new() { "", "", "" },
-            new() { null, null, null },
+            [],
+            ["Abc", "Def", "Ghi"],
+            ["Abc,Def,Ghi"],
+            ["Abc\"Def\"Ghi"],
+            ["Abc'Def'Ghi"],
+            ["The quick, brown", "fox\r\n\r\n\r\njumps over", "the \"lazy\" dog."],
+            [",,,,", "\t\t\t\t", "\r\n\r\n\r\n\r\n"],
+            ["a\tb", "\t\r\n\t", "\t\t\t"],
+            ["123", "456", "789"],
+            ["\t\r\n", "\r\nx", "\b\a\v"],
+            ["    ,    ", "    ,    ", "    ,    "],
+            [" \"abc\" ", " \"\" ", "  \" \" "],
+            ["abc"],
+            ["abc", "def"],
+            ["abc", "def", "ghi"],
+            ["abc", "def", "ghi", "jkl"],
+            ["abc", "def", "ghi", "jkl", "mno"],
+            ["abc", "def", "ghi", "jkl", "mno", "pqr"],
+            ["abc", "def", "ghi", "jkl", "mno", "pqr", "stu"],
+            ["abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx"],
+            ["abc", "def", "ghi", "jkl", "mno", "pqr", "stu", "vwx", "xz"],
+            ["alskdfjlaskdfj asldkfjas ldfk", "laksd flkasj flaksjdfl aksdjf", "lkasjlf kalsdkf jalsdkfj alsdf"],
+            ["a", "b", ""],
+            ["", "", ""],
+            [null, null, null],
         ];
 
         private class ListComparer : Comparer<List<string>>
@@ -203,7 +203,7 @@ namespace CsvParserTests
             using MemoryFile file = new();
 
             CsvSettings settings = new();
-            foreach (EmptyLineBehavior emptyLineBehavior in Enum.GetValues(typeof(EmptyLineBehavior)))
+            foreach (EmptyLineBehavior emptyLineBehavior in Enum.GetValues<EmptyLineBehavior>())
             {
                 settings.EmptyLineBehavior = emptyLineBehavior;
                 List<List<string>> actual = [];

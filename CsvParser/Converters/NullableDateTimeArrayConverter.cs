@@ -23,7 +23,7 @@ namespace SoftCircuits.CsvParser
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = Array.Empty<DateTime?>();
+                    array = [];
                     return true;
                 }
 

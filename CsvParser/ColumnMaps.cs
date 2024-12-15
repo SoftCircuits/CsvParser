@@ -15,7 +15,7 @@ namespace SoftCircuits.CsvParser
     /// <typeparam name="T">Specifies the class that is being mapped.</typeparam>
     public abstract class ColumnMaps<T> where T : class, new()
     {
-        private readonly List<ColumnMap> Maps = new();
+        private readonly List<ColumnMap> Maps = [];
 
         /// <summary>
         /// Adds mapping information to a class property or field. Returns a
@@ -26,8 +26,12 @@ namespace SoftCircuits.CsvParser
         /// the class member to be mapped.</param>
         public ColumnMap MapColumn<TMember>(Expression<Func<T, TMember>> expression)
         {
+#if NETSTANDARD2_0
             if (expression == null)
                 throw new ArgumentNullException(nameof(expression));
+#else
+            ArgumentNullException.ThrowIfNull(expression);
+#endif
 
             MemberExpression? member = null;
             if (expression.Body.NodeType == ExpressionType.Convert)
@@ -51,8 +55,12 @@ namespace SoftCircuits.CsvParser
         /// <param name="memberName">Name of the class member to be mapped.</param>
         public ColumnMap MapColumn(string memberName)
         {
+#if NETSTANDARD2_0
             if (memberName == null)
                 throw new ArgumentNullException(nameof(memberName));
+#else
+            ArgumentNullException.ThrowIfNull(memberName);
+#endif
 
             ColumnMap propertyMap = new(memberName);
             Maps.Add(propertyMap);

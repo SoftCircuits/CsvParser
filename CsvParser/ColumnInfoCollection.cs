@@ -46,8 +46,12 @@ namespace SoftCircuits.CsvParser
         /// <param name="columnMaps">Mapping data.</param>
         public void ApplyColumnMaps(IEnumerable<ColumnMap> columnMaps)
         {
+#if NETSTANDARD2_0
             if (columnMaps == null)
                 throw new ArgumentNullException(nameof(columnMaps));
+#else
+            ArgumentNullException.ThrowIfNull(columnMaps);
+#endif
 
             // Validate mapping property references
             foreach (ColumnMap columnMap in columnMaps)
@@ -104,8 +108,12 @@ namespace SoftCircuits.CsvParser
         /// against column names.</param>
         public void ApplyHeaders(string[] headers, StringComparison stringComparison)
         {
+#if NETSTANDARD2_0
             if (headers == null)
                 throw new ArgumentNullException(nameof(headers));
+#else
+            ArgumentNullException.ThrowIfNull(headers);
+#endif
 
             // Override all Index values (whether explicit or not)
             for (int i = 0; i < Count; i++)

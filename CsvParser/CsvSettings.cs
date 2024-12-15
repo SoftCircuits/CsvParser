@@ -69,7 +69,7 @@ namespace SoftCircuits.CsvParser
 
         /// <summary>
         /// Specifies the string comparison type used by
-        /// <see cref="CsvReader.ReadHeaders(bool)"></see> to compare column
+        /// <see cref="CsvReader{T}.ReadHeaders(bool)"></see> to compare column
         /// names against column headers when it's passed a <c>true</c> argument.
         /// Default value is <see cref="StringComparison.InvariantCultureIgnoreCase"></see>.
         /// </summary>

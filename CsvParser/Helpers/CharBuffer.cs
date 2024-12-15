@@ -32,6 +32,7 @@ namespace CsvParser.Helpers
         /// <summary>
         /// Loads another block of data from <paramref name="reader"/>.
         /// </summary>
+        /// <param name="reader">The reader to load a block of data for.</param>
         /// <param name="line">If the specified line references a <see cref="CharBuffer"/>'s buffer, data from that buffer
         /// will be copied to the <see cref="LineBuffer"/>'s internal buffer. This prevents overwriting data referenced in
         /// this <see cref="CharBuffer"/>.</param>
@@ -60,6 +61,7 @@ namespace CsvParser.Helpers
         /// <summary>
         /// Asynchronously loads another block of data from <paramref name="reader"/>.
         /// </summary>
+        /// <param name="reader">The <see cref="StreamReader"/> to load another block of data from.</param>
         /// <param name="line">If the specified line references a <see cref="CharBuffer"/>'s buffer, data from that buffer
         /// will be copied to the <see cref="LineBuffer"/>'s internnal buffer. This prevents overwriting data referenced in
         /// this <see cref="CharBuffer"/>.</param>

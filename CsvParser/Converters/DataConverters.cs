@@ -79,7 +79,7 @@ namespace SoftCircuits.CsvParser
 
         /// <summary>
         /// Returns the data converter for the specified type. Returns an instance
-        /// of <see cref="UnsupportedConverter"></see> if there are no matching
+        /// of <see cref="UnsupportedTypeConverter"></see> if there are no matching
         /// types.
         /// </summary>
         /// <param name="type">The type to find a converter for.</param>

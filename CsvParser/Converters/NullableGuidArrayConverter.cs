@@ -22,7 +22,7 @@ namespace SoftCircuits.CsvParser
             {
                 if (string.IsNullOrWhiteSpace(s))
                 {
-                    array = Array.Empty<Guid?>();
+                    array = [];
                 }
                 else
                 {

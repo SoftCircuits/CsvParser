@@ -10,6 +10,8 @@ namespace SoftCircuits.CsvParser
     {
         public override string ConvertToString(string[]? array)
         {
+            char[] SpecialCharacters = [';', '"', '\r', '\n'];
+
             if (array == null || array.Length == 0)
                 return string.Empty;
 
@@ -18,7 +20,7 @@ namespace SoftCircuits.CsvParser
             {
                 if (i > 0)
                     builder.Append(';');
-                if (array[i].IndexOfAny(new[] { ';', '"', '\r', '\n' }) >= 0)
+                if (array[i].IndexOfAny(SpecialCharacters) >= 0)
                     builder.Append($"\"{array[i].Replace("\"", "\"\"")}\"");
                 else
                     builder.Append(array[i]);
@@ -30,7 +32,7 @@ namespace SoftCircuits.CsvParser
         {
             s ??= string.Empty;
 
-            List<string> list = new();
+            List<string> list = [];
             int pos = 0;
 
             while (pos < s.Length)

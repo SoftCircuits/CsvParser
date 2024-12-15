@@ -103,7 +103,7 @@ namespace SoftCircuits.CsvParser
 #if NETSTANDARD2_0
             if (item == null) throw new ArgumentNullException(nameof(item));
 #else
-            ArgumentNullException.ThrowIfNull(nameof(item));
+            ArgumentNullException.ThrowIfNull(item);
 #endif
             Write(ColumnsInfo.FilteredColumns.Select(fc => fc.GetValue(item)));
         }
@@ -117,7 +117,7 @@ namespace SoftCircuits.CsvParser
 #if NETSTANDARD2_0
             if (item == null) throw new ArgumentNullException(nameof(item));
 #else
-            ArgumentNullException.ThrowIfNull(nameof(item));
+            ArgumentNullException.ThrowIfNull(item);
 #endif
             await WriteAsync(ColumnsInfo.FilteredColumns.Select(fc => fc.GetValue(item)));
         }
@@ -131,7 +131,7 @@ namespace SoftCircuits.CsvParser
 #if NETSTANDARD2_0
             if (items == null) throw new ArgumentNullException(nameof(items));
 #else
-            ArgumentNullException.ThrowIfNull(nameof(items));
+            ArgumentNullException.ThrowIfNull(items);
 #endif
             foreach (T item in items)
                 Write(item);
@@ -146,7 +146,7 @@ namespace SoftCircuits.CsvParser
 #if NETSTANDARD2_0
             if (items == null) throw new ArgumentNullException(nameof(items));
 #else
-            ArgumentNullException.ThrowIfNull(nameof(items));
+            ArgumentNullException.ThrowIfNull(items);
 #endif
             foreach (T item in items)
                 await WriteAsync(item);
